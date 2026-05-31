@@ -14,4 +14,7 @@ export const queryKeys = {
   search: {
     all: (q: string) => ["search", q] as const,
   },
+  bookmarks: {
+    all: () => ["bookmarks"] as const,
+  },
 };

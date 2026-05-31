@@ -26,6 +26,7 @@ export interface Post {
     likes: number;
   };
   isLiked?: boolean;
+  isBookmarked?: boolean;
   createdAt: string;
   updatedAt: string;
 }

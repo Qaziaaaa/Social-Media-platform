@@ -38,6 +38,9 @@ export async function getPostById(id: string, currentUserId?: string) {
       likes: currentUserId
         ? { where: { userId: currentUserId }, take: 1 }
         : false,
+      bookmarks: currentUserId
+        ? { where: { userId: currentUserId }, take: 1 }
+        : false,
     },
   });
 
@@ -45,10 +48,11 @@ export async function getPostById(id: string, currentUserId?: string) {
     throw new AppError(404, "Post not found");
   }
 
-  const { likes, ...rest } = post;
+  const { likes, bookmarks, ...rest } = post;
   return {
     ...rest,
     isLiked: Array.isArray(likes) ? likes.length > 0 : false,
+    isBookmarked: Array.isArray(bookmarks) ? bookmarks.length > 0 : false,
   };
 }
 
@@ -114,7 +118,10 @@ export async function getFeed(cursor?: string, limit = 20, currentUserId?: strin
       },
       _count: { select: { comments: true, likes: true } },
       ...(currentUserId
-        ? { likes: { where: { userId: currentUserId }, take: 1 } }
+        ? {
+            likes: { where: { userId: currentUserId }, take: 1 },
+            bookmarks: { where: { userId: currentUserId }, take: 1 },
+          }
         : {}),
     },
   });
@@ -122,9 +129,10 @@ export async function getFeed(cursor?: string, limit = 20, currentUserId?: strin
   const hasMore = posts.length > limit;
   if (hasMore) posts.pop();
 
-  const items = posts.map(({ likes, ...rest }) => ({
+  const items = posts.map(({ likes, bookmarks, ...rest }) => ({
     ...rest,
     isLiked: Array.isArray(likes) ? likes.length > 0 : false,
+    isBookmarked: Array.isArray(bookmarks) ? bookmarks.length > 0 : false,
   }));
 
   return {

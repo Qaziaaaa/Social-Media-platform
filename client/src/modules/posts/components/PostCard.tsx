@@ -82,13 +82,19 @@ export function PostCard({ post }: PostCardProps) {
 
   const bookmarkMutation = useMutation({
     mutationFn: async () => {
-      await api.post(`/posts/${post.id}/bookmark`);
+      if (post.isBookmarked) {
+        await api.delete(`/bookmarks/posts/${post.id}/bookmark`);
+      } else {
+        await api.post(`/bookmarks/posts/${post.id}/bookmark`);
+      }
     },
     onSuccess: () => {
-      toast.success("Bookmarked");
+      queryClient.invalidateQueries({ queryKey: queryKeys.posts.feed() });
+      queryClient.invalidateQueries({ queryKey: queryKeys.bookmarks.all() });
+      toast.success(post.isBookmarked ? "Bookmark removed" : "Bookmarked");
     },
     onError: () => {
-      toast.error("Failed to bookmark");
+      toast.error("Failed to update bookmark");
     },
   });
 
@@ -203,9 +209,13 @@ export function PostCard({ post }: PostCardProps) {
         </button>
         <button
           onClick={() => bookmarkMutation.mutate()}
-          className="flex items-center gap-xs hover:text-primary hover:bg-surface-container-low px-sm py-xs rounded-full transition-colors group"
+          className={`flex items-center gap-xs hover:text-primary hover:bg-surface-container-low px-sm py-xs rounded-full transition-colors group ${
+            post.isBookmarked ? "text-primary" : ""
+          }`}
         >
-          <span className="material-symbols-outlined group-hover:scale-110 transition-transform">bookmark</span>
+          <span className={`material-symbols-outlined group-hover:scale-110 transition-transform ${post.isBookmarked ? "text-primary" : ""}`} style={post.isBookmarked ? { fontVariationSettings: "'FILL' 1" } : undefined}>
+            bookmark
+          </span>
         </button>
       </div>
     </article>
