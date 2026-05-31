@@ -59,34 +59,44 @@ export function PostForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="card p-4 animate-fade-in">
-      <div className="flex gap-3">
+    <form onSubmit={handleSubmit} className="bg-surface rounded-xl p-lg ambient-shadow border border-surface-container-high animate-fade-in">
+      <div className="flex gap-md">
         <Avatar src={user?.avatar} alt={user?.fullName ?? "You"} size="md" />
-        <div className="flex-1 space-y-3">
+        <div className="flex-1">
           <textarea
             value={content}
             onChange={(e) => setContent(e.target.value)}
             placeholder="What's on your mind?"
             rows={3}
-            className="w-full resize-none rounded-lg border border-border bg-surface px-3 py-2.5 text-sm text-[#e2e8f0] placeholder:text-[#475569] transition-colors focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/30"
+            className="w-full bg-transparent border-none focus:ring-0 font-body-md text-body-md text-on-surface placeholder:text-on-surface-variant resize-none min-h-[80px]"
           />
 
           {preview && (
-            <div className="relative rounded-xl overflow-hidden ring-1 ring-border-subtle">
+            <div className="relative rounded-xl overflow-hidden border border-surface-container-high mb-sm">
               <img src={preview} alt="Preview" className="max-h-48 w-full object-cover" />
               <button
                 type="button"
                 onClick={() => { setFile(null); setPreview(null); }}
-                className="absolute top-2 right-2 rounded-full bg-black/60 p-1.5 text-white/80 backdrop-blur-sm hover:bg-black/80 hover:text-white transition-colors"
+                className="absolute top-2 right-2 rounded-full bg-black/50 p-1.5 text-white/80 backdrop-blur-sm hover:bg-black/70 hover:text-white transition-colors"
               >
-                <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                </svg>
+                <span className="material-symbols-outlined text-[16px]">close</span>
               </button>
             </div>
           )}
 
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between mt-sm pt-sm border-t border-outline-variant">
+            <div className="flex gap-sm">
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                className="text-primary hover:bg-surface-container-low p-sm rounded-full transition-colors flex items-center justify-center"
+              >
+                <span className="material-symbols-outlined">image</span>
+              </button>
+              <button type="button" className="text-primary hover:bg-surface-container-low p-sm rounded-full transition-colors flex items-center justify-center">
+                <span className="material-symbols-outlined">mood</span>
+              </button>
+            </div>
             <input
               ref={fileInputRef}
               type="file"
@@ -94,16 +104,6 @@ export function PostForm() {
               onChange={handleFileChange}
               className="hidden"
             />
-            <button
-              type="button"
-              onClick={() => fileInputRef.current?.click()}
-              className="flex items-center gap-1.5 rounded-lg px-2 py-1.5 text-sm text-[#64748b] transition-colors hover:bg-surface-hover hover:text-[#22d3ee]"
-            >
-              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z" />
-              </svg>
-              Photo
-            </button>
             <Button
               type="submit"
               size="sm"

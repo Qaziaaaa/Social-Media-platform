@@ -6,15 +6,17 @@ import { RegisterPage } from "@/modules/auth/pages/RegisterPage";
 import { ProfilePage } from "@/modules/profile/pages/ProfilePage";
 import { EditProfilePage } from "@/modules/profile/pages/EditProfilePage";
 import { PostDetailPage } from "@/modules/posts/pages/PostDetailPage";
+import { ExplorePage } from "@/modules/search/pages/ExplorePage";
+import { BookmarksPage } from "@/modules/bookmarks/pages/BookmarksPage";
 
 function NotFoundPage() {
   return (
     <div className="flex flex-col items-center justify-center gap-4 py-20 animate-fade-in">
-      <h1 className="font-display text-7xl font-extrabold text-[#2a2a44]">404</h1>
-      <p className="text-lg text-[#64748b]">Page not found</p>
+      <h1 className="font-display text-7xl font-extrabold text-surface-container-high">404</h1>
+      <p className="text-lg text-on-surface-variant">Page not found</p>
       <Link
         to="/"
-        className="rounded-lg bg-gradient-to-r from-primary-dark to-primary px-4 py-2 text-sm font-medium text-white shadow-lg shadow-primary-dark/25 transition-all hover:shadow-primary/20"
+        className="bg-primary text-on-primary font-label-md text-label-md px-4 py-2 rounded-full hover:bg-on-primary-fixed-variant transition-colors shadow-sm"
       >
         Go home
       </Link>
@@ -25,12 +27,14 @@ function NotFoundPage() {
 export function AppRouter() {
   return (
     <Routes>
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/register" element={<RegisterPage />} />
       <Route element={<MainLayout />}>
         <Route path="/" element={<FeedPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
         <Route path="/profile/:id" element={<ProfilePage />} />
         <Route path="/profile/:id/edit" element={<EditProfilePage />} />
+        <Route path="/explore" element={<ExplorePage />} />
+        <Route path="/bookmarks" element={<BookmarksPage />} />
         <Route path="/posts/:id" element={<PostDetailPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>

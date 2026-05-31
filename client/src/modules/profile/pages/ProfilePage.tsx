@@ -1,3 +1,4 @@
+import { useState, useCallback } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient, useInfiniteQuery } from "@tanstack/react-query";
 import toast from "react-hot-toast";
@@ -10,11 +11,14 @@ import api from "@/services/api";
 import { queryKeys } from "@/lib/query-keys";
 import type { ApiResponse, User, Post, PaginatedResponse } from "@/types";
 
+type Tab = "posts" | "likes" | "media";
+
 export function ProfilePage() {
   const { id } = useParams<{ id: string }>();
   const { user: currentUser } = useAuth();
   const queryClient = useQueryClient();
   const isOwnProfile = currentUser?.id === id;
+  const [activeTab, setActiveTab] = useState<Tab>("posts");
 
   const { data, isLoading, isError } = useQuery({
     queryKey: queryKeys.users.detail(id!),
@@ -45,6 +49,12 @@ export function ProfilePage() {
     },
   });
 
+  const endpointMap: Record<Tab, string> = {
+    posts: `/users/${id}/posts`,
+    likes: `/users/${id}/liked-posts`,
+    media: `/users/${id}/media-posts`,
+  };
+
   const {
     data: postsData,
     fetchNextPage,
@@ -52,13 +62,13 @@ export function ProfilePage() {
     isFetchingNextPage,
     isLoading: postsLoading,
   } = useInfiniteQuery({
-    queryKey: queryKeys.users.posts(id!),
+    queryKey: [...queryKeys.users.posts(id!), activeTab],
     queryFn: async ({ pageParam }: { pageParam?: string }) => {
       const params = new URLSearchParams();
       if (pageParam) params.set("cursor", pageParam);
       params.set("limit", "10");
       const { data } = await api.get<ApiResponse<PaginatedResponse<Post>>>(
-        `/users/${id}/posts?${params}`,
+        `${endpointMap[activeTab]}?${params}`,
       );
       return data.data;
     },
@@ -67,22 +77,26 @@ export function ProfilePage() {
     enabled: !!id,
   });
 
+  const handleSetTab = useCallback((tab: Tab) => {
+    setActiveTab(tab);
+  }, []);
+
   if (isLoading) {
     return (
       <div className="space-y-4">
         <Skeleton className="h-48 w-full rounded-xl" />
         <Skeleton className="h-8 w-48" />
         <Skeleton className="h-4 w-32" />
-        <Skeleton className="h-32 w-full" />
-        <Skeleton className="h-32 w-full" />
+        <Skeleton className="h-32 w-full rounded-xl" />
+        <Skeleton className="h-32 w-full rounded-xl" />
       </div>
     );
   }
 
   if (isError || !data) {
     return (
-      <div className="card p-8 text-center">
-        <p className="text-[#64748b]">User not found</p>
+      <div className="bg-surface rounded-xl p-lg ambient-shadow border border-surface-container-high text-center">
+        <p className="text-on-surface-variant">User not found</p>
       </div>
     );
   }
@@ -90,31 +104,32 @@ export function ProfilePage() {
   const isFollowing = (data as any).isFollowing ?? false;
   const posts = postsData?.pages.flatMap((p) => p.items) ?? [];
 
+  const tabs: { key: Tab; label: string }[] = [
+    { key: "posts", label: "Posts" },
+    { key: "likes", label: "Likes" },
+    { key: "media", label: "Media" },
+  ];
+
   return (
-    <div className="space-y-4 animate-fade-in">
-      <div className="card overflow-hidden">
-        <div className="h-32 bg-gradient-to-r from-primary-dark via-primary to-[#22d3ee]">
+    <div className="flex flex-col gap-lg animate-fade-in">
+      <section className="bg-surface rounded-xl ambient-shadow overflow-hidden border border-surface-container-high">
+        <div className="h-48 md:h-64 w-full bg-surface-variant relative">
           {data.coverImage && (
-            <img
-              src={data.coverImage}
-              alt="Cover"
-              className="h-full w-full object-cover"
-            />
+            <img src={data.coverImage} alt="Cover" className="w-full h-full object-cover" />
           )}
         </div>
-        <div className="px-4 pb-4">
-          <div className="-mt-12 mb-4">
-            <Avatar src={data.avatar} alt={data.fullName} size="lg" className="ring-4 ring-[#0b0b10]" />
+
+        <div className="px-lg pb-lg relative">
+          <div className="absolute -top-16 left-lg">
+            <div className="relative w-32 h-32 rounded-full border-4 border-surface overflow-hidden bg-surface shadow-sm">
+              <Avatar src={data.avatar} alt={data.fullName} size="lg" className="w-full h-full" />
+            </div>
           </div>
 
-          <div className="flex items-start justify-between">
-            <div>
-              <h1 className="font-display text-xl font-bold">{data.fullName}</h1>
-              <p className="text-sm text-[#64748b]">@{data.username}</p>
-            </div>
+          <div className="flex justify-end pt-4 mb-4">
             {isOwnProfile ? (
               <Link to={`/profile/${id}/edit`}>
-                <Button variant="secondary" size="sm">Edit profile</Button>
+                <Button variant="secondary" size="sm">Edit Profile</Button>
               </Link>
             ) : (
               <Button
@@ -128,17 +143,47 @@ export function ProfilePage() {
             )}
           </div>
 
-          {data.bio && <p className="mt-2 text-sm text-[#94a3b8] leading-relaxed">{data.bio}</p>}
-
-          <div className="mt-4 flex gap-6 text-sm">
-            <span className="font-semibold text-[#e2e8f0]">{data._count.posts} <span className="font-normal text-[#64748b]">posts</span></span>
-            <span className="font-semibold text-[#e2e8f0]">{data._count.followers} <span className="font-normal text-[#64748b]">followers</span></span>
-            <span className="font-semibold text-[#e2e8f0]">{data._count.following} <span className="font-normal text-[#64748b]">following</span></span>
+          <div className="mt-2">
+            <h1 className="font-headline-lg text-headline-lg text-on-surface">{data.fullName}</h1>
+            <p className="font-body-md text-body-md text-on-surface-variant mb-4">@{data.username}</p>
+            {data.bio && (
+              <p className="font-body-md text-body-md text-on-surface mb-4 max-w-2xl">{data.bio}</p>
+            )}
+            <div className="flex gap-6 border-t border-surface-container-high pt-4">
+              <div className="flex gap-1 items-baseline">
+                <span className="font-label-md text-label-md text-on-surface">{data._count.posts}</span>
+                <span className="font-body-sm text-body-sm text-on-surface-variant">Posts</span>
+              </div>
+              <div className="flex gap-1 items-baseline">
+                <span className="font-label-md text-label-md text-on-surface">{data._count.followers}</span>
+                <span className="font-body-sm text-body-sm text-on-surface-variant">Followers</span>
+              </div>
+              <div className="flex gap-1 items-baseline">
+                <span className="font-label-md text-label-md text-on-surface">{data._count.following}</span>
+                <span className="font-body-sm text-body-sm text-on-surface-variant">Following</span>
+              </div>
+            </div>
           </div>
         </div>
+      </section>
+
+      <div className="flex border-b border-surface-container-high mb-2">
+        {tabs.map((tab) => (
+          <button
+            key={tab.key}
+            onClick={() => handleSetTab(tab.key)}
+            className={`flex-1 py-4 font-label-md text-label-md transition-colors ${
+              activeTab === tab.key
+                ? "text-primary border-b-2 border-primary"
+                : "text-on-surface-variant hover:bg-surface-container-low"
+            }`}
+          >
+            {tab.label}
+          </button>
+        ))}
       </div>
 
-      <div className="space-y-4">
+      <div className="flex flex-col gap-md">
         {postsLoading && (
           <>
             <Skeleton className="h-32 w-full rounded-xl" />
@@ -146,8 +191,10 @@ export function ProfilePage() {
           </>
         )}
         {!postsLoading && posts.length === 0 && (
-          <div className="card p-8 text-center">
-            <p className="text-[#475569]">No posts yet</p>
+          <div className="bg-surface rounded-xl p-lg text-center ambient-shadow border border-surface-container-high">
+            <p className="text-on-surface-variant">
+              {activeTab === "likes" ? "No liked posts yet" : activeTab === "media" ? "No media posts yet" : "No posts yet"}
+            </p>
           </div>
         )}
         {posts.map((post) => (

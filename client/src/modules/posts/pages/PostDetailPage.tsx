@@ -22,22 +22,22 @@ export function PostDetailPage() {
   if (isLoading) {
     return (
       <div className="space-y-4">
-        <Skeleton className="h-32 w-full rounded-xl" />
         <Skeleton className="h-48 w-full rounded-xl" />
+        <Skeleton className="h-64 w-full rounded-xl" />
       </div>
     );
   }
 
   if (isError || !data) {
     return (
-      <div className="card p-8 text-center">
-        <p className="text-[#64748b]">Post not found</p>
+      <div className="bg-surface rounded-xl p-lg ambient-shadow border border-surface-container-high text-center">
+        <p className="text-on-surface-variant">Post not found</p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-4 animate-fade-in">
+    <div className="flex flex-col gap-lg animate-fade-in">
       <PostCard post={data} />
       <CommentSection postId={data.id} />
     </div>

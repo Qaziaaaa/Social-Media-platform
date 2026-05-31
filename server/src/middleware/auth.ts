@@ -21,10 +21,14 @@ export function authenticate(req: Request, _res: Response, next: NextFunction) {
     throw new AppError(401, "Authentication required");
   }
 
-  const token = header.slice(7);
-  const payload = jwt.verify(token, env.JWT_SECRET) as JwtPayload;
-  req.user = payload;
-  next();
+  try {
+    const token = header.slice(7);
+    const payload = jwt.verify(token, env.JWT_SECRET) as JwtPayload;
+    req.user = payload;
+    next();
+  } catch {
+    throw new AppError(401, "Invalid or expired token");
+  }
 }
 
 export function optionalAuth(req: Request, _res: Response, next: NextFunction) {

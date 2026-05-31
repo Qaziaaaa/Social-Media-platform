@@ -2,7 +2,7 @@ import type { ButtonHTMLAttributes, ReactNode } from "react";
 import { cn } from "@/utils/cn";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "primary" | "secondary" | "ghost" | "danger";
+  variant?: "primary" | "secondary" | "ghost";
   size?: "sm" | "md" | "lg";
   loading?: boolean;
   children: ReactNode;
@@ -10,19 +10,17 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variants = {
   primary:
-    "bg-gradient-to-r from-primary-dark to-primary text-white hover:from-primary hover:to-primary-hover shadow-lg shadow-primary-dark/25 hover:shadow-primary/20",
+    "bg-primary text-on-primary hover:bg-on-primary-fixed-variant",
   secondary:
-    "bg-surface border border-border text-[#cbd5e1] hover:bg-surface-hover hover:border-primary/30",
+    "bg-surface-container-lowest border border-outline-variant text-on-surface hover:bg-surface-container-low",
   ghost:
-    "bg-transparent text-[#94a3b8] hover:text-[#e2e8f0] hover:bg-surface-hover",
-  danger:
-    "bg-red-600/10 border border-red-500/30 text-red-400 hover:bg-red-600/20 hover:border-red-500/50",
+    "bg-transparent text-on-surface-variant hover:bg-surface-container-low",
 };
 
 const sizes = {
-  sm: "px-3 py-1.5 text-sm",
-  md: "px-4 py-2 text-sm",
-  lg: "px-6 py-3 text-base",
+  sm: "px-3 py-1.5 text-label-sm font-label-sm",
+  md: "px-4 py-2 text-label-md font-label-md",
+  lg: "px-6 py-3 text-label-md font-label-md",
 };
 
 export function Button({
@@ -37,7 +35,7 @@ export function Button({
   return (
     <button
       className={cn(
-        "inline-flex items-center justify-center rounded-lg font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 focus:ring-offset-[#0b0b10] disabled:opacity-50 disabled:cursor-not-allowed",
+        "inline-flex items-center justify-center rounded-lg font-medium transition-all duration-200 focus:outline-none focus:ring-[3px] focus:ring-primary/20 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed",
         variants[variant],
         sizes[size],
         className,

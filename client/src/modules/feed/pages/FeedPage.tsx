@@ -6,7 +6,7 @@ export function FeedPage() {
   const { isAuthenticated } = useAuth();
 
   return (
-    <div className="space-y-4 animate-fade-in">
+    <div className="flex flex-col gap-lg animate-fade-in">
       {isAuthenticated && <PostForm />}
       <PostList />
     </div>

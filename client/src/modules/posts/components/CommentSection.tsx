@@ -13,10 +13,85 @@ interface CommentSectionProps {
   postId: string;
 }
 
+function CommentItem({
+  comment,
+  postId,
+  onReply,
+  currentUserId,
+  onLike,
+  onDelete,
+}: {
+  comment: Comment;
+  postId: string;
+  currentUserId?: string;
+  onReply: (id: string, username: string) => void;
+  onLike: (commentId: string, isLiked: boolean) => void;
+  onDelete: (commentId: string) => void;
+}) {
+  return (
+    <div className="flex gap-sm mb-lg last:mb-0">
+      <Avatar src={comment.author.avatar} alt={comment.author.fullName} size="sm" />
+      <div className="flex-1 min-w-0">
+        <div className="bg-surface-container-low p-md rounded-xl rounded-tl-none">
+          <div className="flex justify-between items-start mb-xs">
+            <div className="flex items-baseline gap-xs min-w-0">
+              <span className="font-label-md text-label-md text-on-surface truncate">{comment.author.fullName}</span>
+              <span className="font-body-sm text-body-sm text-on-surface-variant shrink-0">@{comment.author.username}</span>
+            </div>
+            {currentUserId === comment.authorId && (
+              <button
+                onClick={() => { if (confirm("Delete this comment?")) onDelete(comment.id); }}
+                className="text-on-surface-variant hover:text-error p-xs rounded-full transition-colors shrink-0"
+              >
+                <span className="material-symbols-outlined text-[16px]">delete</span>
+              </button>
+            )}
+          </div>
+          <p className="font-body-md text-body-md text-on-surface">{comment.content}</p>
+        </div>
+        <div className="flex items-center gap-md mt-sm ml-sm text-on-surface-variant">
+          <button
+            onClick={() => onLike(comment.id, !!comment.isLiked)}
+            className={`flex items-center gap-xs hover:text-primary transition-colors font-label-sm text-label-sm ${comment.isLiked ? "text-tertiary" : ""}`}
+          >
+            <span className={`material-symbols-outlined text-[16px] ${comment.isLiked ? "text-tertiary" : ""}`} style={comment.isLiked ? { fontVariationSettings: "'FILL' 1" } : undefined}>
+              favorite
+            </span>
+            <span>{comment._count.likes}</span>
+          </button>
+          <button
+            onClick={() => onReply(comment.id, comment.author.username)}
+            className="flex items-center gap-xs hover:text-primary transition-colors font-label-sm text-label-sm"
+          >
+            <span className="material-symbols-outlined text-[16px]">reply</span> Reply
+          </button>
+        </div>
+
+        {comment.replies && comment.replies.length > 0 && (
+          <div className="ml-md pl-md border-l-2 border-surface-container-high mt-md space-y-md">
+            {comment.replies.map((reply) => (
+              <CommentItem
+                key={reply.id}
+                comment={reply}
+                postId={postId}
+                currentUserId={currentUserId}
+                onReply={onReply}
+                onLike={onLike}
+                onDelete={onDelete}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export function CommentSection({ postId }: CommentSectionProps) {
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const [content, setContent] = useState("");
+  const [replyTo, setReplyTo] = useState<{ id: string; username: string } | null>(null);
 
   const { data, isLoading, isError } = useQuery({
     queryKey: queryKeys.posts.comments(postId),
@@ -28,13 +103,47 @@ export function CommentSection({ postId }: CommentSectionProps) {
     },
   });
 
+  const likeMutation = useMutation({
+    mutationFn: async ({ commentId, isLiked }: { commentId: string; isLiked: boolean }) => {
+      if (isLiked) {
+        await api.delete(`/comments/${commentId}/like`);
+      } else {
+        await api.post(`/comments/${commentId}/like`);
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.posts.comments(postId) });
+    },
+    onError: () => {
+      toast.error("Failed to update like");
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: async (commentId: string) => {
+      await api.delete(`/comments/${commentId}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.posts.comments(postId) });
+      queryClient.invalidateQueries({ queryKey: queryKeys.posts.detail(postId) });
+      toast.success("Comment deleted");
+    },
+    onError: () => {
+      toast.error("Failed to delete comment");
+    },
+  });
+
   const createMutation = useMutation({
-    mutationFn: async (body: string) => {
-      const { data } = await api.post<ApiResponse<Comment>>(`/posts/${postId}/comments`, { content: body });
+    mutationFn: async ({ body, parentId }: { body: string; parentId?: string }) => {
+      const { data } = await api.post<ApiResponse<Comment>>(`/posts/${postId}/comments`, {
+        content: body,
+        parentId,
+      });
       return data.data;
     },
     onSuccess: () => {
       setContent("");
+      setReplyTo(null);
       queryClient.invalidateQueries({ queryKey: queryKeys.posts.comments(postId) });
       queryClient.invalidateQueries({ queryKey: queryKeys.posts.detail(postId) });
       queryClient.invalidateQueries({ queryKey: queryKeys.posts.feed() });
@@ -48,35 +157,50 @@ export function CommentSection({ postId }: CommentSectionProps) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!content.trim()) return;
-    createMutation.mutate(content);
+    createMutation.mutate({ body: content, parentId: replyTo?.id });
   };
 
   const comments = data?.items ?? [];
 
   return (
-    <div className="card p-4 animate-fade-in">
-      <h3 className="mb-4 font-display text-sm font-semibold text-[#94a3b8] uppercase tracking-wider">
-        Comments
+    <section className="bg-surface rounded-xl p-lg ambient-shadow border border-surface-container-high animate-fade-in">
+      <h3 className="font-headline-md text-headline-md text-on-surface mb-lg">
+        Comments {data && `(${data.items.length})`}
       </h3>
 
       {user && (
-        <form onSubmit={handleSubmit} className="mb-4 flex gap-2">
+        <form onSubmit={handleSubmit} className="flex gap-sm mb-xl">
           <Avatar src={user.avatar} alt={user.fullName} size="sm" />
-          <div className="flex flex-1 gap-2">
-            <input
+          <div className="flex-1">
+            {replyTo && (
+              <div className="flex items-center gap-xs mb-xs text-body-sm text-on-surface-variant">
+                <span>Replying to @{replyTo.username}</span>
+                <button
+                  type="button"
+                  onClick={() => { setReplyTo(null); setContent(""); }}
+                  className="text-primary hover:underline ml-auto"
+                >
+                  Cancel
+                </button>
+              </div>
+            )}
+            <textarea
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              placeholder="Write a comment..."
-              className="flex-1 rounded-lg border border-border bg-surface px-3 py-2 text-sm text-[#e2e8f0] placeholder:text-[#475569] transition-colors focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/30"
+              placeholder={replyTo ? `Reply to @${replyTo.username}...` : "Post your reply..."}
+              rows={2}
+              className="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-md py-sm font-body-md text-body-md text-on-surface focus:border-primary focus:ring-2 focus:ring-inverse-primary outline-none transition-all resize-none placeholder:text-on-surface-variant"
             />
-            <Button
-              type="submit"
-              size="sm"
-              loading={createMutation.isPending}
-              disabled={!content.trim()}
-            >
-              Post
-            </Button>
+            <div className="flex justify-end mt-sm">
+              <Button
+                type="submit"
+                size="sm"
+                loading={createMutation.isPending}
+                disabled={!content.trim()}
+              >
+                Reply
+              </Button>
+            </div>
           </div>
         </form>
       )}
@@ -96,22 +220,24 @@ export function CommentSection({ postId }: CommentSectionProps) {
       )}
 
       {isError && (
-        <p className="text-sm text-[#64748b]">Failed to load comments</p>
+        <p className="font-body-sm text-body-sm text-on-surface-variant">Failed to load comments</p>
       )}
 
       {!isLoading && !isError && comments.length === 0 && (
-        <p className="text-sm text-[#475569]">No comments yet. Start the conversation.</p>
+        <p className="font-body-sm text-body-sm text-on-surface-variant text-center py-lg">No comments yet. Start the conversation.</p>
       )}
 
       {comments.map((comment) => (
-        <div key={comment.id} className="mb-3 flex gap-2 last:mb-0 group">
-          <Avatar src={comment.author.avatar} alt={comment.author.fullName} size="sm" />
-          <div className="flex-1 rounded-lg bg-surface px-3 py-2">
-            <p className="text-sm font-medium text-[#e2e8f0]">{comment.author.fullName}</p>
-            <p className="text-sm text-[#94a3b8] leading-relaxed">{comment.content}</p>
-          </div>
-        </div>
+        <CommentItem
+          key={comment.id}
+          comment={comment}
+          postId={postId}
+          currentUserId={user?.id}
+          onReply={(id, username) => setReplyTo({ id, username })}
+          onLike={(commentId, isLiked) => likeMutation.mutate({ commentId, isLiked })}
+          onDelete={(commentId) => deleteMutation.mutate(commentId)}
+        />
       ))}
-    </div>
+    </section>
   );
 }

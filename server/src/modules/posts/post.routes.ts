@@ -9,6 +9,7 @@ router.get("/", optionalAuth, asyncHandler(postController.feed));
 router.get("/:id", asyncHandler(postController.getById));
 router.post("/", authenticate, asyncHandler(postController.create));
 router.patch("/:id", authenticate, asyncHandler(postController.update));
+router.post("/:id/repost", authenticate, asyncHandler(postController.repost));
 router.delete("/:id", authenticate, asyncHandler(postController.remove));
 
 export default router;

@@ -11,4 +11,7 @@ export const queryKeys = {
     detail: (id: string) => ["posts", id] as const,
     comments: (id: string) => ["posts", id, "comments"] as const,
   },
+  search: {
+    all: (q: string) => ["search", q] as const,
+  },
 };

@@ -36,6 +36,12 @@ export interface Comment {
   authorId: string;
   author: Pick<User, "id" | "username" | "fullName" | "avatar">;
   content: string;
+  parentId?: string | null;
+  isLiked?: boolean;
+  replies?: Comment[];
+  _count: {
+    likes: number;
+  };
   createdAt: string;
 }
 

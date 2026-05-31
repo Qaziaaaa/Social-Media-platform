@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -8,6 +8,7 @@ import toast from "react-hot-toast";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Skeleton } from "@/components/ui/Skeleton";
+import { Avatar } from "@/components/ui/Avatar";
 import { useAuth } from "@/modules/auth/hooks/useAuth";
 import api from "@/services/api";
 import { queryKeys } from "@/lib/query-keys";
@@ -25,6 +26,12 @@ export function EditProfilePage() {
   const { user, isLoading } = useAuth();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const [coverFile, setCoverFile] = useState<File | null>(null);
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+  const [coverPreview, setCoverPreview] = useState<string | null>(null);
+  const avatarInputRef = useRef<HTMLInputElement>(null);
+  const coverInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (!isLoading && !user) {
@@ -45,9 +52,21 @@ export function EditProfilePage() {
     },
   });
 
+  const uploadImage = async (file: File): Promise<string> => {
+    const formData = new FormData();
+    formData.append("file", file);
+    const { data } = await api.post<ApiResponse<{ url: string }>>("/upload", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    return data.data.url;
+  };
+
   const mutation = useMutation({
-    mutationFn: async (data: EditProfileForm) => {
-      const res = await api.patch<ApiResponse<User>>(`/users/${user?.id}`, data);
+    mutationFn: async (formData: EditProfileForm) => {
+      const payload: Record<string, string | undefined> = { ...formData };
+      if (avatarFile) payload.avatar = await uploadImage(avatarFile);
+      if (coverFile) payload.coverImage = await uploadImage(coverFile);
+      const res = await api.patch<ApiResponse<User>>(`/users/${user?.id}`, payload);
       return res.data;
     },
     onSuccess: () => {
@@ -66,10 +85,10 @@ export function EditProfilePage() {
       <div className="mx-auto max-w-md space-y-6">
         <Skeleton className="h-8 w-32" />
         <div className="space-y-4">
-          <Skeleton className="h-20 w-full" />
-          <Skeleton className="h-20 w-full" />
-          <Skeleton className="h-24 w-full" />
-          <Skeleton className="h-10 w-24" />
+          <Skeleton className="h-20 w-full rounded-lg" />
+          <Skeleton className="h-20 w-full rounded-lg" />
+          <Skeleton className="h-24 w-full rounded-lg" />
+          <Skeleton className="h-10 w-24 rounded-lg" />
         </div>
       </div>
     );
@@ -78,12 +97,66 @@ export function EditProfilePage() {
   if (!user) return null;
 
   return (
-    <div className="mx-auto max-w-md space-y-6">
+    <div className="mx-auto max-w-md space-y-6 animate-fade-in">
       <div>
-        <h1 className="font-display text-3xl font-bold">Edit profile</h1>
+        <h1 className="font-headline-lg text-headline-lg text-on-surface">Edit profile</h1>
       </div>
 
       <form onSubmit={handleSubmit((data) => mutation.mutate(data))} className="space-y-4">
+        <div className="space-y-4 mb-lg">
+          <div>
+            <label className="font-label-md text-label-md text-on-surface ml-xs block mb-sm">Cover image</label>
+            <div
+              onClick={() => coverInputRef.current?.click()}
+              className="relative h-32 bg-surface-container-low rounded-lg overflow-hidden cursor-pointer group border border-outline-variant"
+            >
+              {(coverPreview || user?.coverImage) && (
+                <img
+                  src={coverPreview ?? user!.coverImage!}
+                  alt="Cover"
+                  className="w-full h-full object-cover"
+                />
+              )}
+              <div className="absolute inset-0 flex items-center justify-center bg-black/0 group-hover:bg-black/30 transition-colors">
+                <span className="material-symbols-outlined text-white opacity-0 group-hover:opacity-100 transition-opacity text-3xl">photo_camera</span>
+              </div>
+            </div>
+            <input
+              ref={coverInputRef}
+              type="file"
+              accept="image/jpeg,image/png,image/gif,image/webp"
+              onChange={(e) => {
+                const f = e.target.files?.[0];
+                if (f) { setCoverFile(f); setCoverPreview(URL.createObjectURL(f)); }
+              }}
+              className="hidden"
+            />
+          </div>
+
+          <div className="flex justify-center -mt-12 relative z-10">
+            <div className="relative">
+              <Avatar src={avatarPreview ?? user?.avatar ?? null} alt="Avatar" size="lg" />
+              <button
+                type="button"
+                onClick={() => avatarInputRef.current?.click()}
+                className="absolute inset-0 flex items-center justify-center rounded-full bg-black/0 hover:bg-black/30 transition-colors"
+              >
+                <span className="material-symbols-outlined text-white opacity-0 hover:opacity-100 transition-opacity">photo_camera</span>
+              </button>
+              <input
+                ref={avatarInputRef}
+                type="file"
+                accept="image/jpeg,image/png,image/gif,image/webp"
+                onChange={(e) => {
+                  const f = e.target.files?.[0];
+                  if (f) { setAvatarFile(f); setAvatarPreview(URL.createObjectURL(f)); }
+                }}
+                className="hidden"
+              />
+            </div>
+          </div>
+        </div>
+
         <Input
           id="username"
           label="Username"
@@ -97,16 +170,16 @@ export function EditProfilePage() {
           error={errors.fullName?.message}
         />
         <div className="space-y-1">
-          <label htmlFor="bio" className="block text-sm font-medium text-[#cbd5e1]">
+          <label htmlFor="bio" className="font-label-md text-label-md text-on-surface ml-xs block">
             Bio
           </label>
           <textarea
             id="bio"
             rows={4}
             {...register("bio")}
-            className="block w-full rounded-lg border border-border bg-surface px-3 py-2.5 text-sm text-[#e2e8f0] placeholder:text-[#475569] transition-colors focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/30"
+            className="block w-full rounded-lg border border-outline-variant bg-surface-container-lowest px-3 py-2.5 text-body-md font-body-md text-on-surface placeholder:text-outline/60 shadow-sm transition-colors focus:border-primary focus:outline-none focus:ring-[3px] focus:ring-primary/10"
           />
-          {errors.bio && <p className="text-sm text-red-400">{errors.bio.message}</p>}
+          {errors.bio && <p className="text-sm text-error ml-xs">{errors.bio.message}</p>}
         </div>
 
         <div className="flex gap-3">

@@ -19,8 +19,10 @@ model User {
   posts        Post[]
   comments     Comment[]
   likes        Like[]
-  followers    Follow[]  @relation("following")
-  following    Follow[]  @relation("follower")
+  commentLikes CommentLike[]
+  bookmarks    Bookmark[]
+  followers    Follow[]     @relation("following")
+  following    Follow[]     @relation("follower")
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
 
@@ -29,31 +31,63 @@ model User {
 }
 
 model Post {
-  id        String    @id @default(uuid())
-  authorId  String
-  author    User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  content   String
-  imageUrl  String?
-  comments  Comment[]
-  likes     Like[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id              String         @id @default(uuid())
+  authorId        String
+  author          User           @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  content         String
+  imageUrl        String?
+  originalPostId  String?
+  originalPost    Post?          @relation("Reposts", fields: [originalPostId], references: [id], onDelete: SetNull)
+  reposts         Post[]         @relation("Reposts")
+  comments        Comment[]
+  likes           Like[]
+  bookmarks       Bookmark[]
+  hashtags        PostHashtag[]
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
 
   @@index([authorId])
   @@index([createdAt])
+  @@index([originalPostId])
+}
+
+model Hashtag {
+  id    String        @id @default(uuid())
+  tag   String        @unique
+  posts PostHashtag[]
+
+  @@index([tag])
+}
+
+model PostHashtag {
+  id        String   @id @default(uuid())
+  postId    String
+  hashtagId String
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  hashtag   Hashtag  @relation(fields: [hashtagId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([postId, hashtagId])
+  @@index([hashtagId])
+  @@index([postId])
 }
 
 model Comment {
-  id        String   @id @default(uuid())
+  id        String        @id @default(uuid())
   postId    String
-  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  post      Post          @relation(fields: [postId], references: [id], onDelete: Cascade)
+  parentId  String?
+  parent    Comment?      @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies   Comment[]     @relation("CommentReplies")
   authorId  String
-  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  author    User          @relation(fields: [authorId], references: [id], onDelete: Cascade)
   content   String
-  createdAt DateTime @default(now())
+  likes     CommentLike[]
+  createdAt DateTime      @default(now())
 
   @@index([postId])
   @@index([authorId])
+  @@index([parentId])
 }
 
 model Like {
@@ -78,4 +112,30 @@ model Follow {
   @@id([followerId, followingId])
   @@index([followerId])
   @@index([followingId])
+}
+
+model Bookmark {
+  id        String   @id @default(uuid())
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([postId, userId])
+  @@index([userId])
+  @@index([postId])
+}
+
+model CommentLike {
+  id        String   @id @default(uuid())
+  commentId String
+  comment   Comment  @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([commentId, userId])
+  @@index([commentId])
+  @@index([userId])
 }

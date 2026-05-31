@@ -19,6 +19,11 @@ export async function updateUser(req: Request, res: Response) {
   res.json(success(user));
 }
 
+export async function suggestUsers(req: Request, res: Response) {
+  const users = await userService.getSuggestedUsers(req.user!.userId);
+  res.json(success(users));
+}
+
 export async function listUsers(req: Request, res: Response) {
   const cursor = req.query.cursor as string | undefined;
   const limit = Number(req.query.limit) || 20;
@@ -30,5 +35,19 @@ export async function getUserPosts(req: Request, res: Response) {
   const cursor = req.query.cursor as string | undefined;
   const limit = Number(req.query.limit) || 20;
   const result = await userService.getUserPosts(req.params.id as string, cursor, limit);
+  res.json(success(result));
+}
+
+export async function getUserLikedPosts(req: Request, res: Response) {
+  const cursor = req.query.cursor as string | undefined;
+  const limit = Number(req.query.limit) || 20;
+  const result = await userService.getUserLikedPosts(req.params.id as string, cursor, limit);
+  res.json(success(result));
+}
+
+export async function getUserMediaPosts(req: Request, res: Response) {
+  const cursor = req.query.cursor as string | undefined;
+  const limit = Number(req.query.limit) || 20;
+  const result = await userService.getUserMediaPosts(req.params.id as string, cursor, limit);
   res.json(success(result));
 }

@@ -20,6 +20,11 @@ export async function update(req: Request, res: Response) {
   res.json(success(post));
 }
 
+export async function repost(req: Request, res: Response) {
+  const post = await postService.repostPost(req.params.id as string, req.user!.userId);
+  res.status(201).json(success(post));
+}
+
 export async function remove(req: Request, res: Response) {
   await postService.deletePost(req.params.id as string, req.user!.userId);
   res.json(success({ message: "Post deleted" }));

@@ -13,6 +13,9 @@ import commentRoutes from "./modules/comments/comment.routes";
 import likeRoutes from "./modules/likes/like.routes";
 import followRoutes from "./modules/follows/follow.routes";
 import uploadRoutes from "./modules/upload/upload.routes";
+import searchRoutes from "./modules/search/search.routes";
+import hashtagRoutes from "./modules/hashtags/hashtag.routes";
+import bookmarkRoutes from "./modules/bookmarks/bookmark.routes";
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -48,6 +51,9 @@ app.use("/api", commentRoutes);
 app.use("/api", likeRoutes);
 app.use("/api", followRoutes);
 app.use("/api/upload", uploadRoutes);
+app.use("/api/search", searchRoutes);
+app.use("/api/hashtags", hashtagRoutes);
+app.use("/api/bookmarks", bookmarkRoutes);
 
 app.use(errorHandler);
 
