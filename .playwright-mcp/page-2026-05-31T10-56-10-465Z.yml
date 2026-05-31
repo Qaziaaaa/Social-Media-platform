@@ -1,0 +1,100 @@
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - generic [ref=e5]:
+      - link "Social" [ref=e6] [cursor=pointer]:
+        - /url: /
+      - navigation [ref=e7]:
+        - link "T Test User" [ref=e29] [cursor=pointer]:
+          - /url: /profile/3e89babb-31aa-4693-8cdf-9e54b5dee8e0
+          - generic [ref=e30]: T
+          - generic [ref=e31]: Test User
+        - button "Logout" [ref=e32] [cursor=pointer]
+  - main [ref=e11]:
+    - generic [ref=e12]:
+      - generic [ref=e34]:
+        - generic [ref=e35]: T
+        - generic [ref=e36]:
+          - textbox "What's on your mind?" [ref=e37]
+          - generic [ref=e38]:
+            - button "Photo" [ref=e39] [cursor=pointer]:
+              - img [ref=e40]
+              - text: Photo
+            - button "Post" [disabled] [ref=e42]
+      - generic [ref=e13]:
+        - article [ref=e43]:
+          - generic [ref=e44]:
+            - link "Q" [ref=e45] [cursor=pointer]:
+              - /url: /profile/6fd1fe3e-b50a-46b8-a0ed-e883dfff6d0b
+              - generic [ref=e46]: Q
+            - generic [ref=e47]:
+              - link "Qazi Farhan Ahmad" [ref=e49] [cursor=pointer]:
+                - /url: /profile/6fd1fe3e-b50a-46b8-a0ed-e883dfff6d0b
+              - link "Ai is really changing the world." [ref=e50] [cursor=pointer]:
+                - /url: /posts/0ab3124d-d688-43ec-bc73-5e4f4f4460d7
+                - paragraph [ref=e51]: Ai is really changing the world.
+              - img "Post image" [ref=e52]
+              - generic [ref=e53]:
+                - button "0 likes" [ref=e54] [cursor=pointer]
+                - link "0 comments" [ref=e55] [cursor=pointer]:
+                  - /url: /posts/0ab3124d-d688-43ec-bc73-5e4f4f4460d7
+        - article [ref=e56]:
+          - generic [ref=e57]:
+            - link "Q" [ref=e58] [cursor=pointer]:
+              - /url: /profile/6fd1fe3e-b50a-46b8-a0ed-e883dfff6d0b
+              - generic [ref=e59]: Q
+            - generic [ref=e60]:
+              - link "Qazi Farhan Ahmad" [ref=e62] [cursor=pointer]:
+                - /url: /profile/6fd1fe3e-b50a-46b8-a0ed-e883dfff6d0b
+              - link:
+                - /url: /posts/db326051-a536-43ec-a073-b1b63fa2452e
+                - paragraph
+              - img "Post image" [ref=e63]
+              - generic [ref=e64]:
+                - button "0 likes" [ref=e65] [cursor=pointer]
+                - link "1 comment" [ref=e66] [cursor=pointer]:
+                  - /url: /posts/db326051-a536-43ec-a073-b1b63fa2452e
+        - article [ref=e67]:
+          - generic [ref=e68]:
+            - link "Q" [ref=e69] [cursor=pointer]:
+              - /url: /profile/6fd1fe3e-b50a-46b8-a0ed-e883dfff6d0b
+              - generic [ref=e70]: Q
+            - generic [ref=e71]:
+              - link "Qazi Farhan Ahmad" [ref=e73] [cursor=pointer]:
+                - /url: /profile/6fd1fe3e-b50a-46b8-a0ed-e883dfff6d0b
+              - link "I dont know. Not decided yet." [ref=e74] [cursor=pointer]:
+                - /url: /posts/89ef5d7e-d61e-4fca-9651-4357c93ba56b
+                - paragraph [ref=e75]: I dont know. Not decided yet.
+              - generic [ref=e76]:
+                - button "0 likes" [ref=e77] [cursor=pointer]
+                - link "0 comments" [ref=e78] [cursor=pointer]:
+                  - /url: /posts/89ef5d7e-d61e-4fca-9651-4357c93ba56b
+        - article [ref=e79]:
+          - generic [ref=e80]:
+            - link "B" [ref=e81] [cursor=pointer]:
+              - /url: /profile/970b8779-70c7-42b9-aa30-d3d9c3240584
+              - generic [ref=e82]: B
+            - generic [ref=e83]:
+              - link "Bob Smith" [ref=e85] [cursor=pointer]:
+                - /url: /profile/970b8779-70c7-42b9-aa30-d3d9c3240584
+              - link "What's everyone working on this weekend?" [ref=e86] [cursor=pointer]:
+                - /url: /posts/ef1741cd-ca1d-4f1d-a59d-7bd8d9b6731c
+                - paragraph [ref=e87]: What's everyone working on this weekend?
+              - generic [ref=e88]:
+                - button "0 likes" [ref=e89] [cursor=pointer]
+                - link "1 comment" [ref=e90] [cursor=pointer]:
+                  - /url: /posts/ef1741cd-ca1d-4f1d-a59d-7bd8d9b6731c
+        - article [ref=e91]:
+          - generic [ref=e92]:
+            - link "A" [ref=e93] [cursor=pointer]:
+              - /url: /profile/66706b57-4be8-41b8-853f-16d49830fee9
+              - generic [ref=e94]: A
+            - generic [ref=e95]:
+              - link "Alice Johnson" [ref=e97] [cursor=pointer]:
+                - /url: /profile/66706b57-4be8-41b8-853f-16d49830fee9
+              - link "Just finished building a new project! Really excited about how it turned out." [ref=e98] [cursor=pointer]:
+                - /url: /posts/544c95aa-d7d7-4ce9-beb7-41ce7ead37d9
+                - paragraph [ref=e99]: Just finished building a new project! Really excited about how it turned out.
+              - generic [ref=e100]:
+                - button "1 like" [ref=e101] [cursor=pointer]
+                - link "1 comment" [ref=e102] [cursor=pointer]:
+                  - /url: /posts/544c95aa-d7d7-4ce9-beb7-41ce7ead37d9

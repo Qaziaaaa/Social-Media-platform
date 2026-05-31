@@ -1,0 +1,41 @@
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - generic [ref=e5]:
+      - link "Social" [ref=e6] [cursor=pointer]:
+        - /url: /
+      - navigation [ref=e7]:
+        - link "T Test User" [ref=e15] [cursor=pointer]:
+          - /url: /profile/3e89babb-31aa-4693-8cdf-9e54b5dee8e0
+          - generic [ref=e16]: T
+          - generic [ref=e17]: Test User
+        - button "Logout" [ref=e18] [cursor=pointer]
+  - main [ref=e11]:
+    - generic [ref=e12]:
+      - article [ref=e19]:
+        - generic [ref=e20]:
+          - link "Q" [ref=e21] [cursor=pointer]:
+            - /url: /profile/6fd1fe3e-b50a-46b8-a0ed-e883dfff6d0b
+            - generic [ref=e22]: Q
+          - generic [ref=e23]:
+            - link "Qazi Farhan Ahmad" [ref=e25] [cursor=pointer]:
+              - /url: /profile/6fd1fe3e-b50a-46b8-a0ed-e883dfff6d0b
+            - link:
+              - /url: /posts/db326051-a536-43ec-a073-b1b63fa2452e
+              - paragraph
+            - img "Post image" [ref=e26]
+            - generic [ref=e27]:
+              - button "0 likes" [ref=e28] [cursor=pointer]
+              - link "1 comment" [ref=e29] [cursor=pointer]:
+                - /url: /posts/db326051-a536-43ec-a073-b1b63fa2452e
+      - generic [ref=e30]:
+        - heading "Comments" [level=3] [ref=e31]
+        - generic [ref=e32]:
+          - generic [ref=e33]: T
+          - generic [ref=e34]:
+            - textbox "Write a comment..." [ref=e35]: Test comment from Playwright audit!
+            - button "Post" [ref=e36] [cursor=pointer]
+        - generic [ref=e37]:
+          - generic [ref=e38]: Q
+          - generic [ref=e39]:
+            - paragraph [ref=e40]: Qazi Farhan Ahmad
+            - paragraph [ref=e41]: I cant see any post.

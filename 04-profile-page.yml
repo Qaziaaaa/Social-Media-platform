@@ -1,0 +1,24 @@
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - generic [ref=e5]:
+      - link "Social" [ref=e6] [cursor=pointer]:
+        - /url: /
+      - navigation [ref=e7]:
+        - link "T Test User" [ref=e16] [cursor=pointer]:
+          - /url: /profile/3e89babb-31aa-4693-8cdf-9e54b5dee8e0
+          - generic [ref=e17]: T
+          - generic [ref=e18]: Test User
+        - button "Logout" [ref=e19] [cursor=pointer]
+  - main [ref=e11]:
+    - generic [ref=e22]:
+      - generic [ref=e24]: Q
+      - generic [ref=e25]:
+        - generic [ref=e26]:
+          - heading "Qazi Farhan Ahmad" [level=1] [ref=e27]
+          - paragraph [ref=e28]: "@ahmadq_azi"
+        - button "Follow" [ref=e29] [cursor=pointer]
+      - paragraph [ref=e30]: I am coding enthusiast so connect with me if you.
+      - generic [ref=e31]:
+        - generic [ref=e32]: 3 posts
+        - generic [ref=e33]: 0 followers
+        - generic [ref=e34]: 0 following

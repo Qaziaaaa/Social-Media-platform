@@ -1,0 +1,34 @@
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - generic [ref=e5]:
+      - link "Social" [ref=e6] [cursor=pointer]:
+        - /url: /
+      - navigation [ref=e7]:
+        - link "T Test User" [ref=e33] [cursor=pointer]:
+          - /url: /profile/3e89babb-31aa-4693-8cdf-9e54b5dee8e0
+          - generic [ref=e34]: T
+          - generic [ref=e35]: Test User
+        - button "Logout" [ref=e36] [cursor=pointer]
+  - main [ref=e11]:
+    - generic [ref=e13]:
+      - generic [ref=e14]:
+        - heading "Create account" [level=1] [ref=e15]
+        - paragraph [ref=e16]: Join Social today
+      - generic [ref=e17]:
+        - generic [ref=e18]:
+          - generic [ref=e19]: Username
+          - textbox "Username" [ref=e20]
+        - generic [ref=e21]:
+          - generic [ref=e22]: Full name
+          - textbox "Full name" [ref=e23]
+        - generic [ref=e24]:
+          - generic [ref=e25]: Email
+          - textbox "Email" [ref=e26]
+        - generic [ref=e27]:
+          - generic [ref=e28]: Password
+          - textbox "Password" [ref=e29]
+        - button "Create account" [ref=e30] [cursor=pointer]
+      - paragraph [ref=e31]:
+        - text: Already have an account?
+        - link "Sign in" [ref=e32] [cursor=pointer]:
+          - /url: /login
