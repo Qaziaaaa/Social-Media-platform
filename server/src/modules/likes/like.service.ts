@@ -1,5 +1,6 @@
 import { prisma } from "../../database/prisma";
 import { AppError } from "../../middleware/errorHandler";
+import { notify } from "../../utils/notify";
 
 export async function likePost(postId: string, userId: string) {
   const post = await prisma.post.findUnique({ where: { id: postId } });
@@ -12,6 +13,14 @@ export async function likePost(postId: string, userId: string) {
   if (existing) return { liked: false };
 
   await prisma.like.create({ data: { postId, userId } });
+
+  await notify({
+    userId: post.authorId,
+    actorId: userId,
+    type: "like",
+    entityId: postId,
+  });
+
   return { liked: true };
 }
 

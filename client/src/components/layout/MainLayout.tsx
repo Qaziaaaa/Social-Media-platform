@@ -5,10 +5,12 @@ import { Avatar } from "@/components/ui/Avatar";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { useQuery } from "@tanstack/react-query";
 import api from "@/services/api";
-import type { ApiResponse, User } from "@/types";
+import { useSocket } from "@/services/useSocket";
+import type { ApiResponse, User, Notification } from "@/types";
 
 export function MainLayout() {
   const { isAuthenticated } = useAuth();
+  useSocket();
 
   const { data: suggestions } = useQuery({
     queryKey: ["users", "suggestions"],
@@ -60,6 +62,13 @@ export function MainLayout() {
             )}
           </div>
 
+          {isAuthenticated && (
+            <div className="bg-surface rounded-xl p-lg ambient-shadow border border-surface-container-high">
+              <h3 className="font-headline-md text-headline-md font-bold text-on-surface mb-md">Notifications</h3>
+              <RecentNotifications />
+            </div>
+          )}
+
           {suggestions && suggestions.length > 0 && (
             <div className="bg-surface rounded-xl p-lg ambient-shadow border border-surface-container-high">
               <h3 className="font-headline-md text-headline-md font-bold text-on-surface mb-md">Suggested</h3>
@@ -89,6 +98,42 @@ export function MainLayout() {
           </footer>
         </aside>
       </div>
+    </div>
+  );
+}
+
+function RecentNotifications() {
+  const { data } = useQuery({
+    queryKey: ["notifications", "recent"],
+    queryFn: async () => {
+      const { data } = await api.get<ApiResponse<{ items: Notification[] }>>("/notifications?limit=3");
+      return data.data.items;
+    },
+    enabled: true,
+    refetchInterval: 30000,
+  });
+
+  if (!data || data.length === 0) {
+    return <p className="font-body-sm text-body-sm text-on-surface-variant">No recent notifications</p>;
+  }
+
+  return (
+    <div className="flex flex-col gap-sm">
+      {data.map((n) => (
+        <Link
+          key={n.id}
+          to={n.entityId ? `/posts/${n.entityId}` : `/profile/${n.actorId}`}
+          className="flex items-center gap-sm hover:bg-surface-container-low p-sm -mx-sm rounded-lg transition-colors"
+        >
+          <Avatar src={n.actor.avatar} alt={n.actor.fullName} size="sm" />
+          <div className="min-w-0 text-sm">
+            <span className="font-medium text-on-surface">{n.actor.fullName}</span>{" "}
+            <span className="text-on-surface-variant">
+              {n.type === "like" ? "liked your post" : n.type === "follow" ? "followed you" : "interacted"}
+            </span>
+          </div>
+        </Link>
+      ))}
     </div>
   );
 }

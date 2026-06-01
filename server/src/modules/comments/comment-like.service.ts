@@ -1,5 +1,6 @@
 import { prisma } from "../../database/prisma";
 import { AppError } from "../../middleware/errorHandler";
+import { notify } from "../../utils/notify";
 
 export async function likeComment(commentId: string, userId: string) {
   const comment = await prisma.comment.findUnique({ where: { id: commentId } });
@@ -12,6 +13,14 @@ export async function likeComment(commentId: string, userId: string) {
   if (existing) return { liked: false };
 
   await prisma.commentLike.create({ data: { commentId, userId } });
+
+  await notify({
+    userId: comment.authorId,
+    actorId: userId,
+    type: "comment_like",
+    entityId: comment.postId,
+  });
+
   return { liked: true };
 }
 

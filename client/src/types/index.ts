@@ -62,3 +62,32 @@ export interface AuthResponse {
   user: User;
   accessToken: string;
 }
+
+export interface Notification {
+  id: string;
+  userId: string;
+  actorId: string;
+  actor: Pick<User, "id" | "username" | "fullName" | "avatar">;
+  type: string;
+  entityId: string | null;
+  read: boolean;
+  createdAt: string;
+}
+
+export interface Conversation {
+  id: string;
+  participants: { userId: string; user: Pick<User, "id" | "username" | "fullName" | "avatar">; lastReadAt: string | null }[];
+  otherParticipants?: { userId: string; user: Pick<User, "id" | "username" | "fullName" | "avatar">; lastReadAt: string | null }[];
+  lastMessage?: Message | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Message {
+  id: string;
+  conversationId: string;
+  senderId: string;
+  sender: Pick<User, "id" | "username" | "fullName" | "avatar">;
+  content: string;
+  createdAt: string;
+}

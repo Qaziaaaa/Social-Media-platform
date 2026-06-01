@@ -5,7 +5,9 @@ import helmet from "helmet";
 import cookieParser from "cookie-parser";
 import rateLimit from "express-rate-limit";
 import path from "path";
+import { createServer } from "http";
 import { errorHandler } from "./middleware/errorHandler";
+import { setupSocket } from "./socket";
 import authRoutes from "./modules/auth/auth.routes";
 import userRoutes from "./modules/users/user.routes";
 import postRoutes from "./modules/posts/post.routes";
@@ -16,8 +18,11 @@ import uploadRoutes from "./modules/upload/upload.routes";
 import searchRoutes from "./modules/search/search.routes";
 import hashtagRoutes from "./modules/hashtags/hashtag.routes";
 import bookmarkRoutes from "./modules/bookmarks/bookmark.routes";
+import notificationRoutes from "./modules/notifications/notification.routes";
+import messageRoutes from "./modules/messages/message.routes";
 
 const app = express();
+const httpServer = createServer(app);
 const PORT = process.env.PORT || 4000;
 
 app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
@@ -54,10 +59,14 @@ app.use("/api/upload", uploadRoutes);
 app.use("/api/search", searchRoutes);
 app.use("/api/hashtags", hashtagRoutes);
 app.use("/api/bookmarks", bookmarkRoutes);
+app.use("/api/notifications", notificationRoutes);
+app.use("/api/messages", messageRoutes);
 
 app.use(errorHandler);
 
-app.listen(PORT, () => {
+setupSocket(httpServer);
+
+httpServer.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
 

@@ -1,6 +1,9 @@
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Avatar } from "@/components/ui/Avatar";
 import { useAuth } from "@/modules/auth/hooks/useAuth";
+import api from "@/services/api";
+import type { ApiResponse } from "@/types";
 
 const navItems = [
   { icon: "home", label: "Home", path: "/" },
@@ -13,6 +16,20 @@ const navItems = [
 export function Navbar() {
   const { user, isAuthenticated, isLoading, logout } = useAuth();
   const location = useLocation();
+  const [notifCount, setNotifCount] = useState(0);
+
+  useEffect(() => {
+    if (!isAuthenticated) { setNotifCount(0); return; }
+    const fetch = async () => {
+      try {
+        const { data } = await api.get<ApiResponse<{ count: number }>>("/notifications/unread-count");
+        setNotifCount(data.data.count);
+      } catch {}
+    };
+    fetch();
+    const interval = setInterval(fetch, 30000);
+    return () => clearInterval(interval);
+  }, [isAuthenticated]);
 
   return (
     <>
@@ -24,9 +41,14 @@ export function Navbar() {
         <div className="flex items-center gap-md">
           {isLoading ? null : isAuthenticated && user ? (
             <>
-              <button className="text-on-surface-variant hover:bg-surface-container-low p-sm rounded-full transition-colors active:scale-95">
+              <Link to="/notifications" className="relative text-on-surface-variant hover:bg-surface-container-low p-sm rounded-full transition-colors active:scale-95">
                 <span className="material-symbols-outlined">notifications</span>
-              </button>
+                {notifCount > 0 && (
+                  <span className="absolute -top-0.5 -right-0.5 h-3.5 w-3.5 rounded-full bg-error text-[9px] text-on-error font-bold flex items-center justify-center">
+                    {notifCount > 9 ? "9+" : notifCount}
+                  </span>
+                )}
+              </Link>
               <Link to={`/profile/${user.id}`}>
                 <Avatar src={user.avatar} alt={user.fullName} size="sm" />
               </Link>
@@ -72,11 +94,18 @@ export function Navbar() {
                     : "text-on-surface-variant hover:bg-surface-container-high"
                 }`}
               >
-                <span
-                  className="material-symbols-outlined"
-                  style={isActive ? { fontVariationSettings: "'FILL' 1" } : undefined}
-                >
-                  {item.icon}
+                <span className="relative">
+                  <span
+                    className="material-symbols-outlined"
+                    style={isActive ? { fontVariationSettings: "'FILL' 1" } : undefined}
+                  >
+                    {item.icon}
+                  </span>
+                  {item.icon === "notifications" && notifCount > 0 && (
+                    <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-error text-[10px] text-on-error font-bold flex items-center justify-center">
+                      {notifCount > 9 ? "9+" : notifCount}
+                    </span>
+                  )}
                 </span>
                 <span className="font-label-md text-label-md">{item.label}</span>
               </Link>

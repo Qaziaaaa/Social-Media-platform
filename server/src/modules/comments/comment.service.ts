@@ -1,6 +1,7 @@
 import { prisma } from "../../database/prisma";
 import { AppError } from "../../middleware/errorHandler";
 import { sanitizeHtml } from "../../utils/sanitize";
+import { notify } from "../../utils/notify";
 
 const commentInclude = {
   author: {
@@ -32,7 +33,7 @@ export async function createComment(
     }
   }
 
-  return prisma.comment.create({
+  const comment = await prisma.comment.create({
     data: {
       postId,
       authorId,
@@ -41,6 +42,15 @@ export async function createComment(
     },
     include: commentInclude,
   });
+
+  await notify({
+    userId: post.authorId,
+    actorId: authorId,
+    type: "comment",
+    entityId: postId,
+  });
+
+  return comment;
 }
 
 export async function getComments(postId: string, cursor?: string, limit = 20, currentUserId?: string) {

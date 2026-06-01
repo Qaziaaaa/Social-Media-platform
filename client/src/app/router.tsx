@@ -8,6 +8,9 @@ import { EditProfilePage } from "@/modules/profile/pages/EditProfilePage";
 import { PostDetailPage } from "@/modules/posts/pages/PostDetailPage";
 import { ExplorePage } from "@/modules/search/pages/ExplorePage";
 import { BookmarksPage } from "@/modules/bookmarks/pages/BookmarksPage";
+import { NotificationsPage } from "@/modules/notifications/pages/NotificationsPage";
+import { MessagesPage } from "@/modules/messages/pages/MessagesPage";
+import { ConversationPage } from "@/modules/messages/pages/ConversationPage";
 
 function NotFoundPage() {
   return (
@@ -35,6 +38,9 @@ export function AppRouter() {
         <Route path="/profile/:id/edit" element={<EditProfilePage />} />
         <Route path="/explore" element={<ExplorePage />} />
         <Route path="/bookmarks" element={<BookmarksPage />} />
+        <Route path="/notifications" element={<NotificationsPage />} />
+        <Route path="/messages" element={<MessagesPage />} />
+        <Route path="/messages/:id" element={<ConversationPage />} />
         <Route path="/posts/:id" element={<PostDetailPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>

@@ -1,5 +1,6 @@
 import { prisma } from "../../database/prisma";
 import { AppError } from "../../middleware/errorHandler";
+import { notify } from "../../utils/notify";
 
 export async function followUser(followerId: string, followingId: string) {
   if (followerId === followingId) {
@@ -16,6 +17,13 @@ export async function followUser(followerId: string, followingId: string) {
   if (existing) return { followed: false };
 
   await prisma.follow.create({ data: { followerId, followingId } });
+
+  await notify({
+    userId: followingId,
+    actorId: followerId,
+    type: "follow",
+  });
+
   return { followed: true };
 }
 
