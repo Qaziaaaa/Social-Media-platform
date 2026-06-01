@@ -2,7 +2,7 @@
 
 ## Project State
 
-Full-stack social media platform scaffold complete. Backend and frontend both compile with zero TypeScript errors.
+Full-stack social media platform complete. Backend and frontend both compile with zero TypeScript errors. All core features implemented and tested via Playwright browser audit.
 
 ## Commands
 
