@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useInfiniteQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Avatar } from "@/components/ui/Avatar";
@@ -48,8 +49,16 @@ export function NotificationsPage() {
     mutationFn: markAllNotificationsRead,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["notifications"] });
+      queryClient.invalidateQueries({ queryKey: ["notifications", "unread-count"] });
     },
   });
+
+  const hasUnread = (data?.pages[0]?.items ?? []).some((n) => !n.read);
+  useEffect(() => {
+    if (hasUnread && !markAllMutation.isPending) {
+      markAllMutation.mutate();
+    }
+  }, [hasUnread]);
 
   const notifications = data?.pages.flatMap((p) => p.items) ?? [];
   const unreadCount = notifications.filter((n) => !n.read).length;

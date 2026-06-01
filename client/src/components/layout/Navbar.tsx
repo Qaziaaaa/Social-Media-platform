@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Avatar } from "@/components/ui/Avatar";
 import { useAuth } from "@/modules/auth/hooks/useAuth";
+import { useQuery } from "@tanstack/react-query";
 import api from "@/services/api";
 import type { ApiResponse } from "@/types";
 
@@ -16,20 +16,17 @@ const navItems = [
 export function Navbar() {
   const { user, isAuthenticated, isLoading, logout } = useAuth();
   const location = useLocation();
-  const [notifCount, setNotifCount] = useState(0);
 
-  useEffect(() => {
-    if (!isAuthenticated) { setNotifCount(0); return; }
-    const fetch = async () => {
-      try {
-        const { data } = await api.get<ApiResponse<{ count: number }>>("/notifications/unread-count");
-        setNotifCount(data.data.count);
-      } catch {}
-    };
-    fetch();
-    const interval = setInterval(fetch, 30000);
-    return () => clearInterval(interval);
-  }, [isAuthenticated]);
+  const { data: notifData } = useQuery({
+    queryKey: ["notifications", "unread-count"],
+    queryFn: async () => {
+      const { data } = await api.get<ApiResponse<{ count: number }>>("/notifications/unread-count");
+      return data.data.count;
+    },
+    enabled: isAuthenticated,
+    refetchInterval: 30000,
+  });
+  const notifCount = notifData ?? 0;
 
   return (
     <>
