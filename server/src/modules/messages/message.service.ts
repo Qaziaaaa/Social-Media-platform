@@ -1,5 +1,6 @@
 import { prisma } from "../../database/prisma";
 import { AppError } from "../../middleware/errorHandler";
+import { emitMessage } from "../../socket";
 
 const messageInclude = {
   sender: {
@@ -96,6 +97,12 @@ export async function sendMessage(conversationId: string, senderId: string, cont
     where: { id: conversationId },
     data: { updatedAt: new Date() },
   });
+
+  const participantIds = (await prisma.conversationParticipant.findMany({
+    where: { conversationId },
+    select: { userId: true },
+  })).map((p) => p.userId);
+  emitMessage(conversationId, message, participantIds);
 
   return message;
 }

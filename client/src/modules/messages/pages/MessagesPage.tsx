@@ -50,9 +50,9 @@ export function MessagesPage() {
     queryFn: async () => {
       if (!searchTerm.trim()) return [];
       const { data } = await import("@/services/api").then((m) =>
-        m.default.get("/search/users", { params: { q: searchTerm } }),
+        m.default.get("/search", { params: { q: searchTerm, type: "users" } }),
       );
-      return data.data;
+      return data.data.users;
     },
     enabled: searchTerm.length >= 2,
   });
