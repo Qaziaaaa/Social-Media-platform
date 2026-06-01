@@ -29,23 +29,34 @@ export async function createConversation(userId: string, participantIds: string[
     throw new AppError(400, "Conversation needs at least 2 participants");
   }
 
-  const existing = await prisma.conversation.findFirst({
-    where: {
-      AND: allIds.map((id) => ({
-        participants: { some: { userId: id } },
-      })),
-    },
-  });
-
-  if (existing) return existing;
-
-  return prisma.conversation.create({
-    data: {
-      participants: {
-        create: allIds.map((id) => ({ userId: id })),
+  return prisma.$transaction(async (tx) => {
+    const existing = await tx.conversation.findFirst({
+      where: {
+        AND: allIds.map((id) => ({
+          participants: { some: { userId: id } },
+        })),
       },
-    },
-    include: conversationInclude,
+      include: conversationInclude,
+    });
+
+    if (existing) {
+      const otherParticipants = existing.participants.filter((p: any) => p.userId !== userId);
+      const lastMessage = existing.messages[0] ?? null;
+      return { ...existing, otherParticipants, lastMessage, messages: undefined };
+    }
+
+    const conversation = await tx.conversation.create({
+      data: {
+        participants: {
+          create: allIds.map((id) => ({ userId: id })),
+        },
+      },
+      include: conversationInclude,
+    });
+
+    const otherParticipants = conversation.participants.filter((p: any) => p.userId !== userId);
+    const lastMessage = conversation.messages[0] ?? null;
+    return { ...conversation, otherParticipants, lastMessage, messages: undefined };
   });
 }
 
@@ -58,11 +69,23 @@ export async function getConversations(userId: string) {
     include: conversationInclude,
   });
 
-  return conversations.map((c: any) => {
-    const otherParticipants = c.participants.filter((p: any) => p.userId !== userId);
-    const lastMessage = c.messages[0] ?? null;
-    return { ...c, otherParticipants, lastMessage, messages: undefined };
-  });
+  const seen = new Set<string>();
+  return conversations
+    .filter((c: any) => {
+      const otherIds = c.participants
+        .filter((p: any) => p.userId !== userId)
+        .map((p: any) => p.userId)
+        .sort();
+      const key = otherIds.join(",");
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    })
+    .map((c: any) => {
+      const otherParticipants = c.participants.filter((p: any) => p.userId !== userId);
+      const lastMessage = c.messages[0] ?? null;
+      return { ...c, otherParticipants, lastMessage, messages: undefined };
+    });
 }
 
 export async function getConversation(conversationId: string, userId: string) {
@@ -76,7 +99,9 @@ export async function getConversation(conversationId: string, userId: string) {
 
   if (!conversation) throw new AppError(404, "Conversation not found");
 
-  return conversation;
+  const otherParticipants = conversation.participants.filter((p: any) => p.userId !== userId);
+  const lastMessage = conversation.messages[0] ?? null;
+  return { ...conversation, otherParticipants, lastMessage, messages: undefined };
 }
 
 export async function sendMessage(conversationId: string, senderId: string, content: string) {

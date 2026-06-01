@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
@@ -9,6 +9,15 @@ import { fetchConversations, createConversation } from "../api";
 import { useAuth } from "@/modules/auth/hooks/useAuth";
 import type { Conversation } from "@/types";
 
+function formatTime(dateStr: string) {
+  const d = new Date(dateStr);
+  const now = new Date();
+  const diff = now.getTime() - d.getTime();
+  if (diff < 86400000) return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  if (diff < 604800000) return d.toLocaleDateString([], { weekday: "short" });
+  return d.toLocaleDateString([], { month: "short", day: "numeric" });
+}
+
 function ConversationItem({ c, userId }: { c: Conversation; userId: string }) {
   const other = c.otherParticipants?.[0];
   const lastMsg = c.lastMessage;
@@ -16,17 +25,32 @@ function ConversationItem({ c, userId }: { c: Conversation; userId: string }) {
   return (
     <Link
       to={`/messages/${c.id}`}
-      className="flex items-center gap-md p-md rounded-xl hover:bg-surface-container-low transition-colors"
+      className="flex items-center gap-3 px-4 py-3 hover:bg-surface-container-low transition-colors border-b border-surface-container-high last:border-b-0"
     >
-      <Avatar src={other?.user.avatar ?? null} alt={other?.user.fullName ?? "?"} size="md" />
+      <div className="relative shrink-0">
+        <Avatar src={other?.user.avatar ?? null} alt={other?.user.fullName ?? "?"} size="md" />
+        <span className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full bg-emerald-500 border-2 border-surface" />
+      </div>
       <div className="flex-1 min-w-0">
-        <div className="font-label-md text-label-md text-on-surface truncate">
-          {other?.user.fullName ?? "Unknown"}
+        <div className="flex items-center justify-between gap-2">
+          <span className="font-medium text-sm text-on-surface truncate">
+            {other?.user.fullName ?? "Unknown"}
+          </span>
+          {lastMsg && (
+            <span className="text-[11px] text-on-surface-variant shrink-0">
+              {formatTime(lastMsg.createdAt)}
+            </span>
+          )}
         </div>
-        {lastMsg && (
-          <div className="font-body-sm text-body-sm text-on-surface-variant truncate">
-            {lastMsg.senderId === userId ? "You: " : ""}{lastMsg.content}
+        {lastMsg ? (
+          <div className="text-sm text-on-surface-variant truncate mt-0.5">
+            <span className={lastMsg.senderId === userId ? "text-primary/70" : ""}>
+              {lastMsg.senderId === userId ? "You: " : ""}
+            </span>
+            {lastMsg.content}
           </div>
+        ) : (
+          <div className="text-sm text-on-surface-variant italic mt-0.5">No messages yet</div>
         )}
       </div>
     </Link>
@@ -39,13 +63,14 @@ export function MessagesPage() {
   const queryClient = useQueryClient();
   const [showNew, setShowNew] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const searchRef = useRef<HTMLInputElement>(null);
 
   const { data: conversations, isLoading } = useQuery({
     queryKey: ["conversations"],
     queryFn: fetchConversations,
   });
 
-  const { data: users } = useQuery({
+  const { data: users, isFetching: searching } = useQuery({
     queryKey: ["users", "search", searchTerm],
     queryFn: async () => {
       if (!searchTerm.trim()) return [];
@@ -62,69 +87,93 @@ export function MessagesPage() {
     onSuccess: (conv) => {
       queryClient.invalidateQueries({ queryKey: ["conversations"] });
       setShowNew(false);
+      setSearchTerm("");
       navigate(`/messages/${conv.id}`);
     },
     onError: () => toast.error("Failed to start conversation"),
   });
 
+  useEffect(() => {
+    if (showNew && searchRef.current) searchRef.current.focus();
+  }, [showNew]);
+
   return (
-    <div className="max-w-xl mx-auto space-y-4 animate-fade-in">
-      <div className="flex items-center justify-between">
-        <h1 className="font-headline-lg text-headline-lg text-on-surface">Messages</h1>
-        <Button variant="secondary" size="sm" onClick={() => setShowNew(!showNew)}>
-          New message
+    <div className="max-w-xl mx-auto animate-fade-in">
+      <div className="flex items-center justify-between px-4 py-4 border-b border-surface-container-high">
+        <h1 className="text-lg font-bold text-on-surface">Messages</h1>
+        <Button variant="secondary" size="sm" onClick={() => setShowNew((p) => !p)}>
+          <span className="material-symbols-outlined text-lg mr-1">edit</span>
+          New
         </Button>
       </div>
 
       {showNew && (
-        <div className="bg-surface rounded-xl p-lg ambient-shadow border border-surface-container-high space-y-3">
-          <input
-            type="text"
-            placeholder="Search users..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full rounded-lg border border-outline-variant bg-surface-container-lowest px-3 py-2 text-body-md"
-            autoFocus
-          />
-          {users && users.length > 0 && (
-            <div className="flex flex-col gap-1 max-h-48 overflow-y-auto">
-              {(users as any[]).map((u: any) => (
+        <div className="mx-4 mt-4 mb-2 bg-surface rounded-xl border border-surface-container-high shadow-lg overflow-hidden">
+          <div className="p-3 border-b border-surface-container-high">
+            <input
+              ref={searchRef}
+              type="text"
+              placeholder="Search people..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full bg-surface-container-lowest rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary/30 border border-outline-variant"
+            />
+          </div>
+          <div className="max-h-64 overflow-y-auto">
+            {searching && searchTerm.length >= 2 && (
+              <div className="flex items-center gap-2 px-4 py-3">
+                <div className="h-4 w-4 rounded-full border-2 border-primary border-t-transparent animate-spin" />
+                <span className="text-sm text-on-surface-variant">Searching...</span>
+              </div>
+            )}
+            {!searching && users && users.length > 0 && (
+              (users as any[]).map((u: any) => (
                 <button
                   key={u.id}
                   onClick={() => startMutation.mutate(u.id)}
-                  className="flex items-center gap-md p-sm rounded-lg hover:bg-surface-container-low transition-colors text-left"
+                  disabled={startMutation.isPending}
+                  className="w-full flex items-center gap-3 px-4 py-3 hover:bg-surface-container-low transition-colors text-left disabled:opacity-50"
                 >
                   <Avatar src={u.avatar} alt={u.fullName} size="sm" />
                   <div>
-                    <div className="font-label-md text-label-md text-on-surface">{u.fullName}</div>
-                    <div className="font-body-sm text-body-sm text-on-surface-variant">@{u.username}</div>
+                    <div className="text-sm font-medium text-on-surface">{u.fullName}</div>
+                    <div className="text-xs text-on-surface-variant">@{u.username}</div>
                   </div>
                 </button>
-              ))}
-            </div>
-          )}
+              ))
+            )}
+            {!searching && searchTerm.length >= 2 && users && users.length === 0 && (
+              <p className="px-4 py-6 text-sm text-on-surface-variant text-center">No users found</p>
+            )}
+          </div>
         </div>
       )}
 
       {isLoading && (
-        <div className="space-y-3">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="flex items-center gap-md p-md">
-              <Skeleton className="h-10 w-10 rounded-full" />
-              <Skeleton className="h-4 flex-1 rounded" />
+        <div className="mt-2 space-y-1">
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="flex items-center gap-3 px-4 py-3">
+              <Skeleton className="h-10 w-10 rounded-full shrink-0" />
+              <div className="flex-1 space-y-1.5">
+                <Skeleton className="h-4 w-32 rounded" />
+                <Skeleton className="h-3 w-48 rounded" />
+              </div>
             </div>
           ))}
         </div>
       )}
 
       {!isLoading && (!conversations || conversations.length === 0) && (
-        <div className="bg-surface rounded-xl p-lg text-center ambient-shadow border border-surface-container-high">
-          <p className="text-on-surface-variant">No conversations yet</p>
-          <p className="text-body-sm text-on-surface-variant mt-1">Click "New message" to start one</p>
+        <div className="flex flex-col items-center justify-center py-20 px-4">
+          <div className="h-16 w-16 rounded-full bg-surface-container-high flex items-center justify-center mb-4">
+            <span className="material-symbols-outlined text-3xl text-on-surface-variant">chat</span>
+          </div>
+          <p className="text-on-surface-variant text-sm mb-1">No conversations yet</p>
+          <p className="text-xs text-on-surface-variant/60">Click "New" to start messaging someone</p>
         </div>
       )}
 
-      <div className="flex flex-col gap-xs">
+      <div className="divide-y divide-surface-container-high">
         {conversations?.map((c) => (
           <ConversationItem key={c.id} c={c} userId={user!.id} />
         ))}
