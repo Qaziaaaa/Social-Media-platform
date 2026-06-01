@@ -1,0 +1,44 @@
+- generic [ref=e4]:
+  - complementary [ref=e5]:
+    - generic [ref=e6]:
+      - link "Lumina Social" [ref=e7] [cursor=pointer]:
+        - /url: /
+      - link "A Alice Johnson @alice" [ref=e116] [cursor=pointer]:
+        - /url: /profile/76f21629-45b4-40ad-83d5-176f5b5080d6
+        - generic [ref=e117]: A
+        - generic [ref=e118]:
+          - generic [ref=e119]: Alice Johnson
+          - generic [ref=e120]: "@alice"
+    - navigation [ref=e8]:
+      - link "home Home" [ref=e9] [cursor=pointer]:
+        - /url: /
+        - generic [ref=e11]: home
+        - generic [ref=e12]: Home
+      - link "explore Explore" [ref=e13] [cursor=pointer]:
+        - /url: /explore
+        - generic [ref=e15]: explore
+        - generic [ref=e16]: Explore
+      - link "notifications Notifications" [ref=e17] [cursor=pointer]:
+        - /url: /notifications
+        - generic [ref=e19]: notifications
+        - generic [ref=e20]: Notifications
+      - link "mail Messages" [ref=e21] [cursor=pointer]:
+        - /url: /messages
+        - generic [ref=e23]: mail
+        - generic [ref=e24]: Messages
+      - link "bookmark Bookmarks" [active] [ref=e25] [cursor=pointer]:
+        - /url: /bookmarks
+        - generic [ref=e27]: bookmark
+        - generic [ref=e28]: Bookmarks
+      - link "person Profile" [ref=e121] [cursor=pointer]:
+        - /url: /profile/76f21629-45b4-40ad-83d5-176f5b5080d6
+        - generic [ref=e122]: person
+        - generic [ref=e123]: Profile
+    - generic [ref=e124]:
+      - link "Create Post" [ref=e125] [cursor=pointer]:
+        - /url: /
+      - button "Logout" [ref=e126] [cursor=pointer]
+  - main [ref=e32]:
+    - generic [ref=e169]:
+      - heading "Bookmarks" [level=1] [ref=e170]
+      - paragraph [ref=e172]: No bookmarks yet. Save posts to read later.

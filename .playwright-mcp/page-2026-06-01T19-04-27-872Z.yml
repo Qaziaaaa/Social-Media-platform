@@ -1,0 +1,56 @@
+- generic [ref=e48]:
+  - complementary [ref=e49]:
+    - generic [ref=e50]:
+      - link "Lumina Social" [ref=e51] [cursor=pointer]:
+        - /url: /
+      - link "A Alice Johnson @alice" [ref=e52] [cursor=pointer]:
+        - /url: /profile/76f21629-45b4-40ad-83d5-176f5b5080d6
+        - generic [ref=e53]: A
+        - generic [ref=e54]:
+          - generic [ref=e55]: Alice Johnson
+          - generic [ref=e56]: "@alice"
+    - navigation [ref=e57]:
+      - link "home Home" [ref=e58] [cursor=pointer]:
+        - /url: /
+        - generic [ref=e60]: home
+        - generic [ref=e61]: Home
+      - link "explore Explore" [ref=e62] [cursor=pointer]:
+        - /url: /explore
+        - generic [ref=e64]: explore
+        - generic [ref=e65]: Explore
+      - link "notifications Notifications" [active] [ref=e66] [cursor=pointer]:
+        - /url: /notifications
+        - generic [ref=e68]: notifications
+        - generic [ref=e69]: Notifications
+      - link "mail Messages" [ref=e70] [cursor=pointer]:
+        - /url: /messages
+        - generic [ref=e72]: mail
+        - generic [ref=e73]: Messages
+      - link "bookmark Bookmarks" [ref=e74] [cursor=pointer]:
+        - /url: /bookmarks
+        - generic [ref=e76]: bookmark
+        - generic [ref=e77]: Bookmarks
+      - link "person Profile" [ref=e78] [cursor=pointer]:
+        - /url: /profile/76f21629-45b4-40ad-83d5-176f5b5080d6
+        - generic [ref=e79]: person
+        - generic [ref=e80]: Profile
+    - generic [ref=e81]:
+      - link "Create Post" [ref=e82] [cursor=pointer]:
+        - /url: /
+      - button "Logout" [ref=e83] [cursor=pointer]
+  - main [ref=e84]:
+    - generic [ref=e194]:
+      - heading "Notifications" [level=1] [ref=e196]
+      - generic [ref=e197]:
+        - link "Qazi Farhan Ahmad Qazi Farhan Ahmad commented on your post" [ref=e198] [cursor=pointer]:
+          - /url: /posts/a1ed1446-0dc8-491d-9186-d3df92f900e7
+          - img "Qazi Farhan Ahmad" [ref=e199]
+          - generic [ref=e200]: Qazi Farhan Ahmad commented on your post
+        - link "Qazi Farhan Ahmad Qazi Farhan Ahmad commented on your post" [ref=e201] [cursor=pointer]:
+          - /url: /posts/a1ed1446-0dc8-491d-9186-d3df92f900e7
+          - img "Qazi Farhan Ahmad" [ref=e202]
+          - generic [ref=e203]: Qazi Farhan Ahmad commented on your post
+        - link "Qazi Farhan Ahmad Qazi Farhan Ahmad commented on your post" [ref=e204] [cursor=pointer]:
+          - /url: /posts/a1ed1446-0dc8-491d-9186-d3df92f900e7
+          - img "Qazi Farhan Ahmad" [ref=e205]
+          - generic [ref=e206]: Qazi Farhan Ahmad commented on your post

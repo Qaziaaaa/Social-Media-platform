@@ -1,0 +1,54 @@
+- generic [ref=e2]:
+  - generic [ref=e48]:
+    - complementary [ref=e49]:
+      - generic [ref=e50]:
+        - link "Lumina Social" [ref=e51] [cursor=pointer]:
+          - /url: /
+        - link "A Alice Johnson @alice" [ref=e52] [cursor=pointer]:
+          - /url: /profile/76f21629-45b4-40ad-83d5-176f5b5080d6
+          - generic [ref=e53]: A
+          - generic [ref=e54]:
+            - generic [ref=e55]: Alice Johnson
+            - generic [ref=e56]: "@alice"
+      - navigation [ref=e57]:
+        - link "home Home" [ref=e58] [cursor=pointer]:
+          - /url: /
+          - generic [ref=e60]: home
+          - generic [ref=e61]: Home
+        - link "explore Explore" [ref=e62] [cursor=pointer]:
+          - /url: /explore
+          - generic [ref=e64]: explore
+          - generic [ref=e65]: Explore
+        - link "notifications Notifications" [ref=e66] [cursor=pointer]:
+          - /url: /notifications
+          - generic [ref=e68]: notifications
+          - generic [ref=e69]: Notifications
+        - link "mail Messages" [ref=e70] [cursor=pointer]:
+          - /url: /messages
+          - generic [ref=e72]: mail
+          - generic [ref=e73]: Messages
+        - link "bookmark Bookmarks" [ref=e74] [cursor=pointer]:
+          - /url: /bookmarks
+          - generic [ref=e76]: bookmark
+          - generic [ref=e77]: Bookmarks
+        - link "person Profile" [ref=e78] [cursor=pointer]:
+          - /url: /profile/76f21629-45b4-40ad-83d5-176f5b5080d6
+          - generic [ref=e79]: person
+          - generic [ref=e80]: Profile
+      - generic [ref=e81]:
+        - link "Create Post" [ref=e82] [cursor=pointer]:
+          - /url: /
+        - button "Logout" [ref=e83] [cursor=pointer]
+    - main [ref=e84]:
+      - generic [ref=e87]:
+        - generic [ref=e88]: A
+        - generic [ref=e89]:
+          - textbox "What's on your mind?" [ref=e90]
+          - generic [ref=e91]:
+            - generic [ref=e92]:
+              - button "image" [ref=e93] [cursor=pointer]:
+                - generic [ref=e94]: image
+              - button "mood" [ref=e95] [cursor=pointer]:
+                - generic [ref=e96]: mood
+            - button "Post" [disabled] [ref=e97]
+  - status [ref=e119]: Welcome back!

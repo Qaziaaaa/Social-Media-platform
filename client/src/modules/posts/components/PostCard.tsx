@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Avatar } from "@/components/ui/Avatar";
 import { useAuth } from "@/modules/auth/hooks/useAuth";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -37,6 +37,7 @@ interface PostCardProps {
 
 export function PostCard({ post }: PostCardProps) {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const isOwner = user?.id === post.authorId;
   const [menuOpen, setMenuOpen] = useState(false);
@@ -163,23 +164,27 @@ export function PostCard({ post }: PostCardProps) {
         </div>
 
       {post.content && (
-        <Link to={`/posts/${post.id}`} className="block mb-md">
+        <div
+          onClick={() => navigate(`/posts/${post.id}`)}
+          className="block mb-md cursor-pointer"
+        >
           <p className="font-body-md text-body-md text-on-surface whitespace-pre-wrap leading-relaxed">
             {renderContent(post.content)}
           </p>
-        </Link>
+        </div>
       )}
 
       {post.imageUrl && (
-        <Link to={`/posts/${post.id}`}>
-          <div className="rounded-lg overflow-hidden mb-md border border-surface-container-high">
-            <img
-              src={post.imageUrl}
-              alt="Post image"
-              className="w-full h-auto object-cover max-h-[400px]"
-            />
-          </div>
-        </Link>
+        <div
+          onClick={() => navigate(`/posts/${post.id}`)}
+          className="rounded-lg overflow-hidden mb-md border border-surface-container-high cursor-pointer"
+        >
+          <img
+            src={post.imageUrl}
+            alt="Post image"
+            className="w-full h-auto object-cover max-h-[400px]"
+          />
+        </div>
       )}
 
       <div className="flex items-center justify-between text-on-surface-variant pt-xs border-t border-surface-container-high">
