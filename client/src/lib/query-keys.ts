@@ -17,4 +17,11 @@ export const queryKeys = {
   bookmarks: {
     all: () => ["bookmarks"] as const,
   },
+  reports: {
+    all: (status?: string) => ["reports", status ?? "all"] as const,
+  },
+  blocks: {
+    all: () => ["blocks"] as const,
+    check: (id: string) => ["blocks", id] as const,
+  },
 };

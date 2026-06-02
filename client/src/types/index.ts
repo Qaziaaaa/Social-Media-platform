@@ -6,6 +6,7 @@ export interface User {
   bio: string | null;
   avatar: string | null;
   coverImage: string | null;
+  role: string;
   _count: {
     posts: number;
     followers: number;
@@ -13,6 +14,24 @@ export interface User {
   };
   createdAt: string;
   updatedAt: string;
+}
+
+export interface Report {
+  id: string;
+  reporterId: string;
+  reporter: Pick<User, "id" | "username" | "fullName">;
+  targetType: "post" | "comment" | "user";
+  targetId: string;
+  reason: string;
+  status: "pending" | "resolved" | "dismissed";
+  createdAt: string;
+}
+
+export interface BlockedUser {
+  blockerId: string;
+  blockedId: string;
+  blocked: Pick<User, "id" | "username" | "fullName" | "avatar">;
+  createdAt: string;
 }
 
 export interface Post {

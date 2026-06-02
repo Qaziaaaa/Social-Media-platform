@@ -9,6 +9,7 @@ const userSelect = {
   bio: true,
   avatar: true,
   coverImage: true,
+  role: true,
   createdAt: true,
   updatedAt: true,
   _count: {
@@ -27,14 +28,20 @@ export async function getUserById(id: string, currentUserId?: string) {
   }
 
   let isFollowing = false;
+  let isBlocked = false;
   if (currentUserId) {
     const follow = await prisma.follow.findUnique({
       where: { followerId_followingId: { followerId: currentUserId, followingId: id } },
     });
     isFollowing = !!follow;
+
+    const block = await prisma.block.findUnique({
+      where: { blockerId_blockedId: { blockerId: currentUserId, blockedId: id } },
+    });
+    isBlocked = !!block;
   }
 
-  return { ...user, isFollowing };
+  return { ...user, isFollowing, isBlocked };
 }
 
 export async function updateUser(id: string, data: {

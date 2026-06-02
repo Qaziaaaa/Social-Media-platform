@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient, useInfiniteQuery } from "@tanstack/react-query";
 import toast from "react-hot-toast";
@@ -10,6 +10,8 @@ import { useAuth } from "@/modules/auth/hooks/useAuth";
 import api from "@/services/api";
 import { queryKeys } from "@/lib/query-keys";
 import type { ApiResponse, User, Post, PaginatedResponse } from "@/types";
+import { ReportButton } from "@/modules/reports/components/ReportButton";
+import { BlockButton } from "@/modules/blocks/components/BlockButton";
 
 type Tab = "posts" | "likes" | "media";
 
@@ -19,6 +21,18 @@ export function ProfilePage() {
   const queryClient = useQueryClient();
   const isOwnProfile = currentUser?.id === id;
   const [activeTab, setActiveTab] = useState<Tab>("posts");
+  const [moreOpen, setMoreOpen] = useState(false);
+  const moreRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      if (moreRef.current && !moreRef.current.contains(e.target as Node)) {
+        setMoreOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
 
   const { data, isLoading, isError } = useQuery({
     queryKey: queryKeys.users.detail(id!),
@@ -102,6 +116,7 @@ export function ProfilePage() {
   }
 
   const isFollowing = (data as any).isFollowing ?? false;
+  const isBlocked = (data as any).isBlocked ?? false;
   const posts = postsData?.pages.flatMap((p) => p.items) ?? [];
 
   const tabs: { key: Tab; label: string }[] = [
@@ -132,14 +147,36 @@ export function ProfilePage() {
                 <Button variant="secondary" size="sm">Edit Profile</Button>
               </Link>
             ) : (
-              <Button
-                variant={isFollowing ? "secondary" : "primary"}
-                size="sm"
-                loading={followMutation.isPending}
-                onClick={() => followMutation.mutate()}
-              >
-                {isFollowing ? "Following" : "Follow"}
-              </Button>
+              <div className="flex items-center gap-sm">
+                <Button
+                  variant={isFollowing ? "secondary" : "primary"}
+                  size="sm"
+                  loading={followMutation.isPending}
+                  onClick={() => followMutation.mutate()}
+                >
+                  {isFollowing ? "Following" : "Follow"}
+                </Button>
+                <div ref={moreRef} className="relative">
+                  <button
+                    onClick={() => setMoreOpen(!moreOpen)}
+                    className="text-on-surface-variant hover:text-primary hover:bg-surface-container-low p-sm rounded-full transition-colors"
+                  >
+                    <span className="material-symbols-outlined text-[20px]">more_horiz</span>
+                  </button>
+                  {moreOpen && (
+                    <div className="absolute right-0 top-full mt-xs bg-surface rounded-lg shadow-lg border border-surface-container-high py-xs min-w-[140px] z-10 animate-fade-in">
+                      <BlockButton
+                        userId={id!}
+                        isBlocked={isBlocked}
+                        onToggle={() => setMoreOpen(false)}
+                      />
+                      <div onClick={() => setMoreOpen(false)}>
+                        <ReportButton targetType="user" targetId={id!} />
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
             )}
           </div>
 

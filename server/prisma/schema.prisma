@@ -16,6 +16,7 @@ model User {
   bio          String?
   avatar       String?
   coverImage   String?
+  role         String    @default("user")
   posts        Post[]
   comments     Comment[]
   likes        Like[]
@@ -27,6 +28,9 @@ model User {
   actedNotifications Notification[] @relation("NotificationActor")
   conversations ConversationParticipant[]
   messages     Message[]
+  blockedUsers Block[]       @relation("Blocker")
+  blockedBy    Block[]       @relation("Blocked")
+  reports      Report[]      @relation("Reporter")
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
 
@@ -188,4 +192,30 @@ model Message {
   createdAt      DateTime     @default(now())
 
   @@index([conversationId, createdAt])
+}
+
+model Report {
+  id         String   @id @default(uuid())
+  reporterId String
+  reporter   User     @relation("Reporter", fields: [reporterId], references: [id], onDelete: Cascade)
+  targetType String
+  targetId   String
+  reason     String
+  status     String   @default("pending")
+  createdAt  DateTime @default(now())
+
+  @@index([status])
+  @@index([reporterId])
+}
+
+model Block {
+  blockerId  String
+  blocker    User     @relation("Blocker", fields: [blockerId], references: [id], onDelete: Cascade)
+  blockedId  String
+  blocked    User     @relation("Blocked", fields: [blockedId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+
+  @@id([blockerId, blockedId])
+  @@index([blockerId])
+  @@index([blockedId])
 }

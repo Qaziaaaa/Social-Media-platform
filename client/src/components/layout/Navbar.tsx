@@ -126,6 +126,24 @@ export function Navbar() {
               <span className="font-label-md text-label-md">Profile</span>
             </Link>
           )}
+          {user?.role === "admin" && (
+            <Link
+              to="/admin/reports"
+              className={`flex items-center gap-md px-md py-sm rounded-full transition-all active:scale-98 ${
+                location.pathname === "/admin/reports"
+                  ? "text-primary font-bold bg-surface-container-low"
+                  : "text-on-surface-variant hover:bg-surface-container-high"
+              }`}
+            >
+              <span
+                className="material-symbols-outlined"
+                style={location.pathname === "/admin/reports" ? { fontVariationSettings: "'FILL' 1" } : undefined}
+              >
+                admin_panel_settings
+              </span>
+              <span className="font-label-md text-label-md">Admin</span>
+            </Link>
+          )}
         </nav>
 
         {isAuthenticated && (

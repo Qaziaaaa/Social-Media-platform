@@ -20,6 +20,8 @@ import hashtagRoutes from "./modules/hashtags/hashtag.routes";
 import bookmarkRoutes from "./modules/bookmarks/bookmark.routes";
 import notificationRoutes from "./modules/notifications/notification.routes";
 import messageRoutes from "./modules/messages/message.routes";
+import reportRoutes from "./modules/reports/report.routes";
+import blockRoutes from "./modules/blocks/block.routes";
 
 const app = express();
 const httpServer = createServer(app);
@@ -61,6 +63,8 @@ app.use("/api/hashtags", hashtagRoutes);
 app.use("/api/bookmarks", bookmarkRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/messages", messageRoutes);
+app.use("/api", reportRoutes);
+app.use("/api", blockRoutes);
 
 app.use(errorHandler);
 

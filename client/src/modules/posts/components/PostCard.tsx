@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 import api from "@/services/api";
 import { queryKeys } from "@/lib/query-keys";
 import { EditPostModal } from "@/modules/posts/components/EditPostModal";
+import { ReportButton } from "@/modules/reports/components/ReportButton";
 import type { ApiResponse, Post } from "@/types";
 
 const HASHTAG_REGEX = /(#\w+)/g;
@@ -130,37 +131,55 @@ export function PostCard({ post }: PostCardProps) {
               <div className="font-body-sm text-body-sm text-on-surface-variant">@{post.author.username}</div>
             </div>
           </div>
-          {isOwner && (
-            <div ref={menuRef} className="relative">
-              <button
-                onClick={() => setMenuOpen(!menuOpen)}
-                className="text-on-surface-variant hover:text-error hover:bg-surface-container-low p-xs rounded-full transition-colors"
-              >
-                <span className="material-symbols-outlined text-[20px]">more_horiz</span>
-              </button>
-              {menuOpen && (
-                <div className="absolute right-0 top-full mt-xs bg-surface rounded-lg shadow-lg border border-surface-container-high py-xs min-w-[120px] z-10 animate-fade-in">
-                  <button
-                    onClick={() => { setMenuOpen(false); setEditOpen(true); }}
-                    className="w-full flex items-center gap-sm px-md py-sm text-label-md text-on-surface hover:bg-surface-container-low transition-colors"
-                  >
-                    <span className="material-symbols-outlined text-[18px]">edit</span>
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => {
-                      setMenuOpen(false);
-                      if (confirm("Delete this post?")) deleteMutation.mutate();
-                    }}
-                    className="w-full flex items-center gap-sm px-md py-sm text-label-md text-error hover:bg-surface-container-low transition-colors"
-                  >
-                    <span className="material-symbols-outlined text-[18px]">delete</span>
-                    Delete
-                  </button>
-                </div>
-              )}
-            </div>
-          )}
+          <div ref={menuRef} className="relative">
+            <button
+              onClick={() => setMenuOpen(!menuOpen)}
+              className="text-on-surface-variant hover:text-primary hover:bg-surface-container-low p-xs rounded-full transition-colors"
+            >
+              <span className="material-symbols-outlined text-[20px]">more_horiz</span>
+            </button>
+            {menuOpen && (
+              <div className="absolute right-0 top-full mt-xs bg-surface rounded-lg shadow-lg border border-surface-container-high py-xs min-w-[140px] z-10 animate-fade-in">
+                {isOwner ? (
+                  <>
+                    <button
+                      onClick={() => { setMenuOpen(false); setEditOpen(true); }}
+                      className="w-full flex items-center gap-sm px-md py-sm text-label-md text-on-surface hover:bg-surface-container-low transition-colors"
+                    >
+                      <span className="material-symbols-outlined text-[18px]">edit</span>
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => {
+                        setMenuOpen(false);
+                        if (confirm("Delete this post?")) deleteMutation.mutate();
+                      }}
+                      className="w-full flex items-center gap-sm px-md py-sm text-label-md text-error hover:bg-surface-container-low transition-colors"
+                    >
+                      <span className="material-symbols-outlined text-[18px]">delete</span>
+                      Delete
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button
+                      onClick={() => {
+                        setMenuOpen(false);
+                        navigate(`/messages?user=${post.authorId}`);
+                      }}
+                      className="w-full flex items-center gap-sm px-md py-sm text-label-md text-on-surface hover:bg-surface-container-low transition-colors"
+                    >
+                      <span className="material-symbols-outlined text-[18px]">mail</span>
+                      Message
+                    </button>
+                    <div onClick={() => setMenuOpen(false)}>
+                      <ReportButton targetType="post" targetId={post.id} />
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
+          </div>
         </div>
 
       {post.content && (

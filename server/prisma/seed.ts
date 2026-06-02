@@ -30,6 +30,19 @@ async function main() {
     },
   });
 
+  const admin = await prisma.user.upsert({
+    where: { email: "admin@example.com" },
+    update: {},
+    create: {
+      username: "admin",
+      email: "admin@example.com",
+      fullName: "Admin User",
+      passwordHash,
+      role: "admin",
+      bio: "Platform administrator",
+    },
+  });
+
   const post1 = await prisma.post.create({
     data: {
       authorId: alice.id,
@@ -52,12 +65,16 @@ async function main() {
     },
   });
 
-  await prisma.like.create({
-    data: { postId: post1.id, userId: bob.id },
+  await prisma.like.upsert({
+    where: { postId_userId: { postId: post1.id, userId: bob.id } },
+    update: {},
+    create: { postId: post1.id, userId: bob.id },
   });
 
-  await prisma.follow.create({
-    data: { followerId: bob.id, followingId: alice.id },
+  await prisma.follow.upsert({
+    where: { followerId_followingId: { followerId: bob.id, followingId: alice.id } },
+    update: {},
+    create: { followerId: bob.id, followingId: alice.id },
   });
 
   console.log("Seed completed");
