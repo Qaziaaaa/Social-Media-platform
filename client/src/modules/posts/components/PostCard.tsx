@@ -7,8 +7,7 @@ import toast from "react-hot-toast";
 import api from "@/services/api";
 import { queryKeys } from "@/lib/query-keys";
 import { EditPostModal } from "@/modules/posts/components/EditPostModal";
-import { ReportButton } from "@/modules/reports/components/ReportButton";
-import type { ApiResponse, Post } from "@/types";
+import type { ApiResponse, Post, Report } from "@/types";
 
 const HASHTAG_REGEX = /(#\w+)/g;
 
@@ -43,6 +42,7 @@ export function PostCard({ post }: PostCardProps) {
   const isOwner = user?.id === post.authorId;
   const [menuOpen, setMenuOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
+  const [reportOpen, setReportOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -97,6 +97,28 @@ export function PostCard({ post }: PostCardProps) {
     },
     onError: () => {
       toast.error("Failed to update bookmark");
+    },
+  });
+
+  const [reportReason, setReportReason] = useState("");
+
+  const reportMutation = useMutation({
+    mutationFn: async () => {
+      const { data } = await api.post<ApiResponse<Report>>("/reports", {
+        targetType: "post",
+        targetId: post.id,
+        reason: reportReason,
+      });
+      return data.data;
+    },
+    onSuccess: () => {
+      toast.success("Report submitted");
+      setReportOpen(false);
+      setReportReason("");
+    },
+    onError: (err: unknown) => {
+      const msg = (err as { response?: { data?: { message?: string } } })?.response?.data?.message;
+      toast.error(msg ?? "Failed to submit report");
     },
   });
 
@@ -172,9 +194,13 @@ export function PostCard({ post }: PostCardProps) {
                       <span className="material-symbols-outlined text-[18px]">mail</span>
                       Message
                     </button>
-                    <div onClick={() => setMenuOpen(false)}>
-                      <ReportButton targetType="post" targetId={post.id} />
-                    </div>
+                    <button
+                      onClick={() => { setMenuOpen(false); setReportOpen(true); }}
+                      className="w-full flex items-center gap-sm px-md py-sm text-label-md text-on-surface-variant hover:bg-surface-container-low transition-colors"
+                    >
+                      <span className="material-symbols-outlined text-[18px]">flag</span>
+                      Report
+                    </button>
                   </>
                 )}
               </div>
@@ -245,6 +271,53 @@ export function PostCard({ post }: PostCardProps) {
     </article>
 
       {editOpen && <EditPostModal post={post} onClose={() => setEditOpen(false)} />}
+
+      {reportOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 animate-fade-in"
+          onClick={() => { setReportOpen(false); setReportReason(""); }}
+        >
+          <div
+            className="bg-surface rounded-xl p-lg shadow-xl border border-surface-container-high w-full max-w-md mx-4 animate-scale-up"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 className="font-headline-md text-headline-md font-bold text-on-surface mb-md">Report post</h3>
+            <div className="space-y-sm mb-lg">
+              {["Spam","Harassment","Hate speech","Misinformation","Violence","Inappropriate content","Other"].map((r) => (
+                <label
+                  key={r}
+                  className="flex items-center gap-sm p-sm rounded-lg cursor-pointer hover:bg-surface-container-low transition-colors"
+                >
+                  <input
+                    type="radio"
+                    name="reportReason"
+                    value={r}
+                    checked={reportReason === r}
+                    onChange={(e) => setReportReason(e.target.value)}
+                    className="accent-primary"
+                  />
+                  <span className="font-body-md text-body-md text-on-surface">{r}</span>
+                </label>
+              ))}
+            </div>
+            <div className="flex gap-sm justify-end">
+              <button
+                onClick={() => { setReportOpen(false); setReportReason(""); }}
+                className="px-4 py-2 font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-low rounded-lg transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => reportMutation.mutate()}
+                disabled={!reportReason || reportMutation.isPending}
+                className="px-4 py-2 font-label-md text-label-md bg-error text-on-error rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50"
+              >
+                {reportMutation.isPending ? "Submitting..." : "Submit"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }

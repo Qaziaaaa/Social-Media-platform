@@ -9,8 +9,7 @@ import { PostCard } from "@/modules/posts/components/PostCard";
 import { useAuth } from "@/modules/auth/hooks/useAuth";
 import api from "@/services/api";
 import { queryKeys } from "@/lib/query-keys";
-import type { ApiResponse, User, Post, PaginatedResponse } from "@/types";
-import { ReportButton } from "@/modules/reports/components/ReportButton";
+import type { ApiResponse, User, Post, PaginatedResponse, Report } from "@/types";
 import { BlockButton } from "@/modules/blocks/components/BlockButton";
 
 type Tab = "posts" | "likes" | "media";
@@ -115,6 +114,29 @@ export function ProfilePage() {
     );
   }
 
+  const [reportOpen, setReportOpen] = useState(false);
+  const [reportReason, setReportReason] = useState("");
+
+  const reportMutation = useMutation({
+    mutationFn: async () => {
+      const { data } = await api.post<ApiResponse<Report>>("/reports", {
+        targetType: "user",
+        targetId: id,
+        reason: reportReason,
+      });
+      return data.data;
+    },
+    onSuccess: () => {
+      toast.success("Report submitted");
+      setReportOpen(false);
+      setReportReason("");
+    },
+    onError: (err: unknown) => {
+      const msg = (err as { response?: { data?: { message?: string } } })?.response?.data?.message;
+      toast.error(msg ?? "Failed to submit report");
+    },
+  });
+
   const isFollowing = (data as any).isFollowing ?? false;
   const isBlocked = (data as any).isBlocked ?? false;
   const posts = postsData?.pages.flatMap((p) => p.items) ?? [];
@@ -170,9 +192,13 @@ export function ProfilePage() {
                         isBlocked={isBlocked}
                         onToggle={() => setMoreOpen(false)}
                       />
-                      <div onClick={() => setMoreOpen(false)}>
-                        <ReportButton targetType="user" targetId={id!} />
-                      </div>
+                      <button
+                        onClick={() => { setMoreOpen(false); setReportOpen(true); }}
+                        className="w-full flex items-center gap-sm px-md py-sm text-label-md text-on-surface-variant hover:bg-surface-container-low transition-colors"
+                      >
+                        <span className="material-symbols-outlined text-[18px]">flag</span>
+                        Report
+                      </button>
                     </div>
                   )}
                 </div>
@@ -249,6 +275,53 @@ export function ProfilePage() {
           </div>
         )}
       </div>
+
+      {reportOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 animate-fade-in"
+          onClick={() => { setReportOpen(false); setReportReason(""); }}
+        >
+          <div
+            className="bg-surface rounded-xl p-lg shadow-xl border border-surface-container-high w-full max-w-md mx-4 animate-scale-up"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 className="font-headline-md text-headline-md font-bold text-on-surface mb-md">Report user</h3>
+            <div className="space-y-sm mb-lg">
+              {["Spam","Harassment","Hate speech","Misinformation","Violence","Inappropriate content","Other"].map((r) => (
+                <label
+                  key={r}
+                  className="flex items-center gap-sm p-sm rounded-lg cursor-pointer hover:bg-surface-container-low transition-colors"
+                >
+                  <input
+                    type="radio"
+                    name="profileReportReason"
+                    value={r}
+                    checked={reportReason === r}
+                    onChange={(e) => setReportReason(e.target.value)}
+                    className="accent-primary"
+                  />
+                  <span className="font-body-md text-body-md text-on-surface">{r}</span>
+                </label>
+              ))}
+            </div>
+            <div className="flex gap-sm justify-end">
+              <button
+                onClick={() => { setReportOpen(false); setReportReason(""); }}
+                className="px-4 py-2 font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-low rounded-lg transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => reportMutation.mutate()}
+                disabled={!reportReason || reportMutation.isPending}
+                className="px-4 py-2 font-label-md text-label-md bg-error text-on-error rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50"
+              >
+                {reportMutation.isPending ? "Submitting..." : "Submit"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
