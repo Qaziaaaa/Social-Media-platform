@@ -94,26 +94,6 @@ export function ProfilePage() {
     setActiveTab(tab);
   }, []);
 
-  if (isLoading) {
-    return (
-      <div className="space-y-4">
-        <Skeleton className="h-48 w-full rounded-xl" />
-        <Skeleton className="h-8 w-48" />
-        <Skeleton className="h-4 w-32" />
-        <Skeleton className="h-32 w-full rounded-xl" />
-        <Skeleton className="h-32 w-full rounded-xl" />
-      </div>
-    );
-  }
-
-  if (isError || !data) {
-    return (
-      <div className="bg-surface rounded-xl p-lg ambient-shadow border border-surface-container-high text-center">
-        <p className="text-on-surface-variant">User not found</p>
-      </div>
-    );
-  }
-
   const [reportOpen, setReportOpen] = useState(false);
   const [reportReason, setReportReason] = useState("");
 
@@ -136,6 +116,26 @@ export function ProfilePage() {
       toast.error(msg ?? "Failed to submit report");
     },
   });
+
+  if (isLoading) {
+    return (
+      <div className="space-y-4">
+        <Skeleton className="h-48 w-full rounded-xl" />
+        <Skeleton className="h-8 w-48" />
+        <Skeleton className="h-4 w-32" />
+        <Skeleton className="h-32 w-full rounded-xl" />
+        <Skeleton className="h-32 w-full rounded-xl" />
+      </div>
+    );
+  }
+
+  if (isError || !data) {
+    return (
+      <div className="bg-surface rounded-xl p-lg ambient-shadow border border-surface-container-high text-center">
+        <p className="text-on-surface-variant">User not found</p>
+      </div>
+    );
+  }
 
   const isFollowing = (data as any).isFollowing ?? false;
   const isBlocked = (data as any).isBlocked ?? false;
