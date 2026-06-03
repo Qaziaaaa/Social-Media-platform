@@ -23,6 +23,7 @@ export function BlockButton({ userId, isBlocked, onToggle }: BlockButtonProps) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.blocks.all() });
       queryClient.invalidateQueries({ queryKey: queryKeys.blocks.check(userId) });
+      queryClient.invalidateQueries({ queryKey: queryKeys.users.detail(userId) });
       toast.success(isBlocked ? "User unblocked" : "User blocked");
       onToggle?.();
     },
