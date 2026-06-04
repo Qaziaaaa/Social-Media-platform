@@ -10,6 +10,7 @@ const userSelect = {
   avatar: true,
   coverImage: true,
   role: true,
+  suspended: true,
   createdAt: true,
   updatedAt: true,
   _count: {
@@ -115,6 +116,10 @@ export async function getUserPosts(userId: string, cursor?: string, limit = 20) 
   const user = await prisma.user.findUnique({ where: { id: userId } });
   if (!user) {
     throw new AppError(404, "User not found");
+  }
+
+  if (user.suspended) {
+    return { items: [], nextCursor: null };
   }
 
   const posts = await prisma.post.findMany({

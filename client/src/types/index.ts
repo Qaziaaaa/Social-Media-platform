@@ -7,6 +7,7 @@ export interface User {
   avatar: string | null;
   coverImage: string | null;
   role: string;
+  suspended?: boolean;
   _count: {
     posts: number;
     followers: number;

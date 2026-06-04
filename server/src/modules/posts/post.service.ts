@@ -112,6 +112,7 @@ export async function getFeed(cursor?: string, limit = 20, currentUserId?: strin
     take: limit + 1,
     ...(cursor ? { skip: 1, cursor: { id: cursor } } : {}),
     orderBy: { createdAt: "desc" },
+    where: { author: { suspended: false } },
     include: {
       author: {
         select: { id: true, username: true, fullName: true, avatar: true },
