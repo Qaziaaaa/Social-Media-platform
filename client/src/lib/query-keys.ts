@@ -20,6 +20,10 @@ export const queryKeys = {
   reports: {
     all: (status?: string) => ["reports", status ?? "all"] as const,
   },
+  stories: {
+    following: () => ["stories", "following"] as const,
+    user: (id: string) => ["stories", "user", id] as const,
+  },
   blocks: {
     all: () => ["blocks"] as const,
     check: (id: string) => ["blocks", id] as const,

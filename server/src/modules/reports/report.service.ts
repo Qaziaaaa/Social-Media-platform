@@ -44,6 +44,19 @@ export async function updateReportStatus(reportId: string, status: string) {
   const report = await prisma.report.findUnique({ where: { id: reportId } });
   if (!report) throw new AppError(404, "Report not found");
 
+  if (status === "resolved") {
+    if (report.targetType === "post") {
+      await prisma.post.deleteMany({ where: { id: report.targetId } });
+    } else if (report.targetType === "comment") {
+      await prisma.comment.deleteMany({ where: { id: report.targetId } });
+    } else if (report.targetType === "user") {
+      await prisma.user.update({
+        where: { id: report.targetId },
+        data: { suspended: true },
+      });
+    }
+  }
+
   return prisma.report.update({
     where: { id: reportId },
     data: { status },

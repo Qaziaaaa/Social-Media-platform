@@ -102,6 +102,20 @@ export interface Conversation {
   updatedAt: string;
 }
 
+export interface Story {
+  id: string;
+  userId: string;
+  user: Pick<User, "id" | "username" | "fullName" | "avatar">;
+  mediaUrl: string;
+  createdAt: string;
+  expiresAt: string;
+}
+
+export interface StoryGroup {
+  user: Pick<User, "id" | "username" | "fullName" | "avatar">;
+  stories: Story[];
+}
+
 export interface Message {
   id: string;
   conversationId: string;

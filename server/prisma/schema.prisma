@@ -17,6 +17,7 @@ model User {
   avatar       String?
   coverImage   String?
   role         String    @default("user")
+  suspended    Boolean   @default(false)
   posts        Post[]
   comments     Comment[]
   likes        Like[]
@@ -30,6 +31,7 @@ model User {
   messages     Message[]
   blockedUsers Block[]       @relation("Blocker")
   blockedBy    Block[]       @relation("Blocked")
+  stories      Story[]
   reports      Report[]      @relation("Reporter")
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
@@ -206,6 +208,18 @@ model Report {
 
   @@index([status])
   @@index([reporterId])
+}
+
+model Story {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  mediaUrl  String
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+
+  @@index([userId])
+  @@index([expiresAt])
 }
 
 model Block {
