@@ -79,16 +79,27 @@ export function StoryViewer({ groups, initialIndex, onClose }: StoryViewerProps)
   }, [storyIdx, groupIdx]);
 
   useEffect(() => {
+    if (!currentStory?.mediaUrl) return;
     setImgLoaded(false);
     setImgError(false);
-  }, [currentStory?.id]);
+    const img = new Image();
+    let cancelled = false;
+    img.onload = () => { if (!cancelled) setImgLoaded(true); };
+    img.onerror = () => { if (!cancelled) setImgError(true); };
+    if (img.complete) {
+      setImgLoaded(true);
+    } else {
+      img.src = currentStory.mediaUrl;
+    }
+    return () => { cancelled = true; };
+  }, [currentStory?.mediaUrl]);
 
   if (!currentStory) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black" onClick={onClose}>
       <div
-        className="relative h-full w-full max-w-lg md:h-[90vh] md:w-[400px] md:rounded-xl md:overflow-hidden"
+        className="relative flex h-full w-full max-w-lg items-center justify-center bg-black md:h-[90vh] md:w-[400px] md:rounded-xl md:overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="absolute top-0 left-0 right-0 z-10 flex gap-1 p-2">
@@ -124,12 +135,6 @@ export function StoryViewer({ groups, initialIndex, onClose }: StoryViewerProps)
           </svg>
         </button>
 
-        {!imgLoaded && !imgError && (
-          <div className="flex h-full w-full items-center justify-center">
-            <span className="h-8 w-8 animate-spin rounded-full border-2 border-white border-t-transparent" />
-          </div>
-        )}
-
         {imgError ? (
           <div className="flex h-full w-full flex-col items-center justify-center gap-2 text-white/60">
             <svg className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -137,14 +142,16 @@ export function StoryViewer({ groups, initialIndex, onClose }: StoryViewerProps)
             </svg>
             <p className="text-sm">Image failed to load</p>
           </div>
-        ) : (
+        ) : imgLoaded ? (
           <img
             src={currentStory.mediaUrl}
             alt=""
-            onLoad={() => setImgLoaded(true)}
-            onError={() => setImgError(true)}
             className="h-full w-full object-contain"
           />
+        ) : (
+          <div className="flex h-full w-full items-center justify-center">
+            <span className="h-8 w-8 animate-spin rounded-full border-2 border-white border-t-transparent" />
+          </div>
         )}
 
         <div

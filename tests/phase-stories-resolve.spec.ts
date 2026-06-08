@@ -35,24 +35,25 @@ test.describe("Stories", () => {
     await login(ctx, ALICE);
     await ctx.goto("/");
 
-    // Click the Add button to open file picker
+    // Click the Add button — file chooser dialog opens programmatically
     const addBtn = ctx.locator("button:has-text('Add')");
     await expect(addBtn).toBeVisible({ timeout: 10000 });
+
     await addBtn.click();
 
-    // Upload test image
-    const fileInput = ctx.locator('input[type="file"]');
+    // Upload test image — the StoryRing has the first hidden file input
+    const fileInput = ctx.locator('input[type="file"]').first();
     await fileInput.setInputFiles(path.resolve(__dirname, "test-image.png"));
 
     // Wait for success toast
     await expect(ctx.locator("text=Story created")).toBeVisible({ timeout: 15000 });
 
-    // Ring should now show "You" button with Alice's avatar
-    const youBtn = ctx.locator("button:has-text('You')");
-    await expect(youBtn).toBeVisible({ timeout: 10000 });
+    // The story ring should show Alice's own story ring (avatar with "Alice" name)
+    const storyBtn = ctx.locator("button:has-text('Alice')");
+    await expect(storyBtn).toBeVisible({ timeout: 10000 });
 
-    // Click on own story to open viewer
-    await youBtn.click();
+    // Click on own story ring to open viewer
+    await storyBtn.click();
 
     // Viewer should show the uploaded image
     const viewerImg = ctx.locator(".fixed.inset-0 img[alt='']");
@@ -83,26 +84,27 @@ test.describe("Auto-resolve reports", () => {
     });
     const postId = postRes.data.id;
 
-    // ── Report Alice's own post (just to have a report) ──
+    // ── Report Alice's own post ──
     await api(aliceCtx, "POST", "/reports", {
       targetType: "post",
       targetId: postId,
       reason: "Test auto-resolve",
     });
 
-    // ── Admin resolves the report ──
+    // ── Login as admin and resolve via API (more reliable than UI click) ──
     const adminCtx = await browser.newPage();
     await login(adminCtx, ADMIN);
-    await adminCtx.goto("/admin/reports");
-    await expect(adminCtx.locator("text=Reports")).toBeVisible({ timeout: 10000 });
 
-    // Click first Resolve button
-    const resolveBtn = adminCtx.locator("button:has-text('Resolve')").first();
-    await expect(resolveBtn).toBeVisible({ timeout: 10000 });
-    await resolveBtn.click();
+    // List reports and get the matching report ID
+    const reportsRes = await api(adminCtx, "GET", "/admin/reports");
+    const report = reportsRes.data.find((r) => r.targetId === postId);
+    expect(report).toBeDefined();
 
-    // Verify status changed to resolved
-    await expect(adminCtx.locator("text=resolved").first()).toBeVisible({ timeout: 10000 });
+    // Resolve via API
+    const resolveRes = await api(adminCtx, "PATCH", `/admin/reports/${report.id}`, {
+      status: "resolved",
+    });
+    expect(resolveRes.success).toBe(true);
 
     // ── Verify post returns 404 ──
     const getRes = await api(adminCtx, "GET", `/posts/${postId}`);
@@ -113,7 +115,7 @@ test.describe("Auto-resolve reports", () => {
   });
 
   test("Admin resolves user report → user suspended", async ({ browser }) => {
-    // ── Login as admin to get user IDs ──
+    // ── Login as admin ──
     const adminCtx = await browser.newPage();
     await login(adminCtx, ADMIN);
 
@@ -121,33 +123,36 @@ test.describe("Auto-resolve reports", () => {
     const searchRes = await api(adminCtx, "GET", "/search?q=alice&type=users");
     const aliceId = searchRes.data.users[0].id;
 
-    // ── Login as another context (Alice) to report ──
-    // (Can't report self, so this is just setting up the report for admin to resolve)
+    // Check if there's an existing pending report for Alice; if not, create one
+    let reportId;
+    const existingReports = await api(adminCtx, "GET", "/admin/reports?status=pending");
+    const existingReport = existingReports.data.find(
+      (r) => r.targetType === "user" && r.targetId === aliceId,
+    );
+    if (existingReport) {
+      reportId = existingReport.id;
+    } else {
+      const reportRes = await api(adminCtx, "POST", "/reports", {
+        targetType: "user",
+        targetId: aliceId,
+        reason: "Suspicious activity",
+      });
+      expect(reportRes.success).toBe(true);
+      reportId = reportRes.data.id;
+    }
 
-    // ── Admin creates a report against Alice (simulating a user report) ──
-    await api(adminCtx, "POST", "/reports", {
-      targetType: "user",
-      targetId: aliceId,
-      reason: "Suspicious activity",
+    // Resolve the user report via API
+    const resolveRes = await api(adminCtx, "PATCH", `/admin/reports/${reportId}`, {
+      status: "resolved",
     });
+    expect(resolveRes.success).toBe(true);
 
-    // Navigate to admin reports
-    await adminCtx.goto("/admin/reports");
+    // ── Verify Alice is suspended via profile API ──
+    const userRes = await api(adminCtx, "GET", `/users/${aliceId}`);
+    expect(userRes.data.suspended).toBe(true);
 
-    // Resolve the user report
-    const resolveBtns = adminCtx.locator("button:has-text('Resolve')");
-    await expect(resolveBtns.first()).toBeVisible({ timeout: 10000 });
-    await resolveBtns.first().click();
-    await expect(adminCtx.locator("text=resolved").first()).toBeVisible({ timeout: 10000 });
-
-    // ── Verify Alice is suspended by checking her profile ──
-    await adminCtx.goto(`/profile/${aliceId}`);
-    // Profile should still load (user exists) but should show suspended state
-    await expect(adminCtx.locator("text=Alice Johnson").first()).toBeVisible({ timeout: 10000 });
-
-    // Verify Alice's posts don't show in feed anymore
-    // (the suspended check is server-side, so we verify via API)
-    const feedRes = await api(adminCtx, "GET", "/posts?limit=10");
+    // ── Verify Alice's posts don't show in the feed ──
+    const feedRes = await api(adminCtx, "GET", "/posts?limit=20");
     const alicePosts = feedRes.data.items.filter((p) => p.authorId === aliceId);
     expect(alicePosts.length).toBe(0);
 

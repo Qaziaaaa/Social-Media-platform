@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import api from "@/services/api";
@@ -13,7 +13,7 @@ interface Props {
 export function StoryUploadButton({ hasActiveStory }: Props) {
   const { user } = useAuth();
   const fileRef = useRef<HTMLInputElement>(null);
-  const submittingRef = useRef(false);
+  const [inputKey, setInputKey] = useState(0);
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
@@ -36,25 +36,22 @@ export function StoryUploadButton({ hasActiveStory }: Props) {
       toast.error(msg);
     },
     onSettled: () => {
-      submittingRef.current = false;
-      if (fileRef.current) fileRef.current.value = "";
+      setInputKey((k) => k + 1);
     },
   });
 
   return (
     <>
       <input
+        key={inputKey}
         ref={fileRef}
         type="file"
         accept="image/*"
         className="hidden"
         onChange={(e) => {
-          if (submittingRef.current) return;
+          if (mutation.isPending) return;
           const file = e.target.files?.[0];
-          if (file) {
-            submittingRef.current = true;
-            mutation.mutate(file);
-          }
+          if (file) mutation.mutate(file);
         }}
       />
       <button
