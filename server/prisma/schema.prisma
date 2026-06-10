@@ -16,8 +16,12 @@ model User {
   bio          String?
   avatar       String?
   coverImage   String?
-  role         String    @default("user")
-  suspended    Boolean   @default(false)
+  role            String    @default("user")
+  suspended       Boolean   @default(false)
+  emailVerified   Boolean   @default(false)
+  verificationToken String?
+  resetToken      String?
+  resetTokenExpires DateTime?
   posts        Post[]
   comments     Comment[]
   likes        Like[]

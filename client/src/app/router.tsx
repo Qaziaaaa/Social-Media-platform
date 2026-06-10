@@ -3,6 +3,9 @@ import { MainLayout } from "@/components/layout/MainLayout";
 import { FeedPage } from "@/modules/feed/pages/FeedPage";
 import { LoginPage } from "@/modules/auth/pages/LoginPage";
 import { RegisterPage } from "@/modules/auth/pages/RegisterPage";
+import { VerifyEmailPage } from "@/modules/auth/pages/VerifyEmailPage";
+import { ForgotPasswordPage } from "@/modules/auth/pages/ForgotPasswordPage";
+import { ResetPasswordPage } from "@/modules/auth/pages/ResetPasswordPage";
 import { ProfilePage } from "@/modules/profile/pages/ProfilePage";
 import { EditProfilePage } from "@/modules/profile/pages/EditProfilePage";
 import { PostDetailPage } from "@/modules/posts/pages/PostDetailPage";
@@ -33,6 +36,9 @@ export function AppRouter() {
     <Routes>
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
+      <Route path="/verify-email" element={<VerifyEmailPage />} />
+      <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+      <Route path="/reset-password" element={<ResetPasswordPage />} />
       <Route element={<MainLayout />}>
         <Route path="/" element={<FeedPage />} />
         <Route path="/profile/:id" element={<ProfilePage />} />

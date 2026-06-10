@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { registerSchema, loginSchema } from "./auth.validator";
+import { registerSchema, loginSchema, verifyEmailSchema, forgotPasswordSchema, resetPasswordSchema } from "./auth.validator";
 import * as authService from "./auth.service";
 import { success } from "../../types/responses";
 
@@ -65,6 +65,24 @@ export async function refresh(req: Request, res: Response) {
 export async function logout(_req: Request, res: Response) {
   res.clearCookie("refreshToken", { path: "/api/auth" });
   res.json(success({ message: "Logged out" }));
+}
+
+export async function verifyEmail(req: Request, res: Response) {
+  const { token } = verifyEmailSchema.parse(req.body);
+  await authService.verifyEmail(token);
+  res.json(success({ message: "Email verified" }));
+}
+
+export async function forgotPassword(req: Request, res: Response) {
+  const { email } = forgotPasswordSchema.parse(req.body);
+  await authService.forgotPassword(email);
+  res.json(success({ message: "If the email exists, a reset link has been sent" }));
+}
+
+export async function resetPassword(req: Request, res: Response) {
+  const { token, password } = resetPasswordSchema.parse(req.body);
+  await authService.resetPassword(token, password);
+  res.json(success({ message: "Password reset successfully" }));
 }
 
 export async function me(req: Request, res: Response) {

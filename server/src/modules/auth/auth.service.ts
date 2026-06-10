@@ -1,8 +1,14 @@
 import bcrypt from "bcryptjs";
+import crypto from "crypto";
 import { prisma } from "../../database/prisma";
 import { signAccessToken, signRefreshToken, verifyToken } from "../../utils/jwt";
 import { AppError } from "../../middleware/errorHandler";
 import type { TokenPayload } from "../../utils/jwt";
+import { sendVerificationEmail, sendPasswordResetEmail } from "../../services/email";
+
+function generateToken(): string {
+  return crypto.randomBytes(32).toString("hex");
+}
 
 export async function registerUser(data: {
   username: string;
@@ -24,6 +30,7 @@ export async function registerUser(data: {
   }
 
   const passwordHash = await bcrypt.hash(data.password, 12);
+  const verificationToken = generateToken();
 
   const user = await prisma.user.create({
     data: {
@@ -31,6 +38,7 @@ export async function registerUser(data: {
       email: data.email,
       passwordHash,
       fullName: data.fullName,
+      verificationToken,
     },
     select: {
       id: true,
@@ -47,6 +55,8 @@ export async function registerUser(data: {
       },
     },
   });
+
+  sendVerificationEmail(data.email, verificationToken).catch(() => {});
 
   const payload: TokenPayload = { userId: user.id };
   const accessToken = signAccessToken(payload);
@@ -119,6 +129,61 @@ export async function refreshUserToken(refreshToken: string) {
   } catch {
     throw new AppError(401, "Invalid refresh token");
   }
+}
+
+export async function verifyEmail(token: string) {
+  const user = await prisma.user.findFirst({
+    where: { verificationToken: token, emailVerified: false },
+  });
+
+  if (!user) {
+    throw new AppError(400, "Invalid or expired verification token");
+  }
+
+  await prisma.user.update({
+    where: { id: user.id },
+    data: { emailVerified: true, verificationToken: null },
+  });
+}
+
+export async function forgotPassword(email: string) {
+  const user = await prisma.user.findUnique({ where: { email } });
+
+  if (!user) {
+    return;
+  }
+
+  const resetToken = generateToken();
+
+  await prisma.user.update({
+    where: { id: user.id },
+    data: {
+      resetToken,
+      resetTokenExpires: new Date(Date.now() + 60 * 60 * 1000),
+    },
+  });
+
+  sendPasswordResetEmail(email, resetToken).catch(() => {});
+}
+
+export async function resetPassword(token: string, password: string) {
+  const user = await prisma.user.findFirst({
+    where: {
+      resetToken: token,
+      resetTokenExpires: { gt: new Date() },
+    },
+  });
+
+  if (!user) {
+    throw new AppError(400, "Invalid or expired reset token");
+  }
+
+  const passwordHash = await bcrypt.hash(password, 12);
+
+  await prisma.user.update({
+    where: { id: user.id },
+    data: { passwordHash, resetToken: null, resetTokenExpires: null },
+  });
 }
 
 export async function getCurrentUser(userId: string) {

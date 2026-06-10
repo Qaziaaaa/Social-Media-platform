@@ -110,7 +110,7 @@ export function LoginPage() {
                 </div>
                 <span className="font-label-sm text-label-sm text-on-surface-variant group-hover:text-on-surface transition-colors">Remember me</span>
               </label>
-              <a className="font-label-sm text-label-sm text-primary hover:text-on-primary-fixed-variant hover:underline underline-offset-4 transition-all" href="#">Forgot password?</a>
+              <Link to="/forgot-password" className="font-label-sm text-label-sm text-primary hover:text-on-primary-fixed-variant hover:underline underline-offset-4 transition-all">Forgot password?</Link>
             </div>
 
             <Button type="submit" loading={loginLoading} className="w-full">
