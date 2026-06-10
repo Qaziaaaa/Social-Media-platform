@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "postinstall": "prisma generate",
     "predev": "node scripts/kill-port.js",
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
