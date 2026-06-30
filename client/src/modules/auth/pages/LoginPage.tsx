@@ -51,9 +51,9 @@ export function LoginPage() {
               <span className="material-symbols-outlined text-primary text-[20px]">verified</span>
               <span className="font-label-sm text-label-sm text-on-surface">Secure & Encrypted</span>
             </div>
-            <h2 className="font-display-sm text-display-sm text-on-surface mb-sm">Connect with clarity.</h2>
+            <h2 className="font-display-sm text-display-sm text-on-surface mb-sm">Forge your ideas publicly.</h2>
             <p className="font-body-lg text-body-lg text-on-surface-variant max-w-[80%]">
-              Experience a premium social network designed for professional engagement and meaningful interactions.
+              A social platform for builders, makers, and creators. Share progress, track milestones, and launch products.
             </p>
           </div>
         </div>
@@ -63,7 +63,7 @@ export function LoginPage() {
             <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-on-primary shadow-sm">
               <span className="material-symbols-outlined text-[24px]">scatter_plot</span>
             </div>
-            <span className="font-headline-md text-headline-md font-bold text-primary">Lumina Social</span>
+            <span className="font-headline-md text-headline-md font-bold text-primary">Forge</span>
           </div>
 
           <div className="mb-xl">

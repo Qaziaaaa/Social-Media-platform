@@ -8,6 +8,7 @@ import type { ApiResponse } from "@/types";
 const navItems = [
   { icon: "home", label: "Home", path: "/" },
   { icon: "explore", label: "Explore", path: "/explore" },
+  { icon: "folder", label: "Projects", path: "/projects" },
   { icon: "notifications", label: "Notifications", path: "/notifications" },
   { icon: "mail", label: "Messages", path: "/messages" },
   { icon: "bookmark", label: "Bookmarks", path: "/bookmarks" },
@@ -33,7 +34,7 @@ export function Navbar() {
       {/* Mobile Top Bar */}
       <header className="md:hidden fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-md shadow-sm flex justify-between items-center px-margin-mobile py-sm">
         <Link to="/" className="font-headline-md text-headline-md font-bold text-primary">
-          Lumina Social
+          Forge
         </Link>
         <div className="flex items-center gap-md">
           {isLoading ? null : isAuthenticated && user ? (
@@ -65,7 +66,7 @@ export function Navbar() {
       <aside className="hidden md:flex flex-col gap-md py-lg sticky top-0 h-screen w-64 bg-surface shrink-0 no-scrollbar overflow-y-auto">
         <div className="mb-lg px-md">
           <Link to="/" className="font-headline-lg text-headline-lg font-bold text-primary mb-xl block">
-            Lumina Social
+            Forge
           </Link>
           {!isLoading && isAuthenticated && user && (
             <Link to={`/profile/${user.id}`} className="flex items-center gap-md mb-xl hover:bg-surface-container-low p-sm -mx-sm rounded-xl transition-colors">

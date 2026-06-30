@@ -60,12 +60,12 @@ export function RegisterPage() {
           <div className="w-full max-w-md mx-auto">
             <div className="mb-2xl flex items-center gap-sm">
               <span className="material-symbols-outlined text-primary text-[32px]" style={{ fontVariationSettings: "'FILL' 1" }}>graphic_eq</span>
-              <span className="font-headline-md text-headline-md font-bold text-primary">Lumina Social</span>
+              <span className="font-headline-md text-headline-md font-bold text-primary">Forge</span>
             </div>
 
             <div className="mb-xl">
               <h1 className="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg text-on-surface mb-sm">Create an account</h1>
-              <p className="font-body-md text-body-md text-on-surface-variant">Join our professional community today.</p>
+              <p className="font-body-md text-body-md text-on-surface-variant">Join the builder community. Share what you're building.</p>
             </div>
 
             <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-lg">

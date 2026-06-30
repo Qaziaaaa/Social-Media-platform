@@ -94,7 +94,7 @@ export function MainLayout() {
             <a className="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Help</a>
             <a className="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Privacy</a>
             <a className="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Terms</a>
-            <div className="w-full mt-xs font-body-sm text-body-sm text-on-surface-variant">© 2024 Lumina Social</div>
+            <div className="w-full mt-xs font-body-sm text-body-sm text-on-surface-variant">© 2025 Forge</div>
           </footer>
         </aside>
       </div>

@@ -327,3 +327,63 @@ test.describe("Auth Pages", () => {
     await ctx.close();
   });
 });
+
+// ── Rebrand / Forge ─────────────────────────────────────
+
+test.describe("Rebrand", () => {
+  test("page title shows Forge", async ({ browser }) => {
+    const ctx = await browser.newPage();
+    await ctx.goto("/login");
+    const title = await ctx.title();
+    expect(title).toBe("Forge");
+    await ctx.close();
+  });
+
+  test("brand name shows Forge in navbar", async ({ browser }) => {
+    const ctx = await browser.newPage();
+    await login(ctx, BOB);
+    await expect(ctx.locator("text=Forge").first()).toBeVisible({ timeout: 10000 });
+    await ctx.close();
+  });
+});
+
+// ── Projects ────────────────────────────────────────────
+
+test.describe("Projects", () => {
+  test("create a project and see it in the list", async ({ browser }) => {
+    const ctx = await browser.newPage();
+    await login(ctx, BOB);
+    await ctx.goto("/projects");
+    await expect(ctx.getByRole("heading", { name: "Projects" })).toBeVisible({ timeout: 10000 });
+
+    // Create a project
+    await ctx.locator("button:has-text('New Project')").click();
+    await ctx.fill('input[placeholder="Project name"]', "My E2E Project");
+    await ctx.locator("button:has-text('Create')").click();
+    await expect(ctx.locator("text=My E2E Project")).toBeVisible({ timeout: 10000 });
+    await ctx.close();
+  });
+
+  test("create project via API", async ({ browser }) => {
+    const ctx = await browser.newPage();
+    await login(ctx, BOB);
+
+    const res = await api(ctx, "POST", "/projects", { name: "API Project Test" });
+    expect(res.success).toBe(true);
+    expect(res.data.name).toBe("API Project Test");
+    expect(res.data.status).toBe("idea");
+
+    // Fetch user's projects and verify it's there
+    const listRes = await api(ctx, "GET", "/projects");
+    expect(listRes.success).toBe(true);
+    expect(listRes.data.some((p: any) => p.name === "API Project Test")).toBe(true);
+    await ctx.close();
+  });
+
+  test("projects nav item exists", async ({ browser }) => {
+    const ctx = await browser.newPage();
+    await login(ctx, BOB);
+    await expect(ctx.locator('text=Projects').first()).toBeVisible({ timeout: 10000 });
+    await ctx.close();
+  });
+});

@@ -15,6 +15,7 @@ import { NotificationsPage } from "@/modules/notifications/pages/NotificationsPa
 import { MessagesPage } from "@/modules/messages/pages/MessagesPage";
 import { ConversationPage } from "@/modules/messages/pages/ConversationPage";
 import { AdminReportsPage } from "@/modules/admin/pages/AdminReportsPage";
+import { ProjectsPage } from "@/modules/projects/pages/ProjectsPage";
 
 function NotFoundPage() {
   return (
@@ -41,6 +42,7 @@ export function AppRouter() {
       <Route path="/reset-password" element={<ResetPasswordPage />} />
       <Route element={<MainLayout />}>
         <Route path="/" element={<FeedPage />} />
+        <Route path="/projects" element={<ProjectsPage />} />
         <Route path="/profile/:id" element={<ProfilePage />} />
         <Route path="/profile/:id/edit" element={<EditProfilePage />} />
         <Route path="/explore" element={<ExplorePage />} />

@@ -117,6 +117,20 @@ export interface StoryGroup {
   stories: Story[];
 }
 
+export interface Project {
+  id: string;
+  name: string;
+  description: string | null;
+  category: string | null;
+  techStack: string[];
+  status: "idea" | "in_progress" | "testing" | "completed" | "archived";
+  visibility: "public" | "private";
+  userId: string;
+  user?: Pick<User, "id" | "username" | "fullName" | "avatar">;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface Message {
   id: string;
   conversationId: string;
