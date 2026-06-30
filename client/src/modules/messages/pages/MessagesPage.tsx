@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { Avatar } from "@/components/ui/Avatar";
@@ -60,6 +60,7 @@ function ConversationItem({ c, userId }: { c: Conversation; userId: string }) {
 export function MessagesPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const queryClient = useQueryClient();
   const [showNew, setShowNew] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -96,6 +97,22 @@ export function MessagesPage() {
   useEffect(() => {
     if (showNew && searchRef.current) searchRef.current.focus();
   }, [showNew]);
+
+  const autoStartRef = useRef(false);
+  useEffect(() => {
+    if (autoStartRef.current || !user) return;
+    const targetId = searchParams.get("user");
+    if (!targetId) return;
+    autoStartRef.current = true;
+    createConversation([targetId])
+      .then((conv) => {
+        navigate(`/messages/${conv.id}`, { replace: true });
+      })
+      .catch(() => {
+        toast.error("Could not start conversation");
+        navigate("/messages", { replace: true });
+      });
+  }, [user, searchParams, navigate]);
 
   return (
     <div className="max-w-xl mx-auto animate-fade-in">

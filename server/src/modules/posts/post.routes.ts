@@ -6,7 +6,7 @@ import * as postController from "./post.controller";
 const router = Router();
 
 router.get("/", optionalAuth, asyncHandler(postController.feed));
-router.get("/:id", asyncHandler(postController.getById));
+router.get("/:id", optionalAuth, asyncHandler(postController.getById));
 router.post("/", authenticate, asyncHandler(postController.create));
 router.patch("/:id", authenticate, asyncHandler(postController.update));
 router.post("/:id/repost", authenticate, asyncHandler(postController.repost));
