@@ -12,17 +12,17 @@ export async function search(req: Request, res: Response) {
     return;
   }
 
-  if (type === "posts") {
-    const result = await searchService.searchPosts(q, cursor, limit);
-    res.json(success({ posts: result.items, nextCursor: result.nextCursor }));
+  if (type === "updates") {
+    const result = await searchService.searchUpdates(q, cursor, limit);
+    res.json(success({ updates: result.items, nextCursor: result.nextCursor }));
     return;
   }
 
-  const [users, posts, hashtags] = await Promise.all([
+  const [users, updates, hashtags] = await Promise.all([
     searchService.searchUsers(q, undefined, 5),
-    searchService.searchPosts(q, cursor, limit),
+    searchService.searchUpdates(q, cursor, limit),
     searchService.searchHashtags(q, 8),
   ]);
 
-  res.json(success({ users: users.items, posts: posts.items, hashtags, nextCursor: posts.nextCursor }));
+  res.json(success({ users: users.items, updates: updates.items, hashtags, nextCursor: updates.nextCursor }));
 }

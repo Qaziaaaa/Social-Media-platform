@@ -43,14 +43,14 @@ async function main() {
     },
   });
 
-  const post1 = await prisma.post.create({
+  const update1 = await prisma.update.create({
     data: {
       authorId: alice.id,
       content: "Just finished building a new project! Really excited about how it turned out.",
     },
   });
 
-  const post2 = await prisma.post.create({
+  const update2 = await prisma.update.create({
     data: {
       authorId: bob.id,
       content: "What's everyone working on this weekend?",
@@ -59,16 +59,16 @@ async function main() {
 
   await prisma.comment.create({
     data: {
-      postId: post1.id,
+      updateId: update1.id,
       authorId: bob.id,
       content: "Looks awesome! Would love to see more.",
     },
   });
 
   await prisma.like.upsert({
-    where: { postId_userId: { postId: post1.id, userId: bob.id } },
+    where: { updateId_userId: { updateId: update1.id, userId: bob.id } },
     update: {},
-    create: { postId: post1.id, userId: bob.id },
+    create: { updateId: update1.id, userId: bob.id },
   });
 
   await prisma.follow.upsert({

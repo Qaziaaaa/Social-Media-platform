@@ -3,12 +3,12 @@ import { Link, useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { Avatar } from "@/components/ui/Avatar";
 import { Button } from "@/components/ui/Button";
-import { PostCard } from "@/modules/posts/components/PostCard";
+import { UpdateCard } from "@/modules/updates/components/UpdateCard";
 import api from "@/services/api";
 import { queryKeys } from "@/lib/query-keys";
-import type { ApiResponse, User, Post } from "@/types";
+import type { ApiResponse, User, Update } from "@/types";
 
-type SearchType = "all" | "users" | "posts";
+type SearchType = "all" | "users" | "updates";
 
 export function ExplorePage() {
   const [searchParams] = useSearchParams();
@@ -40,12 +40,12 @@ export function ExplorePage() {
   });
 
   const users: User[] = data?.users ?? [];
-  const posts: Post[] = data?.posts ?? [];
+  const updates: Update[] = data?.updates ?? [];
 
   const tabs: { key: SearchType; label: string }[] = [
     { key: "all", label: "All" },
     { key: "users", label: "Users" },
-    { key: "posts", label: "Posts" },
+    { key: "updates", label: "Updates" },
   ];
 
   return (
@@ -61,7 +61,7 @@ export function ExplorePage() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-              placeholder="Search users and posts..."
+              placeholder="Search users and updates..."
               className="w-full bg-surface-container-lowest border border-outline-variant rounded-lg pl-10 pr-3 py-2.5 font-body-md text-body-md text-on-surface focus:border-primary focus:ring-2 focus:ring-inverse-primary outline-none transition-all placeholder:text-on-surface-variant"
             />
           </div>
@@ -93,7 +93,7 @@ export function ExplorePage() {
         </div>
       )}
 
-      {!isLoading && debouncedQuery && users.length === 0 && posts.length === 0 && (
+      {!isLoading && debouncedQuery && users.length === 0 && updates.length === 0 && (
         <div className="bg-surface rounded-xl p-lg ambient-shadow border border-surface-container-high text-center">
           <p className="text-on-surface-variant">No results for "{debouncedQuery}"</p>
         </div>
@@ -120,12 +120,12 @@ export function ExplorePage() {
         </section>
       )}
 
-      {(searchType === "all" || searchType === "posts") && posts.length > 0 && (
+      {(searchType === "all" || searchType === "updates") && updates.length > 0 && (
         <section>
-          <h2 className="font-headline-md text-headline-md text-on-surface mb-md">Posts</h2>
+          <h2 className="font-headline-md text-headline-md text-on-surface mb-md">Updates</h2>
           <div className="flex flex-col gap-md">
-            {posts.map((post) => (
-              <PostCard key={post.id} post={post} />
+            {updates.map((update) => (
+              <UpdateCard key={update.id} update={update} />
             ))}
           </div>
         </section>

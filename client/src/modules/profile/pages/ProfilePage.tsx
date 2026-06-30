@@ -5,21 +5,21 @@ import toast from "react-hot-toast";
 import { Avatar } from "@/components/ui/Avatar";
 import { Button } from "@/components/ui/Button";
 import { Skeleton } from "@/components/ui/Skeleton";
-import { PostCard } from "@/modules/posts/components/PostCard";
+import { UpdateCard } from "@/modules/updates/components/UpdateCard";
 import { useAuth } from "@/modules/auth/hooks/useAuth";
 import api from "@/services/api";
 import { queryKeys } from "@/lib/query-keys";
-import type { ApiResponse, User, Post, PaginatedResponse, Report } from "@/types";
+import type { ApiResponse, User, Update, PaginatedResponse, Report } from "@/types";
 import { BlockButton } from "@/modules/blocks/components/BlockButton";
 
-type Tab = "posts" | "likes" | "media";
+type Tab = "updates" | "likes" | "media";
 
 export function ProfilePage() {
   const { id } = useParams<{ id: string }>();
   const { user: currentUser } = useAuth();
   const queryClient = useQueryClient();
   const isOwnProfile = currentUser?.id === id;
-  const [activeTab, setActiveTab] = useState<Tab>("posts");
+  const [activeTab, setActiveTab] = useState<Tab>("updates");
   const [moreOpen, setMoreOpen] = useState(false);
   const moreRef = useRef<HTMLDivElement>(null);
 
@@ -63,9 +63,9 @@ export function ProfilePage() {
   });
 
   const endpointMap: Record<Tab, string> = {
-    posts: `/users/${id}/posts`,
-    likes: `/users/${id}/liked-posts`,
-    media: `/users/${id}/media-posts`,
+    updates: `/users/${id}/updates`,
+    likes: `/users/${id}/liked-updates`,
+    media: `/users/${id}/media-updates`,
   };
 
   const {
@@ -75,12 +75,12 @@ export function ProfilePage() {
     isFetchingNextPage,
     isLoading: postsLoading,
   } = useInfiniteQuery({
-    queryKey: [...queryKeys.users.posts(id!), activeTab],
+    queryKey: [...queryKeys.users.updates(id!), activeTab],
     queryFn: async ({ pageParam }: { pageParam?: string }) => {
       const params = new URLSearchParams();
       if (pageParam) params.set("cursor", pageParam);
       params.set("limit", "10");
-      const { data } = await api.get<ApiResponse<PaginatedResponse<Post>>>(
+      const { data } = await api.get<ApiResponse<PaginatedResponse<Update>>>(
         `${endpointMap[activeTab]}?${params}`,
       );
       return data.data;
@@ -139,10 +139,10 @@ export function ProfilePage() {
 
   const isFollowing = (data as any).isFollowing ?? false;
   const isBlocked = (data as any).isBlocked ?? false;
-  const posts = postsData?.pages.flatMap((p) => p.items) ?? [];
+  const updates = postsData?.pages.flatMap((p) => p.items) ?? [];
 
   const tabs: { key: Tab; label: string }[] = [
-    { key: "posts", label: "Posts" },
+    { key: "updates", label: "Updates" },
     { key: "likes", label: "Likes" },
     { key: "media", label: "Media" },
   ];
@@ -214,8 +214,8 @@ export function ProfilePage() {
             )}
             <div className="flex gap-6 border-t border-surface-container-high pt-4">
               <div className="flex gap-1 items-baseline">
-                <span className="font-label-md text-label-md text-on-surface">{data._count.posts}</span>
-                <span className="font-body-sm text-body-sm text-on-surface-variant">Posts</span>
+                <span className="font-label-md text-label-md text-on-surface">{data._count.updates}</span>
+                <span className="font-body-sm text-body-sm text-on-surface-variant">Updates</span>
               </div>
               <div className="flex gap-1 items-baseline">
                 <span className="font-label-md text-label-md text-on-surface">{data._count.followers}</span>
@@ -253,15 +253,15 @@ export function ProfilePage() {
             <Skeleton className="h-32 w-full rounded-xl" />
           </>
         )}
-        {!postsLoading && posts.length === 0 && (
+        {!postsLoading && updates.length === 0 && (
           <div className="bg-surface rounded-xl p-lg text-center ambient-shadow border border-surface-container-high">
             <p className="text-on-surface-variant">
-              {activeTab === "likes" ? "No liked posts yet" : activeTab === "media" ? "No media posts yet" : "No posts yet"}
+              {activeTab === "likes" ? "No liked updates yet" : activeTab === "media" ? "No media updates yet" : "No updates yet"}
             </p>
           </div>
         )}
-        {posts.map((post) => (
-          <PostCard key={post.id} post={post} />
+        {updates.map((update) => (
+          <UpdateCard key={update.id} update={update} />
         ))}
         {hasNextPage && (
           <div className="flex justify-center py-4">

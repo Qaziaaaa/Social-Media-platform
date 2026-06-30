@@ -18,24 +18,24 @@ const replyInclude = {
 };
 
 export async function createComment(
-  postId: string,
+  updateId: string,
   authorId: string,
   content: string,
   parentId?: string,
 ) {
-  const post = await prisma.post.findUnique({ where: { id: postId } });
-  if (!post) throw new AppError(404, "Post not found");
+  const update = await prisma.update.findUnique({ where: { id: updateId } });
+  if (!update) throw new AppError(404, "Update not found");
 
   if (parentId) {
     const parent = await prisma.comment.findUnique({ where: { id: parentId } });
-    if (!parent || parent.postId !== postId) {
+    if (!parent || parent.updateId !== updateId) {
       throw new AppError(400, "Invalid parent comment");
     }
   }
 
   const comment = await prisma.comment.create({
     data: {
-      postId,
+      updateId,
       authorId,
       content: sanitizeHtml(content),
       parentId,
@@ -44,23 +44,23 @@ export async function createComment(
   });
 
   await notify({
-    userId: post.authorId,
+    userId: update.authorId,
     actorId: authorId,
     type: "comment",
-    entityId: postId,
+    entityId: updateId,
   });
 
   return comment;
 }
 
-export async function getComments(postId: string, cursor?: string, limit = 20, currentUserId?: string) {
-  const post = await prisma.post.findUnique({ where: { id: postId } });
-  if (!post) throw new AppError(404, "Post not found");
+export async function getComments(updateId: string, cursor?: string, limit = 20, currentUserId?: string) {
+  const update = await prisma.update.findUnique({ where: { id: updateId } });
+  if (!update) throw new AppError(404, "Update not found");
 
   const parents = await prisma.comment.findMany({
     take: limit + 1,
     ...(cursor ? { skip: 1, cursor: { id: cursor } } : {}),
-    where: { postId, parentId: null },
+    where: { updateId, parentId: null },
     orderBy: { createdAt: "asc" },
     include: {
       ...commentInclude,

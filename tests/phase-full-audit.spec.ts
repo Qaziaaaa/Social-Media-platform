@@ -43,7 +43,7 @@ test.describe("Auth", () => {
     await ctx.click('button[type="submit"]');
     await ctx.waitForURL("/", { timeout: 15000 });
 
-    // Registration logs you in — feed should show the post form
+    // Registration logs you in — feed should show the update form
     await expect(ctx.locator('textarea[placeholder*="What"]').first()).toBeVisible({ timeout: 10000 });
     await ctx.close();
   });
@@ -56,22 +56,22 @@ test.describe("Auth", () => {
   });
 });
 
-// ── Feed / Post CRUD ─────────────────────────────────────
+// ── Feed / Update CRUD ─────────────────────────────────────
 
-test.describe("Feed & Posts", () => {
-  test("create a post and see it on the feed", async ({ browser }) => {
+test.describe("Feed & Updates", () => {
+  test("create an update and see it on the feed", async ({ browser }) => {
     const ctx = await browser.newPage();
     await login(ctx, BOB);
 
-    await ctx.fill('textarea[placeholder*="What"]', "E2E test post " + Date.now());
+    await ctx.fill('textarea[placeholder*="What"]', "E2E test update " + Date.now());
     await ctx.click('button[type="submit"]');
 
-    await expect(ctx.locator("text=Post created")).toBeVisible({ timeout: 10000 });
-    await expect(ctx.locator("text=E2E test post").first()).toBeVisible({ timeout: 10000 });
+    await expect(ctx.locator("text=Update created")).toBeVisible({ timeout: 10000 });
+    await expect(ctx.locator("text=E2E test update").first()).toBeVisible({ timeout: 10000 });
     await ctx.close();
   });
 
-  test("like and unlike a post", async ({ browser }) => {
+  test("like and unlike an update", async ({ browser }) => {
     const ctx = await browser.newPage();
     await login(ctx, BOB);
 
@@ -90,15 +90,15 @@ test.describe("Feed & Posts", () => {
     await ctx.close();
   });
 
-  test("comment on a post", async ({ browser }) => {
+  test("comment on an update", async ({ browser }) => {
     const ctx = await browser.newPage();
     await login(ctx, BOB);
 
-    // Click chat bubble to go to post detail
-    const commentLink = ctx.locator('article a[href^="/posts/"]').first();
+    // Click chat bubble to go to update detail
+    const commentLink = ctx.locator('article a[href^="/updates/"]').first();
     await commentLink.scrollIntoViewIfNeeded();
     await commentLink.click();
-    await ctx.waitForURL(/\/posts\//, { timeout: 10000 });
+    await ctx.waitForURL(/\/updates\//, { timeout: 10000 });
 
     // Write a comment using the textarea
     const commentInput = ctx.locator('textarea[placeholder*="Post your reply"]').first();
@@ -109,7 +109,7 @@ test.describe("Feed & Posts", () => {
     await ctx.close();
   });
 
-  test("bookmark and unbookmark a post", async ({ browser }) => {
+  test("bookmark and unbookmark an update", async ({ browser }) => {
     const ctx = await browser.newPage();
     await login(ctx, BOB);
 
@@ -124,25 +124,25 @@ test.describe("Feed & Posts", () => {
   });
 });
 
-// ── Post Detail (the bug fix) ─────────────────────────────
+// ── Update Detail ─────────────────────────────────────────────
 
-test.describe("Post Detail", () => {
-  test("post detail page loads with like/bookmark state", async ({ browser }) => {
+test.describe("Update Detail", () => {
+  test("update detail page loads with like/bookmark state", async ({ browser }) => {
     const ctx = await browser.newPage();
     await login(ctx, BOB);
 
-    // Create a post via API
-    const res = await api(ctx, "POST", "/posts", { content: "Detail test " + Date.now() });
-    const postId = res.data.id;
+    // Create an update via API
+    const res = await api(ctx, "POST", "/updates", { content: "Detail test " + Date.now() });
+    const updateId = res.data.id;
 
-    // Like the post via API
-    await api(ctx, "POST", `/posts/${postId}/like`);
+    // Like the update via API
+    await api(ctx, "POST", `/updates/${updateId}/like`);
 
-    // Visit the post detail page
-    await ctx.goto(`/posts/${postId}`);
+    // Visit the update detail page
+    await ctx.goto(`/updates/${updateId}`);
     await ctx.waitForLoadState("networkidle");
 
-    // The post content should be visible
+    // The update content should be visible
     await expect(ctx.locator("text=Detail test").first()).toBeVisible({ timeout: 10000 });
 
     await ctx.close();
@@ -254,7 +254,7 @@ test.describe("Messages", () => {
     const searchRes = await api(ctx, "GET", "/search?q=alice&type=users");
     const aliceId = searchRes.data.users[0].id;
 
-    // Navigate with user ID param (same as PostCard Message button does)
+    // Navigate with user ID param (same as UpdateCard Message button does)
     await ctx.goto(`/messages?user=${aliceId}`);
     await ctx.waitForLoadState("networkidle");
 

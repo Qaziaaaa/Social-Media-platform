@@ -9,7 +9,7 @@ export interface User {
   role: string;
   suspended?: boolean;
   _count: {
-    posts: number;
+    updates: number;
     followers: number;
     following: number;
   };
@@ -21,7 +21,7 @@ export interface Report {
   id: string;
   reporterId: string;
   reporter: Pick<User, "id" | "username" | "fullName">;
-  targetType: "post" | "comment" | "user";
+  targetType: "update" | "comment" | "user";
   targetId: string;
   reason: string;
   status: "pending" | "resolved" | "dismissed";
@@ -35,7 +35,7 @@ export interface BlockedUser {
   createdAt: string;
 }
 
-export interface Post {
+export interface Update {
   id: string;
   authorId: string;
   author: Pick<User, "id" | "username" | "fullName" | "avatar">;
@@ -53,7 +53,7 @@ export interface Post {
 
 export interface Comment {
   id: string;
-  postId: string;
+  updateId: string;
   authorId: string;
   author: Pick<User, "id" | "username" | "fullName" | "avatar">;
   content: string;

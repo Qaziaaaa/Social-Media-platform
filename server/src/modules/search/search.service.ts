@@ -17,7 +17,7 @@ export async function searchUsers(q: string, cursor?: string, limit = 20) {
       fullName: true,
       avatar: true,
       bio: true,
-      _count: { select: { posts: true, followers: true, following: true } },
+      _count: { select: { updates: true, followers: true, following: true } },
     },
   });
 
@@ -35,14 +35,14 @@ export async function searchHashtags(q: string, limit = 10) {
     take: limit,
     where: { tag: { contains: q, mode: "insensitive" } },
     orderBy: { tag: "asc" },
-    include: { _count: { select: { posts: true } } },
+    include: { _count: { select: { updates: true } } },
   });
 
-  return hashtags.map((h) => ({ tag: h.tag, count: h._count.posts }));
+  return hashtags.map((h) => ({ tag: h.tag, count: h._count.updates }));
 }
 
-export async function searchPosts(q: string, cursor?: string, limit = 20) {
-  const posts = await prisma.post.findMany({
+export async function searchUpdates(q: string, cursor?: string, limit = 20) {
+  const updates = await prisma.update.findMany({
     take: limit + 1,
     ...(cursor ? { skip: 1, cursor: { id: cursor } } : {}),
     where: {
@@ -57,11 +57,11 @@ export async function searchPosts(q: string, cursor?: string, limit = 20) {
     },
   });
 
-  const hasMore = posts.length > limit;
-  if (hasMore) posts.pop();
+  const hasMore = updates.length > limit;
+  if (hasMore) updates.pop();
 
   return {
-    items: posts,
-    nextCursor: hasMore ? posts[posts.length - 1]?.id ?? null : null,
+    items: updates,
+    nextCursor: hasMore ? updates[updates.length - 1]?.id ?? null : null,
   };
 }

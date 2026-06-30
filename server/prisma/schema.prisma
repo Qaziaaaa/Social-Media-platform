@@ -22,7 +22,7 @@ model User {
   verificationToken String?
   resetToken      String?
   resetTokenExpires DateTime?
-  posts        Post[]
+  updates      Update[]
   comments     Comment[]
   likes        Like[]
   commentLikes CommentLike[]
@@ -46,52 +46,51 @@ model User {
   @@index([email])
 }
 
-model Post {
-  id              String         @id @default(uuid())
-  authorId        String
-  author          User           @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  content         String
-  imageUrl        String?
-  originalPostId  String?
-  originalPost    Post?          @relation("Reposts", fields: [originalPostId], references: [id], onDelete: SetNull)
-  reposts         Post[]         @relation("Reposts")
-  comments        Comment[]
-  likes           Like[]
-  bookmarks       Bookmark[]
-  hashtags        PostHashtag[]
-  createdAt       DateTime       @default(now())
-  updatedAt       DateTime       @updatedAt
+model Update {
+  id         String    @id @default(uuid())
+  authorId   String
+  author     User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  projectId  String?
+  project    Project?  @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  content    String
+  imageUrl   String?
+  comments   Comment[]
+  likes      Like[]
+  bookmarks  Bookmark[]
+  hashtags   UpdateHashtag[]
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
 
   @@index([authorId])
   @@index([createdAt])
-  @@index([originalPostId])
+  @@index([projectId])
 }
 
 model Hashtag {
-  id    String        @id @default(uuid())
-  tag   String        @unique
-  posts PostHashtag[]
+  id      String          @id @default(uuid())
+  tag     String          @unique
+  updates UpdateHashtag[]
 
   @@index([tag])
 }
 
-model PostHashtag {
+model UpdateHashtag {
   id        String   @id @default(uuid())
-  postId    String
+  updateId  String
   hashtagId String
-  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  update    Update   @relation(fields: [updateId], references: [id], onDelete: Cascade)
   hashtag   Hashtag  @relation(fields: [hashtagId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
 
-  @@unique([postId, hashtagId])
+  @@unique([updateId, hashtagId])
   @@index([hashtagId])
-  @@index([postId])
+  @@index([updateId])
 }
 
 model Comment {
   id        String        @id @default(uuid())
-  postId    String
-  post      Post          @relation(fields: [postId], references: [id], onDelete: Cascade)
+  updateId  String
+  update    Update        @relation(fields: [updateId], references: [id], onDelete: Cascade)
   parentId  String?
   parent    Comment?      @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
   replies   Comment[]     @relation("CommentReplies")
@@ -101,20 +100,20 @@ model Comment {
   likes     CommentLike[]
   createdAt DateTime      @default(now())
 
-  @@index([postId])
+  @@index([updateId])
   @@index([authorId])
   @@index([parentId])
 }
 
 model Like {
-  id     String @id @default(uuid())
-  postId String
-  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
-  userId String
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id       String @id @default(uuid())
+  updateId String
+  update   Update @relation(fields: [updateId], references: [id], onDelete: Cascade)
+  userId   String
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([postId, userId])
-  @@index([postId])
+  @@unique([updateId, userId])
+  @@index([updateId])
   @@index([userId])
 }
 
@@ -132,15 +131,15 @@ model Follow {
 
 model Bookmark {
   id        String   @id @default(uuid())
-  postId    String
-  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  updateId  String
+  update    Update   @relation(fields: [updateId], references: [id], onDelete: Cascade)
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
 
-  @@unique([postId, userId])
+  @@unique([updateId, userId])
   @@index([userId])
-  @@index([postId])
+  @@index([updateId])
 }
 
 model CommentLike {
@@ -251,6 +250,7 @@ model Project {
   visibility  ProjectVisibility  @default(public)
   userId      String
   user        User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  updates    Update[]
   createdAt   DateTime           @default(now())
   updatedAt   DateTime           @updatedAt
 

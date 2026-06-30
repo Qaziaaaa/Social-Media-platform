@@ -5,7 +5,7 @@ import * as likeController from "./like.controller";
 
 const router = Router();
 
-router.post("/posts/:postId/like", authenticate, asyncHandler(likeController.like));
-router.delete("/posts/:postId/like", authenticate, asyncHandler(likeController.unlike));
+router.post("/updates/:updateId/like", authenticate, asyncHandler(likeController.like));
+router.delete("/updates/:updateId/like", authenticate, asyncHandler(likeController.unlike));
 
 export default router;

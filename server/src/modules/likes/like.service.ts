@@ -2,37 +2,37 @@ import { prisma } from "../../database/prisma";
 import { AppError } from "../../middleware/errorHandler";
 import { notify } from "../../utils/notify";
 
-export async function likePost(postId: string, userId: string) {
-  const post = await prisma.post.findUnique({ where: { id: postId } });
-  if (!post) throw new AppError(404, "Post not found");
+export async function likeUpdate(updateId: string, userId: string) {
+  const update = await prisma.update.findUnique({ where: { id: updateId } });
+  if (!update) throw new AppError(404, "Update not found");
 
   const existing = await prisma.like.findUnique({
-    where: { postId_userId: { postId, userId } },
+    where: { updateId_userId: { userId, updateId } },
   });
 
   if (existing) return { liked: false };
 
-  await prisma.like.create({ data: { postId, userId } });
+  await prisma.like.create({ data: { updateId, userId } });
 
   await notify({
-    userId: post.authorId,
+    userId: update.authorId,
     actorId: userId,
     type: "like",
-    entityId: postId,
+    entityId: updateId,
   });
 
   return { liked: true };
 }
 
-export async function unlikePost(postId: string, userId: string) {
+export async function unlikeUpdate(updateId: string, userId: string) {
   const existing = await prisma.like.findUnique({
-    where: { postId_userId: { postId, userId } },
+    where: { updateId_userId: { userId, updateId } },
   });
 
   if (!existing) return { liked: false };
 
   await prisma.like.delete({
-    where: { postId_userId: { postId, userId } },
+    where: { updateId_userId: { userId, updateId } },
   });
   return { liked: false };
 }

@@ -1,528 +1,1036 @@
-# SOCIAL MEDIA PLATFORM — AGENT CONSTITUTION
+# Project Vision
 
-## ROLE
+Create a modern social platform focused on **people who build things**.
 
-You are a Senior Full-Stack Engineer, Software Architect, DevOps Engineer, Security Engineer, Database Architect, and UI/UX Engineer.
+Not another Instagram.
+Not another LinkedIn.
+Not another GitHub clone.
 
-Your responsibility is to design, implement, test, document, and maintain a production-quality Social Media Platform.
+This product is designed for:
 
-You must make decisions as a senior engineer rather than asking unnecessary questions.
+- indie hackers
+- startup founders
+- developers
+- designers
+- students building side projects
+- researchers
+- makers
+- creators
 
-Always optimize for:
+The platform should make building in public addictive.
 
-1. Scalability
-2. Maintainability
-3. Security
-4. Performance
-5. Developer Experience
-6. User Experience
-7. Clean Architecture
+People do not simply post photos.
 
----
+They publish:
 
-# PROJECT OBJECTIVE
+- progress
+- milestones
+- launches
+- experiments
+- roadmaps
+- learnings
+- failures
+- updates
+- changelogs
 
-Build a modern Social Media Platform containing:
+Core philosophy:
 
-* User Authentication
-* User Profiles
-* Posts
-* Comments
-* Likes
-* Follow System
-* User Feed
-
-The application should be portfolio-quality and suitable for professional internship evaluation.
-
----
-
-# ENGINEERING PRINCIPLES
-
-## Principle 1: Production First
-
-Every implementation must be written as if it will be deployed to production.
-
-Never create demo-quality code.
+"Show what you're building, not what you're consuming."
 
 ---
 
-## Principle 2: Clean Architecture
+# Product Name
 
-Always separate:
+## Forge
 
-* Presentation Layer
-* Business Logic Layer
-* Data Layer
-* Infrastructure Layer
+Tagline:
 
-Never mix concerns.
+Forge your ideas publicly.
 
----
+Alternative names:
 
-## Principle 3: Scalability
+- Foundry
+- Catalyst
+- PulseLab
+- Momentum
+- LaunchLoop
+- Origin
+- MakerGrid
+- CraftFlow
+- Assembly
+- Hatch
+- Sparkbase
+- Buildlog
+- Ignition
+- Flux
+- Frame
 
-Design all systems assuming:
+Recommended:
 
-* 100,000+ users
-* Millions of posts
-* Thousands of concurrent requests
+# Forge
 
-Avoid designs that only work for small datasets.
+Reason:
 
----
+short
 
-## Principle 4: Security By Default
+premium
 
-Every feature must be secure by default.
+easy branding
 
-Validate all inputs.
+strong identity
 
-Sanitize user-generated content.
+memorable
 
-Never trust client-side data.
+domain friendly
 
----
-
-## Principle 5: Reusability
-
-Before creating new code:
-
-* Search for existing code
-* Reuse components
-* Reuse hooks
-* Reuse services
-* Reuse utilities
-
-Avoid duplication.
+not obviously another social app
 
 ---
 
-# TECH STACK
+# Product Positioning
 
-## Frontend
+Forge is a social operating system for builders.
 
-Use:
+Users can:
 
-* React
-* TypeScript
-* React Router
-* Tailwind CSS
-* TanStack Query
-* Axios
-* React Hook Form
-* Zod
+track projects
 
-## Backend
+share progress
 
-Use:
+discover makers
 
-* Node.js
-* Express.js
-* TypeScript
+find collaborators
 
-## Database
+document journeys
 
-Use:
+launch products
 
-* PostgreSQL
-* Prisma ORM
+maintain changelogs
+
+receive feedback
+
+gain followers
+
+measure momentum
+
+---
+
+# Value Proposition
+
+Instagram:
+people share moments
+
+LinkedIn:
+people share careers
+
+GitHub:
+people share code
+
+Forge:
+people share creation journeys
+
+---
+
+# Main Objects
+
+Users
+
+Projects
+
+Milestones
+
+Updates
+
+Roadmaps
+
+Collections
+
+Collaborations
+
+Stories
+
+Messages
+
+Experiments
+
+Launches
+
+Feedback
+
+Achievements
+
+Signals
+
+Momentum Score
+
+---
+
+# Core Features
 
 ## Authentication
 
-Use:
+Register
 
-* JWT Access Tokens
-* Refresh Tokens
-* Bcrypt Password Hashing
+Login
 
----
+JWT
 
-# PROJECT STRUCTURE
+Refresh Tokens
 
-Maintain the following structure:
+Forgot Password
 
-src/
+Email Verification
 
-├── app/
-├── modules/
-├── components/
-├── hooks/
-├── services/
-├── lib/
-├── utils/
-├── types/
-├── middleware/
-├── config/
-├── routes/
-├── controllers/
-├── repositories/
-├── database/
-└── tests/
+Sessions
 
-Feature-based organization is preferred.
+OAuth
+
+Google Login
+
+GitHub Login
+
+2FA
+
+Password Reset
+
+Security Settings
 
 ---
 
-# DATABASE RULES
+## User Profile
 
-Design normalized schemas.
+avatar
 
-Required entities:
+cover image
 
-## User
+bio
 
-* id
-* username
-* email
-* passwordHash
-* bio
-* avatar
-* coverImage
-* createdAt
-* updatedAt
+skills
 
-## Post
+interests
 
-* id
-* authorId
-* content
-* imageUrl
-* createdAt
-* updatedAt
+links
 
-## Comment
+website
 
-* id
-* postId
-* authorId
-* content
-* createdAt
+github
 
-## Like
+portfolio
 
-* id
-* postId
-* userId
+current focus
 
-## Follow
+availability
 
-* followerId
-* followingId
+timezone
 
-Relationships must be properly indexed.
+stats
 
-Add foreign key constraints.
+followers
 
-Add database indexes for:
+following
 
-* username
-* email
-* post author
-* comments
-* followers
-* likes
+projects count
+
+milestones completed
+
+momentum score
+
+streak
+
+builder level
 
 ---
 
-# AUTHENTICATION RULES
+## Projects
 
-Implement:
+Each user owns projects.
 
-* Registration
-* Login
-* Logout
-* Token Refresh
-* Password Hashing
-* Protected Routes
-* Role Middleware
+Project fields:
 
-Passwords must never be stored in plain text.
+name
 
-Use bcrypt hashing.
+description
 
-JWT secrets must come from environment variables.
+category
+
+tech stack
+
+status
+
+visibility
+
+roadmap
+
+timeline
+
+team members
+
+contributors
+
+repository link
+
+demo link
+
+screenshots
+
+launch date
+
+progress percentage
+
+followers count
+
+tags
+
+difficulty
+
+estimated completion
 
 ---
 
-# API RULES
+## Progress Updates
 
-Follow REST standards.
+Users publish updates.
 
 Examples:
 
-GET /api/users
-GET /api/users/:id
+Implemented authentication
 
-POST /api/auth/register
-POST /api/auth/login
+Completed dashboard
 
-POST /api/posts
-PATCH /api/posts/:id
-DELETE /api/posts/:id
+Released beta
 
-POST /api/posts/:id/like
-DELETE /api/posts/:id/like
+Reached 100 users
 
-POST /api/users/:id/follow
-DELETE /api/users/:id/follow
+Refactored API
 
----
+Designed homepage
 
-# RESPONSE STANDARDS
+Published v1
 
-Success:
-
-{
-"success": true,
-"data": {}
-}
-
-Error:
-
-{
-"success": false,
-"message": "Description"
-}
-
-Validation Error:
-
-{
-"success": false,
-"errors": []
-}
+Integrated payments
 
 ---
 
-# FEATURE REQUIREMENTS
+Updates contain:
 
-## User Profiles
+text
 
-Users can:
+images
 
-* View profile
-* Edit profile
-* Upload avatar
-* Upload cover image
-* Follow users
-* Unfollow users
+videos
 
-Display:
+polls
 
-* Followers count
-* Following count
-* Posts count
+attachments
 
----
+links
 
-## Posts
+progress percentage
 
-Users can:
+milestone references
 
-* Create posts
-* Edit own posts
-* Delete own posts
-* View feed
-* View profile posts
+emoji reactions
 
-Support:
+comments
 
-* Text posts
-* Image posts
+bookmarks
+
+shares
+
+mentions
+
+hashtags
 
 ---
 
-## Comments
+## Roadmaps
 
-Users can:
+Roadmaps become visual timelines.
 
-* Create comments
-* Delete own comments
+Backlog
 
-Comments must be paginated.
+In Progress
 
----
+Testing
 
-## Likes
+Completed
 
-Users can:
+Archived
 
-* Like posts
-* Unlike posts
-
-One like per user per post.
+Users can subscribe.
 
 ---
 
-## Follow System
+## Milestones
 
-Users can:
-
-* Follow users
-* Unfollow users
-
-Prevent:
-
-* Duplicate follows
-* Self-following
-
----
-
-# FRONTEND RULES
-
-Every page must support:
-
-* Loading State
-* Error State
-* Empty State
-
-Implement:
-
-* Responsive Design
-* Mobile First Design
-* Accessible Components
-
-Use semantic HTML.
-
----
-
-# PERFORMANCE RULES
-
-Always:
-
-* Lazy load routes
-* Paginate large datasets
-* Use query caching
-* Optimize images
-* Minimize re-renders
-* Avoid N+1 queries
-
----
-
-# SECURITY RULES
-
-Implement:
-
-* Input Validation
-* Rate Limiting
-* XSS Protection
-* SQL Injection Protection
-* Secure Headers
-* Authentication Middleware
-* Authorization Middleware
-
-Never expose:
-
-* Passwords
-* Tokens
-* Secrets
-* Internal Errors
-
----
-
-# CODE QUALITY RULES
-
-Mandatory:
-
-* TypeScript Strict Mode
-* ESLint
-* Prettier
-* Husky
-* Lint Staged
-
-Functions should:
-
-* Have a single responsibility
-* Be easily testable
-* Remain small and focused
-
-Avoid:
-
-* God Components
-* God Services
-* Massive Files
-* Deep Nesting
-
----
-
-# TESTING RULES
-
-Write tests for:
-
-* Authentication
-* Posts
-* Comments
-* Likes
-* Follow System
-
-Coverage target:
-
-* Minimum 80%
-
----
-
-# DEVOPS RULES
-
-Provide:
-
-* Dockerfile
-* Docker Compose
-* Environment Templates
-* CI/CD Workflow
-
-Support:
-
-* Local Development
-* Staging
-* Production
-
----
-
-# GIT RULES
-
-Commit Convention:
-
-feat:
-fix:
-refactor:
-docs:
-test:
-chore:
+Milestones provide dopamine.
 
 Examples:
 
-feat: implement follow system
-fix: resolve token refresh bug
-refactor: optimize post queries
+First Commit
+
+MVP Done
+
+Beta Released
+
+First Customer
+
+100 Users
+
+1000 Users
+
+Launch Day
+
+Revenue Goal
 
 ---
 
-# DOCUMENTATION RULES
+Milestones generate feed activities.
 
-Maintain:
+Example:
 
-* README.md
-* API Documentation
-* Database Schema
-* Environment Setup
-* Deployment Guide
+Ahmed completed:
+
+API Architecture
+
+78% complete
 
 ---
 
-# AGENT EXECUTION RULES
+## Builder Stories
 
-When implementing any feature:
+Stories disappear after 24 hours.
 
-1. Analyze existing architecture first.
-2. Reuse existing code before creating new code.
-3. Generate complete implementations.
-4. Never leave TODO placeholders.
-5. Never use mock data unless explicitly requested.
-6. Include proper error handling.
-7. Include validation.
-8. Include TypeScript types.
-9. Include security considerations.
-10. Keep code production-ready.
+Content:
 
-If multiple implementation approaches exist, choose the most scalable and maintainable solution.
+progress screenshots
 
-The final output must always resemble code written by a senior engineer for a real-world production system.
+behind the scenes
+
+wins
+
+struggles
+
+mini updates
+
+polls
+
+quick notes
+
+---
+
+## Collaboration Marketplace
+
+Builders can discover teammates.
+
+Need Designer
+
+Need Backend Developer
+
+Need Marketer
+
+Need Co-founder
+
+Need Tester
+
+Need Writer
+
+Need Investor
+
+Need Advisor
+
+---
+
+Collaboration card:
+
+Project
+
+role
+
+time commitment
+
+remote
+
+equity
+
+paid
+
+experience
+
+duration
+
+---
+
+## Discover
+
+Trending Projects
+
+Fastest Growing
+
+New Launches
+
+Most Active Builders
+
+Popular Categories
+
+Featured Roadmaps
+
+Weekly Builders
+
+Recommended Projects
+
+---
+
+## Search
+
+Search by:
+
+builder
+
+project
+
+technology
+
+tags
+
+skills
+
+launches
+
+milestones
+
+roadmaps
+
+---
+
+## Messaging
+
+Realtime messaging
+
+typing indicator
+
+read receipts
+
+project chats
+
+attachments
+
+voice notes
+
+message reactions
+
+search messages
+
+pin chats
+
+archive chats
+
+---
+
+## Notifications
+
+likes
+
+comments
+
+mentions
+
+followers
+
+milestones
+
+invitations
+
+collaboration requests
+
+launches
+
+messages
+
+story interactions
+
+---
+
+## Collections
+
+Save projects.
+
+Save resources.
+
+Save updates.
+
+Create boards.
+
+Examples:
+
+Startup Ideas
+
+Interesting APIs
+
+UI Inspiration
+
+AI Projects
+
+Open Source
+
+Future Reading
+
+---
+
+## Launch System
+
+Projects can be launched publicly.
+
+Launch page includes:
+
+screenshots
+
+videos
+
+features
+
+maker profile
+
+upvotes
+
+feedback
+
+comments
+
+followers
+
+analytics
+
+---
+
+## Achievements
+
+Builder badges.
+
+7 day streak
+
+30 day streak
+
+100 updates
+
+First Launch
+
+Collaborator
+
+Mentor
+
+Early Adopter
+
+Consistency Badge
+
+Momentum Badge
+
+---
+
+# Unique Features
+
+These are portfolio differentiators.
+
+---
+
+## Momentum Score
+
+Forge calculates a dynamic score.
+
+Factors:
+
+activity
+
+milestones
+
+engagement
+
+project completion
+
+consistency
+
+followers
+
+launches
+
+updates
+
+collaboration
+
+The score reflects momentum.
+
+Not popularity.
+
+---
+
+## Build DNA
+
+Automatically generated profile summary.
+
+Example:
+
+Backend Focused
+
+Fast Iteration
+
+Strong Consistency
+
+AI Enthusiast
+
+Product Driven
+
+Open Source Contributor
+
+---
+
+## Project Heatmap
+
+GitHub style visualization.
+
+Shows:
+
+days active
+
+progress density
+
+consistency
+
+build habits
+
+---
+
+## Public Journey Timeline
+
+Timeline view.
+
+Day 1
+
+Idea
+
+Week 2
+
+Design
+
+Month 1
+
+MVP
+
+Month 2
+
+Beta
+
+Month 4
+
+Launch
+
+Month 6
+
+Revenue
+
+---
+
+## Reflection Mode
+
+Users can publish failures.
+
+Lessons learned.
+
+Mistakes.
+
+Experiments.
+
+Postmortems.
+
+Insights.
+
+Encourages authenticity.
+
+---
+
+## Build Journal
+
+Every project has a journal.
+
+Daily logs.
+
+Weekly summaries.
+
+Retrospectives.
+
+Wins.
+
+Challenges.
+
+---
+
+## Pulse Feed
+
+Feed prioritizes progress.
+
+Not vanity metrics.
+
+Algorithm signals:
+
+consistency
+
+momentum
+
+quality
+
+activity
+
+learning
+
+milestones
+
+---
+
+# Admin
+
+dashboard
+
+reports
+
+analytics
+
+user management
+
+moderation
+
+shadow bans
+
+content reports
+
+project reports
+
+spam detection
+
+flagging
+
+audit logs
+
+---
+
+# Suggested Tech Stack
+
+Frontend
+
+Next.js
+
+React
+
+TypeScript
+
+Tailwind
+
+shadcn/ui
+
+React Query
+
+Zustand
+
+Framer Motion
+
+Socket.io Client
+
+React Hook Form
+
+Zod
+
+---
+
+Backend
+
+Node.js
+
+Express
+
+TypeScript
+
+Socket.io
+
+JWT
+
+Redis
+
+BullMQ
+
+Cron Jobs
+
+Cloudinary
+
+Multer
+
+---
+
+Database
+
+MongoDB
+
+Mongoose
+
+Redis
+
+---
+
+Search
+
+Mongo Atlas Search
+
+or
+
+Elasticsearch
+
+---
+
+Realtime
+
+Socket.io
+
+Redis Pub/Sub
+
+---
+
+Storage
+
+Cloudinary
+
+---
+
+Notifications
+
+Socket Events
+
+Redis Queue
+
+BullMQ
+
+---
+
+Authentication
+
+JWT
+
+Refresh Tokens
+
+bcrypt
+
+OTP
+
+Google OAuth
+
+GitHub OAuth
+
+---
+
+Infrastructure
+
+Docker
+
+Docker Compose
+
+Nginx
+
+GitHub Actions
+
+CI/CD
+
+---
+
+Deployment
+
+Vercel
+
+Railway
+
+Render
+
+DigitalOcean
+
+AWS ECS
+
+---
+
+Monitoring
+
+Sentry
+
+OpenTelemetry
+
+Grafana
+
+Prometheus
+
+---
+
+Analytics
+
+PostHog
+
+Plausible
+
+Mixpanel
+
+---
+
+Testing
+
+Vitest
+
+Jest
+
+Playwright
+
+Supertest
+
+---
+
+Architecture
+
+Frontend
+
+↓
+
+API Gateway
+
+↓
+
+Express Services
+
+↓
+
+Redis Cache
+
+↓
+
+MongoDB
+
+↓
+
+Queue Workers
+
+↓
+
+Notification Service
+
+↓
+
+Realtime Layer
+
+↓
+
+Cloudinary
+
+---
+
+Portfolio Headline
+
+Forge
+
+A social operating system for builders to document projects, track milestones, launch ideas, discover collaborators, and showcase creation journeys in public.
+
+---
+
+Resume Description
+
+Built Forge, a builder-centric social platform enabling creators to document projects, share milestones, maintain roadmaps, collaborate with teammates, launch products, and visualize momentum through realtime engagement systems.

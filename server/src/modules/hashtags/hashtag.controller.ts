@@ -2,11 +2,11 @@ import type { Request, Response } from "express";
 import * as hashtagService from "./hashtag.service";
 import { success } from "../../types/responses";
 
-export async function getPosts(req: Request, res: Response) {
+export async function getUpdates(req: Request, res: Response) {
   const tag = req.params.tag as string;
   const cursor = req.query.cursor as string | undefined;
   const limit = Number(req.query.limit) || 20;
-  const result = await hashtagService.getPostsByHashtag(tag, cursor, limit);
+  const result = await hashtagService.getUpdatesByHashtag(tag, cursor, limit);
   res.json(success(result));
 }
 

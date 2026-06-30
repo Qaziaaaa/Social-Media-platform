@@ -51,7 +51,7 @@ export async function registerUser(data: {
       createdAt: true,
       updatedAt: true,
       _count: {
-        select: { posts: true, followers: true, following: true },
+        select: { updates: true, followers: true, following: true },
       },
     },
   });
@@ -86,7 +86,7 @@ export async function loginUser(email: string, password: string) {
     user: {
       ...safeUser,
       _count: {
-        posts: 0,
+        updates: 0,
         followers: 0,
         following: 0,
       },
@@ -112,7 +112,7 @@ export async function refreshUserToken(refreshToken: string) {
         createdAt: true,
         updatedAt: true,
         _count: {
-          select: { posts: true, followers: true, following: true },
+          select: { updates: true, followers: true, following: true },
         },
       },
     });
@@ -200,7 +200,7 @@ export async function getCurrentUser(userId: string) {
       createdAt: true,
       updatedAt: true,
       _count: {
-        select: { posts: true, followers: true, following: true },
+        select: { updates: true, followers: true, following: true },
       },
     },
   });

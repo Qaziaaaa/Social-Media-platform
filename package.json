@@ -1,0 +1,27 @@
+{
+  "name": "social-media-platform",
+  "version": "1.0.0",
+  "description": "Full-stack social media platform built with React, Express, PostgreSQL, and Prisma.",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Qaziaaaa/Social-Media-platform.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Qaziaaaa/Social-Media-platform/issues"
+  },
+  "homepage": "https://github.com/Qaziaaaa/Social-Media-platform#readme",
+  "dependencies": {
+    "@playwright/test": "^1.60.0"
+  }
+}

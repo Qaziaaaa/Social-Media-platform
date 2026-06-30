@@ -6,9 +6,9 @@ import { Avatar } from "@/components/ui/Avatar";
 import api from "@/services/api";
 import { useAuth } from "@/modules/auth/hooks/useAuth";
 import { queryKeys } from "@/lib/query-keys";
-import type { ApiResponse, Post } from "@/types";
+import type { ApiResponse, Update } from "@/types";
 
-export function PostForm() {
+export function UpdateForm() {
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const [content, setContent] = useState("");
@@ -29,18 +29,18 @@ export function PostForm() {
         imageUrl = uploadRes.data.url;
       }
 
-      const { data } = await api.post<ApiResponse<Post>>("/posts", { content, imageUrl });
+      const { data } = await api.post<ApiResponse<Update>>("/updates", { content, imageUrl });
       return data.data;
     },
     onSuccess: () => {
       setContent("");
       setFile(null);
       setPreview(null);
-      queryClient.invalidateQueries({ queryKey: queryKeys.posts.feed() });
-      toast.success("Post created");
+      queryClient.invalidateQueries({ queryKey: queryKeys.updates.feed() });
+      toast.success("Update created");
     },
     onError: (err: unknown) => {
-      const msg = (err as { response?: { data?: { message?: string } } })?.response?.data?.message ?? "Failed to create post";
+      const msg = (err as { response?: { data?: { message?: string } } })?.response?.data?.message ?? "Failed to create update";
       toast.error(msg);
     },
   });
@@ -110,7 +110,7 @@ export function PostForm() {
               loading={mutation.isPending}
               disabled={!content.trim() && !file}
             >
-              Post
+              Update
             </Button>
           </div>
         </div>

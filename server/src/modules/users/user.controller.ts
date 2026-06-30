@@ -31,23 +31,23 @@ export async function listUsers(req: Request, res: Response) {
   res.json(success(result));
 }
 
-export async function getUserPosts(req: Request, res: Response) {
+export async function getUserUpdates(req: Request, res: Response) {
   const cursor = req.query.cursor as string | undefined;
   const limit = Number(req.query.limit) || 20;
-  const result = await userService.getUserPosts(req.params.id as string, cursor, limit);
+  const result = await userService.getUserUpdates(req.params.id as string, cursor, limit);
   res.json(success(result));
 }
 
-export async function getUserLikedPosts(req: Request, res: Response) {
+export async function getUserLikedUpdates(req: Request, res: Response) {
   const cursor = req.query.cursor as string | undefined;
   const limit = Number(req.query.limit) || 20;
-  const result = await userService.getUserLikedPosts(req.params.id as string, cursor, limit);
+  const result = await userService.getUserLikedUpdates(req.params.id as string, cursor, limit);
   res.json(success(result));
 }
 
-export async function getUserMediaPosts(req: Request, res: Response) {
+export async function getUserMediaUpdates(req: Request, res: Response) {
   const cursor = req.query.cursor as string | undefined;
   const limit = Number(req.query.limit) || 20;
-  const result = await userService.getUserMediaPosts(req.params.id as string, cursor, limit);
+  const result = await userService.getUserMediaUpdates(req.params.id as string, cursor, limit);
   res.json(success(result));
 }

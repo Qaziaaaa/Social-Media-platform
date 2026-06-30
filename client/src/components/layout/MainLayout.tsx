@@ -122,7 +122,7 @@ function RecentNotifications() {
       {data.map((n) => (
         <Link
           key={n.id}
-          to={n.entityId ? `/posts/${n.entityId}` : `/profile/${n.actorId}`}
+          to={n.entityId ? `/updates/${n.entityId}` : `/profile/${n.actorId}`}
           className="flex items-center gap-sm hover:bg-surface-container-low p-sm -mx-sm rounded-lg transition-colors"
         >
           <Avatar src={n.actor.avatar} alt={n.actor.fullName} size="sm" />

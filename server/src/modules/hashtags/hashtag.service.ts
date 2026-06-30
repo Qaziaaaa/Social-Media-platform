@@ -11,7 +11,7 @@ export async function upsertHashtags(tags: string[]) {
   }
 }
 
-export async function associateHashtags(postId: string, tags: string[]) {
+export async function associateHashtags(updateId: string, tags: string[]) {
   if (tags.length === 0) return;
 
   await upsertHashtags(tags);
@@ -20,32 +20,32 @@ export async function associateHashtags(postId: string, tags: string[]) {
     where: { tag: { in: tags } },
   });
 
-  await prisma.postHashtag.createMany({
-    data: hashtags.map((h) => ({ postId, hashtagId: h.id })),
+  await prisma.updateHashtag.createMany({
+    data: hashtags.map((h) => ({ updateId, hashtagId: h.id })),
     skipDuplicates: true,
   });
 }
 
-export async function replaceHashtags(postId: string, tags: string[]) {
-  await prisma.postHashtag.deleteMany({ where: { postId } });
+export async function replaceHashtags(updateId: string, tags: string[]) {
+  await prisma.updateHashtag.deleteMany({ where: { updateId } });
   if (tags.length > 0) {
-    await associateHashtags(postId, tags);
+    await associateHashtags(updateId, tags);
   }
 }
 
-export async function getPostsByHashtag(tag: string, cursor?: string, limit = 20) {
+export async function getUpdatesByHashtag(tag: string, cursor?: string, limit = 20) {
   const hashtag = await prisma.hashtag.findUnique({ where: { tag: tag.toLowerCase() } });
   if (!hashtag) {
     return { items: [], nextCursor: null };
   }
 
-  const postHashtags = await prisma.postHashtag.findMany({
+  const updateHashtags = await prisma.updateHashtag.findMany({
     take: limit + 1,
     ...(cursor ? { skip: 1, cursor: { id: cursor } } : {}),
     where: { hashtagId: hashtag.id },
     orderBy: { createdAt: "desc" },
     include: {
-      post: {
+      update: {
         include: {
           author: {
             select: { id: true, username: true, fullName: true, avatar: true },
@@ -56,21 +56,21 @@ export async function getPostsByHashtag(tag: string, cursor?: string, limit = 20
     },
   });
 
-  const hasMore = postHashtags.length > limit;
-  if (hasMore) postHashtags.pop();
+  const hasMore = updateHashtags.length > limit;
+  if (hasMore) updateHashtags.pop();
 
   return {
-    items: postHashtags.map((ph) => ph.post),
-    nextCursor: hasMore ? postHashtags[postHashtags.length - 1]?.id ?? null : null,
+    items: updateHashtags.map((uh) => uh.update),
+    nextCursor: hasMore ? updateHashtags[updateHashtags.length - 1]?.id ?? null : null,
   };
 }
 
 export async function getTrendingHashtags(limit = 10) {
   const hashtags = await prisma.hashtag.findMany({
     take: limit,
-    orderBy: { posts: { _count: "desc" } },
-    include: { _count: { select: { posts: true } } },
+    orderBy: { updates: { _count: "desc" } },
+    include: { _count: { select: { updates: true } } },
   });
 
-  return hashtags.map((h) => ({ tag: h.tag, count: h._count.posts }));
+  return hashtags.map((h) => ({ tag: h.tag, count: h._count.updates }));
 }

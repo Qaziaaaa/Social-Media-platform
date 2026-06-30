@@ -10,19 +10,19 @@ import { queryKeys } from "@/lib/query-keys";
 import type { ApiResponse, PaginatedResponse, Comment } from "@/types";
 
 interface CommentSectionProps {
-  postId: string;
+  updateId: string;
 }
 
 function CommentItem({
   comment,
-  postId,
+  updateId,
   onReply,
   currentUserId,
   onLike,
   onDelete,
 }: {
   comment: Comment;
-  postId: string;
+  updateId: string;
   currentUserId?: string;
   onReply: (id: string, username: string) => void;
   onLike: (commentId: string, isLiked: boolean) => void;
@@ -73,7 +73,7 @@ function CommentItem({
               <CommentItem
                 key={reply.id}
                 comment={reply}
-                postId={postId}
+                updateId={updateId}
                 currentUserId={currentUserId}
                 onReply={onReply}
                 onLike={onLike}
@@ -87,17 +87,17 @@ function CommentItem({
   );
 }
 
-export function CommentSection({ postId }: CommentSectionProps) {
+export function CommentSection({ updateId }: CommentSectionProps) {
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const [content, setContent] = useState("");
   const [replyTo, setReplyTo] = useState<{ id: string; username: string } | null>(null);
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: queryKeys.posts.comments(postId),
+    queryKey: queryKeys.updates.comments(updateId),
     queryFn: async () => {
       const { data } = await api.get<ApiResponse<PaginatedResponse<Comment>>>(
-        `/posts/${postId}/comments`,
+        `/updates/${updateId}/comments`,
       );
       return data.data;
     },
@@ -112,7 +112,7 @@ export function CommentSection({ postId }: CommentSectionProps) {
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.posts.comments(postId) });
+      queryClient.invalidateQueries({ queryKey: queryKeys.updates.comments(updateId) });
     },
     onError: () => {
       toast.error("Failed to update like");
@@ -124,8 +124,8 @@ export function CommentSection({ postId }: CommentSectionProps) {
       await api.delete(`/comments/${commentId}`);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.posts.comments(postId) });
-      queryClient.invalidateQueries({ queryKey: queryKeys.posts.detail(postId) });
+      queryClient.invalidateQueries({ queryKey: queryKeys.updates.comments(updateId) });
+      queryClient.invalidateQueries({ queryKey: queryKeys.updates.detail(updateId) });
       toast.success("Comment deleted");
     },
     onError: () => {
@@ -135,7 +135,7 @@ export function CommentSection({ postId }: CommentSectionProps) {
 
   const createMutation = useMutation({
     mutationFn: async ({ body, parentId }: { body: string; parentId?: string }) => {
-      const { data } = await api.post<ApiResponse<Comment>>(`/posts/${postId}/comments`, {
+      const { data } = await api.post<ApiResponse<Comment>>(`/updates/${updateId}/comments`, {
         content: body,
         parentId,
       });
@@ -144,9 +144,9 @@ export function CommentSection({ postId }: CommentSectionProps) {
     onSuccess: () => {
       setContent("");
       setReplyTo(null);
-      queryClient.invalidateQueries({ queryKey: queryKeys.posts.comments(postId) });
-      queryClient.invalidateQueries({ queryKey: queryKeys.posts.detail(postId) });
-      queryClient.invalidateQueries({ queryKey: queryKeys.posts.feed() });
+      queryClient.invalidateQueries({ queryKey: queryKeys.updates.comments(updateId) });
+      queryClient.invalidateQueries({ queryKey: queryKeys.updates.detail(updateId) });
+      queryClient.invalidateQueries({ queryKey: queryKeys.updates.feed() });
       toast.success("Comment added");
     },
     onError: () => {
@@ -231,7 +231,7 @@ export function CommentSection({ postId }: CommentSectionProps) {
         <CommentItem
           key={comment.id}
           comment={comment}
-          postId={postId}
+          updateId={updateId}
           currentUserId={user?.id}
           onReply={(id, username) => setReplyTo({ id, username })}
           onLike={(commentId, isLiked) => likeMutation.mutate({ commentId, isLiked })}

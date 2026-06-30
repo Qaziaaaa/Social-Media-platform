@@ -3,12 +3,12 @@ import * as bookmarkService from "./bookmark.service";
 import { success } from "../../types/responses";
 
 export async function bookmark(req: Request, res: Response) {
-  const result = await bookmarkService.bookmarkPost(req.params.postId as string, req.user!.userId);
+  const result = await bookmarkService.bookmarkUpdate(req.params.updateId as string, req.user!.userId);
   res.json(success(result));
 }
 
 export async function unbookmark(req: Request, res: Response) {
-  const result = await bookmarkService.unbookmarkPost(req.params.postId as string, req.user!.userId);
+  const result = await bookmarkService.unbookmarkUpdate(req.params.updateId as string, req.user!.userId);
   res.json(success(result));
 }
 

@@ -18,7 +18,7 @@ export async function likeComment(commentId: string, userId: string) {
     userId: comment.authorId,
     actorId: userId,
     type: "comment_like",
-    entityId: comment.postId,
+    entityId: comment.updateId,
   });
 
   return { liked: true };

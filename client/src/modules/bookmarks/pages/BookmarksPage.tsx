@@ -1,10 +1,10 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/Button";
 import { Skeleton } from "@/components/ui/Skeleton";
-import { PostCard } from "@/modules/posts/components/PostCard";
+import { UpdateCard } from "@/modules/updates/components/UpdateCard";
 import api from "@/services/api";
 import { queryKeys } from "@/lib/query-keys";
-import type { ApiResponse, Post, PaginatedResponse } from "@/types";
+import type { ApiResponse, Update, PaginatedResponse } from "@/types";
 
 export function BookmarksPage() {
   const {
@@ -19,14 +19,14 @@ export function BookmarksPage() {
       const params = new URLSearchParams();
       if (pageParam) params.set("cursor", pageParam);
       params.set("limit", "10");
-      const { data } = await api.get<ApiResponse<PaginatedResponse<Post>>>(`/bookmarks?${params}`);
+      const { data } = await api.get<ApiResponse<PaginatedResponse<Update>>>(`/bookmarks?${params}`);
       return data.data;
     },
     initialPageParam: undefined as string | undefined,
     getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
   });
 
-  const posts = data?.pages.flatMap((p) => p.items) ?? [];
+  const updates = data?.pages.flatMap((p) => p.items) ?? [];
 
   return (
     <div className="flex flex-col gap-lg animate-fade-in">
@@ -37,14 +37,14 @@ export function BookmarksPage() {
           <Skeleton className="h-32 w-full rounded-xl" />
           <Skeleton className="h-32 w-full rounded-xl" />
         </div>
-      ) : posts.length === 0 ? (
+      ) : updates.length === 0 ? (
         <div className="bg-surface rounded-xl p-lg text-center ambient-shadow border border-surface-container-high">
           <p className="text-on-surface-variant">No bookmarks yet. Save posts to read later.</p>
         </div>
       ) : (
         <div className="flex flex-col gap-md">
-          {posts.map((post) => (
-            <PostCard key={post.id} post={post} />
+          {updates.map((update) => (
+            <UpdateCard key={update.id} update={update} />
           ))}
           {hasNextPage && (
             <div className="flex justify-center py-4">

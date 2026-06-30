@@ -45,8 +45,8 @@ export async function updateReportStatus(reportId: string, status: string) {
   if (!report) throw new AppError(404, "Report not found");
 
   if (status === "resolved") {
-    if (report.targetType === "post") {
-      await prisma.post.deleteMany({ where: { id: report.targetId } });
+    if (report.targetType === "update") {
+      await prisma.update.deleteMany({ where: { id: report.targetId } });
     } else if (report.targetType === "comment") {
       await prisma.comment.deleteMany({ where: { id: report.targetId } });
     } else if (report.targetType === "user") {

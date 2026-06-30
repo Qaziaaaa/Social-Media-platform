@@ -14,7 +14,7 @@ const userSelect = {
   createdAt: true,
   updatedAt: true,
   _count: {
-    select: { posts: true, followers: true, following: true },
+    select: { updates: true, followers: true, following: true },
   },
 };
 
@@ -90,7 +90,7 @@ export async function listUsers(cursor?: string, limit = 20) {
   };
 }
 
-const postInclude = {
+const updateInclude = {
   author: {
     select: { id: true, username: true, fullName: true, avatar: true },
   },
@@ -112,7 +112,7 @@ export async function getSuggestedUsers(currentUserId: string, limit = 5) {
   });
 }
 
-export async function getUserPosts(userId: string, cursor?: string, limit = 20) {
+export async function getUserUpdates(userId: string, cursor?: string, limit = 20) {
   const user = await prisma.user.findUnique({ where: { id: userId } });
   if (!user) {
     throw new AppError(404, "User not found");
@@ -122,24 +122,24 @@ export async function getUserPosts(userId: string, cursor?: string, limit = 20) 
     return { items: [], nextCursor: null };
   }
 
-  const posts = await prisma.post.findMany({
+  const updates = await prisma.update.findMany({
     take: limit + 1,
     ...(cursor ? { skip: 1, cursor: { id: cursor } } : {}),
     where: { authorId: userId },
     orderBy: { createdAt: "desc" },
-    include: postInclude,
+    include: updateInclude,
   });
 
-  const hasMore = posts.length > limit;
-  if (hasMore) posts.pop();
+  const hasMore = updates.length > limit;
+  if (hasMore) updates.pop();
 
   return {
-    items: posts,
-    nextCursor: hasMore ? posts[posts.length - 1]?.id ?? null : null,
+    items: updates,
+    nextCursor: hasMore ? updates[updates.length - 1]?.id ?? null : null,
   };
 }
 
-export async function getUserLikedPosts(userId: string, cursor?: string, limit = 20) {
+export async function getUserLikedUpdates(userId: string, cursor?: string, limit = 20) {
   const user = await prisma.user.findUnique({ where: { id: userId } });
   if (!user) {
     throw new AppError(404, "User not found");
@@ -150,37 +150,37 @@ export async function getUserLikedPosts(userId: string, cursor?: string, limit =
     ...(cursor ? { skip: 1, cursor: { id: cursor } } : {}),
     where: { userId },
     orderBy: { id: "desc" },
-    include: { post: { include: postInclude } },
+    include: { update: { include: updateInclude } },
   });
 
   const hasMore = likes.length > limit;
   if (hasMore) likes.pop();
 
   return {
-    items: likes.map((l) => ({ ...l.post, isLiked: true })),
+    items: likes.map((l) => ({ ...l.update, isLiked: true })),
     nextCursor: hasMore ? likes[likes.length - 1]?.id ?? null : null,
   };
 }
 
-export async function getUserMediaPosts(userId: string, cursor?: string, limit = 20) {
+export async function getUserMediaUpdates(userId: string, cursor?: string, limit = 20) {
   const user = await prisma.user.findUnique({ where: { id: userId } });
   if (!user) {
     throw new AppError(404, "User not found");
   }
 
-  const posts = await prisma.post.findMany({
+  const updates = await prisma.update.findMany({
     take: limit + 1,
     ...(cursor ? { skip: 1, cursor: { id: cursor } } : {}),
     where: { authorId: userId, imageUrl: { not: null } },
     orderBy: { createdAt: "desc" },
-    include: postInclude,
+    include: updateInclude,
   });
 
-  const hasMore = posts.length > limit;
-  if (hasMore) posts.pop();
+  const hasMore = updates.length > limit;
+  if (hasMore) updates.pop();
 
   return {
-    items: posts,
-    nextCursor: hasMore ? posts[posts.length - 1]?.id ?? null : null,
+    items: updates,
+    nextCursor: hasMore ? updates[updates.length - 1]?.id ?? null : null,
   };
 }

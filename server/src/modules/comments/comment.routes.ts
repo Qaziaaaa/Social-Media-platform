@@ -6,8 +6,8 @@ import * as commentLikeController from "./comment-like.controller";
 
 const router = Router();
 
-router.get("/posts/:postId/comments", optionalAuth, asyncHandler(commentController.list));
-router.post("/posts/:postId/comments", authenticate, asyncHandler(commentController.create));
+router.get("/updates/:updateId/comments", optionalAuth, asyncHandler(commentController.list));
+router.post("/updates/:updateId/comments", authenticate, asyncHandler(commentController.create));
 router.delete("/comments/:id", authenticate, asyncHandler(commentController.remove));
 router.post("/comments/:id/like", authenticate, asyncHandler(commentLikeController.like));
 router.delete("/comments/:id/like", authenticate, asyncHandler(commentLikeController.unlike));

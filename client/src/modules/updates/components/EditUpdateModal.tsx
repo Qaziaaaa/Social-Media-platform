@@ -4,16 +4,16 @@ import toast from "react-hot-toast";
 import { Button } from "@/components/ui/Button";
 import api from "@/services/api";
 import { queryKeys } from "@/lib/query-keys";
-import type { ApiResponse, Post } from "@/types";
+import type { ApiResponse, Update } from "@/types";
 
-interface EditPostModalProps {
-  post: Post;
+interface EditUpdateModalProps {
+  update: Update;
   onClose: () => void;
 }
 
-export function EditPostModal({ post, onClose }: EditPostModalProps) {
+export function EditUpdateModal({ update, onClose }: EditUpdateModalProps) {
   const queryClient = useQueryClient();
-  const [content, setContent] = useState(post.content);
+  const [content, setContent] = useState(update.content);
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -29,7 +29,7 @@ export function EditPostModal({ post, onClose }: EditPostModalProps) {
 
   const mutation = useMutation({
     mutationFn: async () => {
-      let imageUrl = post.imageUrl ?? undefined;
+      let imageUrl = update.imageUrl ?? undefined;
 
       if (file) {
         const formData = new FormData();
@@ -40,17 +40,17 @@ export function EditPostModal({ post, onClose }: EditPostModalProps) {
         imageUrl = uploadRes.data.url;
       }
 
-      const { data } = await api.patch<ApiResponse<Post>>(`/posts/${post.id}`, { content, imageUrl });
+      const { data } = await api.patch<ApiResponse<Update>>(`/updates/${update.id}`, { content, imageUrl });
       return data.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.posts.feed() });
-      queryClient.invalidateQueries({ queryKey: queryKeys.posts.detail(post.id) });
-      toast.success("Post updated");
+      queryClient.invalidateQueries({ queryKey: queryKeys.updates.feed() });
+      queryClient.invalidateQueries({ queryKey: queryKeys.updates.detail(update.id) });
+      toast.success("Update updated");
       onClose();
     },
     onError: () => {
-      toast.error("Failed to update post");
+      toast.error("Failed to update update");
     },
   });
 
@@ -73,7 +73,7 @@ export function EditPostModal({ post, onClose }: EditPostModalProps) {
     >
       <div className="bg-surface rounded-xl p-lg ambient-shadow border border-surface-container-high w-full max-w-lg animate-scale-in">
         <div className="flex justify-between items-center mb-lg">
-          <h2 className="font-headline-md text-headline-md text-on-surface">Edit post</h2>
+          <h2 className="font-headline-md text-headline-md text-on-surface">Edit update</h2>
           <button
             onClick={onClose}
             className="text-on-surface-variant hover:text-on-surface p-xs rounded-full hover:bg-surface-container-low transition-colors"
@@ -90,10 +90,10 @@ export function EditPostModal({ post, onClose }: EditPostModalProps) {
           className="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-md py-sm font-body-md text-body-md text-on-surface focus:border-primary focus:ring-2 focus:ring-inverse-primary outline-none transition-all resize-none placeholder:text-on-surface-variant mb-md"
         />
 
-        {(preview || post.imageUrl) && (
+        {(preview || update.imageUrl) && (
           <div className="relative rounded-xl overflow-hidden border border-surface-container-high mb-md">
             <img
-              src={preview ?? post.imageUrl!}
+              src={preview ?? update.imageUrl!}
               alt="Preview"
               className="max-h-48 w-full object-cover"
             />

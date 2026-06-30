@@ -20,7 +20,7 @@ function NotificationItem({ n }: { n: Notification }) {
 
   return (
     <Link
-      to={n.entityId ? `/posts/${n.entityId}` : `/profile/${n.actorId}`}
+      to={n.entityId ? `/updates/${n.entityId}` : `/profile/${n.actorId}`}
       className={`flex items-center gap-md p-md rounded-xl transition-colors hover:bg-surface-container-low ${
         n.read ? "" : "bg-primary-container/10"
       }`}

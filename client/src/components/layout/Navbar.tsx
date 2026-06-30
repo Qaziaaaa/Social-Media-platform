@@ -153,7 +153,7 @@ export function Navbar() {
               to="/"
               className="w-full bg-primary text-on-primary font-label-md text-label-md py-sm rounded-full hover:bg-on-primary-fixed-variant transition-colors shadow-sm text-center block"
             >
-              Create Post
+              Create Update
             </Link>
             <button
               onClick={() => logout()}

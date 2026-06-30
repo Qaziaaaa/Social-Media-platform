@@ -1,19 +1,19 @@
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { PostCard } from "@/modules/posts/components/PostCard";
-import { CommentSection } from "@/modules/posts/components/CommentSection";
+import { UpdateCard } from "@/modules/updates/components/UpdateCard";
+import { CommentSection } from "@/modules/updates/components/CommentSection";
 import { Skeleton } from "@/components/ui/Skeleton";
 import api from "@/services/api";
 import { queryKeys } from "@/lib/query-keys";
-import type { ApiResponse, Post } from "@/types";
+import type { ApiResponse, Update } from "@/types";
 
-export function PostDetailPage() {
+export function UpdateDetailPage() {
   const { id } = useParams<{ id: string }>();
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: queryKeys.posts.detail(id!),
+    queryKey: queryKeys.updates.detail(id!),
     queryFn: async () => {
-      const { data } = await api.get<ApiResponse<Post>>(`/posts/${id}`);
+      const { data } = await api.get<ApiResponse<Update>>(`/updates/${id}`);
       return data.data;
     },
     enabled: !!id,
@@ -31,15 +31,15 @@ export function PostDetailPage() {
   if (isError || !data) {
     return (
       <div className="bg-surface rounded-xl p-lg ambient-shadow border border-surface-container-high text-center">
-        <p className="text-on-surface-variant">Post not found</p>
+        <p className="text-on-surface-variant">Update not found</p>
       </div>
     );
   }
 
   return (
     <div className="flex flex-col gap-lg animate-fade-in">
-      <PostCard post={data} />
-      <CommentSection postId={data.id} />
+      <UpdateCard update={data} />
+      <CommentSection updateId={data.id} />
     </div>
   );
 }

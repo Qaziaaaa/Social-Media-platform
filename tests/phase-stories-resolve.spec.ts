@@ -74,20 +74,20 @@ test.describe("Stories", () => {
 // ── Auto-resolve Reports ─────────────────────────────────
 
 test.describe("Auto-resolve reports", () => {
-  test("Admin resolves post report → post is deleted", async ({ browser }) => {
-    // ── Login as Alice and create a post ──
+  test("Admin resolves report → update is deleted", async ({ browser }) => {
+    // ── Login as Alice and create an update ──
     const aliceCtx = await browser.newPage();
     await login(aliceCtx, ALICE);
 
-    const postRes = await api(aliceCtx, "POST", "/posts", {
-      content: "Post to be reported and auto-deleted",
+    const updateRes = await api(aliceCtx, "POST", "/updates", {
+      content: "Update to be reported and auto-deleted",
     });
-    const postId = postRes.data.id;
+    const updateId = updateRes.data.id;
 
-    // ── Report Alice's own post ──
+    // ── Report Alice's own update ──
     await api(aliceCtx, "POST", "/reports", {
-      targetType: "post",
-      targetId: postId,
+      targetType: "update",
+      targetId: updateId,
       reason: "Test auto-resolve",
     });
 
@@ -97,7 +97,7 @@ test.describe("Auto-resolve reports", () => {
 
     // List reports and get the matching report ID
     const reportsRes = await api(adminCtx, "GET", "/admin/reports");
-    const report = reportsRes.data.find((r) => r.targetId === postId);
+    const report = reportsRes.data.find((r) => r.targetId === updateId);
     expect(report).toBeDefined();
 
     // Resolve via API
@@ -106,8 +106,8 @@ test.describe("Auto-resolve reports", () => {
     });
     expect(resolveRes.success).toBe(true);
 
-    // ── Verify post returns 404 ──
-    const getRes = await api(adminCtx, "GET", `/posts/${postId}`);
+    // ── Verify update returns 404 ──
+    const getRes = await api(adminCtx, "GET", `/updates/${updateId}`);
     expect(getRes.success).toBe(false);
 
     await aliceCtx.close();
@@ -151,10 +151,10 @@ test.describe("Auto-resolve reports", () => {
     const userRes = await api(adminCtx, "GET", `/users/${aliceId}`);
     expect(userRes.data.suspended).toBe(true);
 
-    // ── Verify Alice's posts don't show in the feed ──
-    const feedRes = await api(adminCtx, "GET", "/posts?limit=20");
-    const alicePosts = feedRes.data.items.filter((p) => p.authorId === aliceId);
-    expect(alicePosts.length).toBe(0);
+    // ── Verify Alice's updates don't show in the feed ──
+    const feedRes = await api(adminCtx, "GET", "/updates?limit=20");
+    const aliceUpdates = feedRes.data.items.filter((p) => p.authorId === aliceId);
+    expect(aliceUpdates.length).toBe(0);
 
     await adminCtx.close();
   });

@@ -6,8 +6,8 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import api from "@/services/api";
 import { queryKeys } from "@/lib/query-keys";
-import { EditPostModal } from "@/modules/posts/components/EditPostModal";
-import type { ApiResponse, Post, Report } from "@/types";
+import { EditUpdateModal } from "@/modules/updates/components/EditUpdateModal";
+import type { ApiResponse, Update, Report } from "@/types";
 
 const HASHTAG_REGEX = /(#\w+)/g;
 
@@ -31,15 +31,15 @@ function renderContent(text: string) {
   });
 }
 
-interface PostCardProps {
-  post: Post;
+interface UpdateCardProps {
+  update: Update;
 }
 
-export function PostCard({ post }: PostCardProps) {
+export function UpdateCard({ update }: UpdateCardProps) {
   const { user } = useAuth();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const isOwner = user?.id === post.authorId;
+  const isOwner = user?.id === update.authorId;
   const [menuOpen, setMenuOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
   const [reportOpen, setReportOpen] = useState(false);
@@ -57,43 +57,29 @@ export function PostCard({ post }: PostCardProps) {
 
   const deleteMutation = useMutation({
     mutationFn: async () => {
-      await api.delete(`/posts/${post.id}`);
+      await api.delete(`/updates/${update.id}`);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.posts.feed() });
-      toast.success("Post deleted");
+      queryClient.invalidateQueries({ queryKey: queryKeys.updates.feed() });
+      toast.success("Update deleted");
     },
     onError: () => {
-      toast.error("Failed to delete post");
-    },
-  });
-
-  const repostMutation = useMutation({
-    mutationFn: async () => {
-      const { data } = await api.post<ApiResponse<Post>>(`/posts/${post.id}/repost`);
-      return data.data;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.posts.feed() });
-      toast.success("Reposted");
-    },
-    onError: () => {
-      toast.error("Failed to repost");
+      toast.error("Failed to delete update");
     },
   });
 
   const bookmarkMutation = useMutation({
     mutationFn: async () => {
-      if (post.isBookmarked) {
-        await api.delete(`/bookmarks/posts/${post.id}/bookmark`);
+      if (update.isBookmarked) {
+        await api.delete(`/bookmarks/updates/${update.id}/bookmark`);
       } else {
-        await api.post(`/bookmarks/posts/${post.id}/bookmark`);
+        await api.post(`/bookmarks/updates/${update.id}/bookmark`);
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.posts.feed() });
+      queryClient.invalidateQueries({ queryKey: queryKeys.updates.feed() });
       queryClient.invalidateQueries({ queryKey: queryKeys.bookmarks.all() });
-      toast.success(post.isBookmarked ? "Bookmark removed" : "Bookmarked");
+      toast.success(update.isBookmarked ? "Bookmark removed" : "Bookmarked");
     },
     onError: () => {
       toast.error("Failed to update bookmark");
@@ -105,8 +91,8 @@ export function PostCard({ post }: PostCardProps) {
   const reportMutation = useMutation({
     mutationFn: async () => {
       const { data } = await api.post<ApiResponse<Report>>("/reports", {
-        targetType: "post",
-        targetId: post.id,
+        targetType: "update",
+        targetId: update.id,
         reason: reportReason,
       });
       return data.data;
@@ -124,14 +110,14 @@ export function PostCard({ post }: PostCardProps) {
 
   const likeMutation = useMutation({
     mutationFn: async () => {
-      if (post.isLiked) {
-        await api.delete(`/posts/${post.id}/like`);
+      if (update.isLiked) {
+        await api.delete(`/updates/${update.id}/like`);
       } else {
-        await api.post(`/posts/${post.id}/like`);
+        await api.post(`/updates/${update.id}/like`);
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.posts.feed() });
+      queryClient.invalidateQueries({ queryKey: queryKeys.updates.feed() });
     },
     onError: () => {
       toast.error("Failed to update like");
@@ -143,14 +129,14 @@ export function PostCard({ post }: PostCardProps) {
       <article className="bg-surface rounded-xl p-lg ambient-shadow border border-surface-container-high animate-fade-in">
         <div className="flex justify-between items-start mb-md">
           <div className="flex gap-md items-center">
-            <Link to={`/profile/${post.author.id}`}>
-              <Avatar src={post.author.avatar} alt={post.author.fullName} />
+            <Link to={`/profile/${update.author.id}`}>
+              <Avatar src={update.author.avatar} alt={update.author.fullName} />
             </Link>
             <div>
-              <Link to={`/profile/${post.author.id}`} className="font-label-md text-label-md text-on-surface hover:text-primary transition-colors">
-                {post.author.fullName}
+              <Link to={`/profile/${update.author.id}`} className="font-label-md text-label-md text-on-surface hover:text-primary transition-colors">
+                {update.author.fullName}
               </Link>
-              <div className="font-body-sm text-body-sm text-on-surface-variant">@{post.author.username}</div>
+              <div className="font-body-sm text-body-sm text-on-surface-variant">@{update.author.username}</div>
             </div>
           </div>
           <div ref={menuRef} className="relative">
@@ -174,7 +160,7 @@ export function PostCard({ post }: PostCardProps) {
                     <button
                       onClick={() => {
                         setMenuOpen(false);
-                        if (confirm("Delete this post?")) deleteMutation.mutate();
+                        if (confirm("Delete this update?")) deleteMutation.mutate();
                       }}
                       className="w-full flex items-center gap-sm px-md py-sm text-label-md text-error hover:bg-surface-container-low transition-colors"
                     >
@@ -187,7 +173,7 @@ export function PostCard({ post }: PostCardProps) {
                     <button
                       onClick={() => {
                         setMenuOpen(false);
-                        navigate(`/messages?user=${post.authorId}`);
+                        navigate(`/messages?user=${update.authorId}`);
                       }}
                       className="w-full flex items-center gap-sm px-md py-sm text-label-md text-on-surface hover:bg-surface-container-low transition-colors"
                     >
@@ -208,25 +194,25 @@ export function PostCard({ post }: PostCardProps) {
           </div>
         </div>
 
-      {post.content && (
+      {update.content && (
         <div
-          onClick={() => navigate(`/posts/${post.id}`)}
+          onClick={() => navigate(`/updates/${update.id}`)}
           className="block mb-md cursor-pointer"
         >
           <p className="font-body-md text-body-md text-on-surface whitespace-pre-wrap leading-relaxed">
-            {renderContent(post.content)}
+            {renderContent(update.content)}
           </p>
         </div>
       )}
 
-      {post.imageUrl && (
+      {update.imageUrl && (
         <div
-          onClick={() => navigate(`/posts/${post.id}`)}
+          onClick={() => navigate(`/updates/${update.id}`)}
           className="rounded-lg overflow-hidden mb-md border border-surface-container-high cursor-pointer"
         >
           <img
-            src={post.imageUrl}
-            alt="Post image"
+            src={update.imageUrl}
+            alt="Update image"
             className="w-full h-auto object-cover max-h-[400px]"
           />
         </div>
@@ -236,41 +222,35 @@ export function PostCard({ post }: PostCardProps) {
         <button
           onClick={() => likeMutation.mutate()}
           className={`flex items-center gap-xs hover:text-primary hover:bg-surface-container-low px-sm py-xs rounded-full transition-colors group ${
-            post.isLiked ? "text-tertiary" : ""
+            update.isLiked ? "text-tertiary" : ""
           }`}
         >
-          <span className={`material-symbols-outlined group-hover:scale-110 transition-transform ${post.isLiked ? "text-tertiary" : ""}`} style={post.isLiked ? { fontVariationSettings: "'FILL' 1" } : undefined}>
+          <span className={`material-symbols-outlined group-hover:scale-110 transition-transform ${update.isLiked ? "text-tertiary" : ""}`} style={update.isLiked ? { fontVariationSettings: "'FILL' 1" } : undefined}>
             favorite
           </span>
-          <span className="font-label-sm text-label-sm">{post._count.likes}</span>
+          <span className="font-label-sm text-label-sm">{update._count.likes}</span>
         </button>
         <Link
-          to={`/posts/${post.id}`}
+          to={`/updates/${update.id}`}
           className="flex items-center gap-xs hover:text-primary hover:bg-surface-container-low px-sm py-xs rounded-full transition-colors group"
         >
           <span className="material-symbols-outlined group-hover:scale-110 transition-transform">chat_bubble</span>
-          <span className="font-label-sm text-label-sm">{post._count.comments}</span>
+          <span className="font-label-sm text-label-sm">{update._count.comments}</span>
         </Link>
-        <button
-          onClick={() => repostMutation.mutate()}
-          className="flex items-center gap-xs hover:text-primary hover:bg-surface-container-low px-sm py-xs rounded-full transition-colors group"
-        >
-          <span className="material-symbols-outlined group-hover:scale-110 transition-transform">repeat</span>
-        </button>
         <button
           onClick={() => bookmarkMutation.mutate()}
           className={`flex items-center gap-xs hover:text-primary hover:bg-surface-container-low px-sm py-xs rounded-full transition-colors group ${
-            post.isBookmarked ? "text-primary" : ""
+            update.isBookmarked ? "text-primary" : ""
           }`}
         >
-          <span className={`material-symbols-outlined group-hover:scale-110 transition-transform ${post.isBookmarked ? "text-primary" : ""}`} style={post.isBookmarked ? { fontVariationSettings: "'FILL' 1" } : undefined}>
+          <span className={`material-symbols-outlined group-hover:scale-110 transition-transform ${update.isBookmarked ? "text-primary" : ""}`} style={update.isBookmarked ? { fontVariationSettings: "'FILL' 1" } : undefined}>
             bookmark
           </span>
         </button>
       </div>
     </article>
 
-      {editOpen && <EditPostModal post={post} onClose={() => setEditOpen(false)} />}
+      {editOpen && <EditUpdateModal update={update} onClose={() => setEditOpen(false)} />}
 
       {reportOpen && (
         <div
@@ -281,7 +261,7 @@ export function PostCard({ post }: PostCardProps) {
             className="bg-surface rounded-xl p-lg shadow-xl border border-surface-container-high w-full max-w-md mx-4 animate-scale-up"
             onClick={(e) => e.stopPropagation()}
           >
-            <h3 className="font-headline-md text-headline-md font-bold text-on-surface mb-md">Report post</h3>
+            <h3 className="font-headline-md text-headline-md font-bold text-on-surface mb-md">Report update</h3>
             <div className="space-y-sm mb-lg">
               {["Spam","Harassment","Hate speech","Misinformation","Violence","Inappropriate content","Other"].map((r) => (
                 <label

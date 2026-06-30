@@ -1,6 +1,6 @@
 import { useAuth } from "@/modules/auth/hooks/useAuth";
-import { PostForm } from "@/modules/posts/components/PostForm";
-import { PostList } from "@/modules/feed/components/PostList";
+import { UpdateForm } from "@/modules/updates/components/UpdateForm";
+import { UpdateList } from "@/modules/feed/components/UpdateList";
 import { StoryRing } from "@/modules/stories/components/StoryRing";
 
 export function FeedPage() {
@@ -9,8 +9,8 @@ export function FeedPage() {
   return (
     <div className="flex flex-col gap-lg animate-fade-in">
       {isAuthenticated && <StoryRing />}
-      {isAuthenticated && <PostForm />}
-      <PostList />
+      {isAuthenticated && <UpdateForm />}
+      <UpdateList />
     </div>
   );
 }

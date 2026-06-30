@@ -4,12 +4,12 @@ export const queryKeys = {
   },
   users: {
     detail: (id: string) => ["users", id] as const,
-    posts: (id: string) => ["users", id, "posts"] as const,
+    updates: (id: string) => ["users", id, "updates"] as const,
   },
-  posts: {
-    feed: () => ["posts", "feed"] as const,
-    detail: (id: string) => ["posts", id] as const,
-    comments: (id: string) => ["posts", id, "comments"] as const,
+  updates: {
+    feed: () => ["updates", "feed"] as const,
+    detail: (id: string) => ["updates", id] as const,
+    comments: (id: string) => ["updates", id, "comments"] as const,
   },
   search: {
     all: (q: string) => ["search", q] as const,

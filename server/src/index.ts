@@ -10,7 +10,7 @@ import { errorHandler } from "./middleware/errorHandler";
 import { setupSocket } from "./socket";
 import authRoutes from "./modules/auth/auth.routes";
 import userRoutes from "./modules/users/user.routes";
-import postRoutes from "./modules/posts/post.routes";
+import updateRoutes from "./modules/updates/update.routes";
 import commentRoutes from "./modules/comments/comment.routes";
 import likeRoutes from "./modules/likes/like.routes";
 import followRoutes from "./modules/follows/follow.routes";
@@ -55,7 +55,7 @@ app.get("/api/health", (_req, res) => {
 
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
-app.use("/api/posts", postRoutes);
+app.use("/api/updates", updateRoutes);
 app.use("/api", commentRoutes);
 app.use("/api", likeRoutes);
 app.use("/api", followRoutes);

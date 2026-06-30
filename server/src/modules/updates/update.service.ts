@@ -4,37 +4,37 @@ import { sanitizeHtml } from "../../utils/sanitize";
 import { parseHashtags } from "../../utils/hashtags";
 import { associateHashtags, replaceHashtags } from "../hashtags/hashtag.service";
 
-const postInclude = {
+const updateInclude = {
   author: {
     select: { id: true, username: true, fullName: true, avatar: true },
   },
   _count: { select: { comments: true, likes: true } },
 };
 
-export async function createPost(authorId: string, content: string, imageUrl?: string) {
+export async function createUpdate(authorId: string, content: string, imageUrl?: string) {
   const sanitized = sanitizeHtml(content);
-  const post = await prisma.post.create({
+  const update = await prisma.update.create({
     data: {
       authorId,
       content: sanitized,
       imageUrl,
     },
-    include: postInclude,
+    include: updateInclude,
   });
 
   const tags = parseHashtags(sanitized);
   if (tags.length > 0) {
-    await associateHashtags(post.id, tags);
+    await associateHashtags(update.id, tags);
   }
 
-  return post;
+  return update;
 }
 
-export async function getPostById(id: string, currentUserId?: string) {
-  const post = await prisma.post.findUnique({
+export async function getUpdateById(id: string, currentUserId?: string) {
+  const update = await prisma.update.findUnique({
     where: { id },
     include: {
-      ...postInclude,
+      ...updateInclude,
       likes: currentUserId
         ? { where: { userId: currentUserId }, take: 1 }
         : false,
@@ -44,11 +44,11 @@ export async function getPostById(id: string, currentUserId?: string) {
     },
   });
 
-  if (!post) {
-    throw new AppError(404, "Post not found");
+  if (!update) {
+    throw new AppError(404, "Update not found");
   }
 
-  const { likes, bookmarks, ...rest } = post;
+  const { likes, bookmarks, ...rest } = update;
   return {
     ...rest,
     isLiked: Array.isArray(likes) ? likes.length > 0 : false,
@@ -56,10 +56,10 @@ export async function getPostById(id: string, currentUserId?: string) {
   };
 }
 
-export async function updatePost(postId: string, userId: string, data: { content?: string; imageUrl?: string }) {
-  const post = await prisma.post.findUnique({ where: { id: postId } });
-  if (!post) throw new AppError(404, "Post not found");
-  if (post.authorId !== userId) throw new AppError(403, "Cannot edit another user's post");
+export async function updateUpdate(updateId: string, userId: string, data: { content?: string; imageUrl?: string }) {
+  const update = await prisma.update.findUnique({ where: { id: updateId } });
+  if (!update) throw new AppError(404, "Update not found");
+  if (update.authorId !== userId) throw new AppError(403, "Cannot edit another user's update");
 
   const updateData: Record<string, string> = {};
   if (data.content) {
@@ -70,45 +70,30 @@ export async function updatePost(postId: string, userId: string, data: { content
     updateData.imageUrl = data.imageUrl;
   }
 
-  const updated = await prisma.post.update({
-    where: { id: postId },
+  const updated = await prisma.update.update({
+    where: { id: updateId },
     data: updateData,
-    include: postInclude,
+    include: updateInclude,
   });
 
   if (data.content) {
     const tags = parseHashtags(updateData.content!);
-    await replaceHashtags(postId, tags);
+    await replaceHashtags(updateId, tags);
   }
 
   return updated;
 }
 
-export async function repostPost(postId: string, userId: string) {
-  const original = await prisma.post.findUnique({ where: { id: postId } });
-  if (!original) throw new AppError(404, "Post not found");
+export async function deleteUpdate(updateId: string, userId: string) {
+  const update = await prisma.update.findUnique({ where: { id: updateId } });
+  if (!update) throw new AppError(404, "Update not found");
+  if (update.authorId !== userId) throw new AppError(403, "Cannot delete another user's update");
 
-  return prisma.post.create({
-    data: {
-      authorId: userId,
-      content: original.content,
-      imageUrl: original.imageUrl,
-      originalPostId: original.id,
-    },
-    include: postInclude,
-  });
-}
-
-export async function deletePost(postId: string, userId: string) {
-  const post = await prisma.post.findUnique({ where: { id: postId } });
-  if (!post) throw new AppError(404, "Post not found");
-  if (post.authorId !== userId) throw new AppError(403, "Cannot delete another user's post");
-
-  await prisma.post.delete({ where: { id: postId } });
+  await prisma.update.delete({ where: { id: updateId } });
 }
 
 export async function getFeed(cursor?: string, limit = 20, currentUserId?: string) {
-  const posts = await prisma.post.findMany({
+  const updates = await prisma.update.findMany({
     take: limit + 1,
     ...(cursor ? { skip: 1, cursor: { id: cursor } } : {}),
     orderBy: { createdAt: "desc" },
@@ -127,10 +112,10 @@ export async function getFeed(cursor?: string, limit = 20, currentUserId?: strin
     },
   });
 
-  const hasMore = posts.length > limit;
-  if (hasMore) posts.pop();
+  const hasMore = updates.length > limit;
+  if (hasMore) updates.pop();
 
-  const items = posts.map(({ likes, bookmarks, ...rest }) => ({
+  const items = updates.map(({ likes, bookmarks, ...rest }) => ({
     ...rest,
     isLiked: Array.isArray(likes) ? likes.length > 0 : false,
     isBookmarked: Array.isArray(bookmarks) ? bookmarks.length > 0 : false,

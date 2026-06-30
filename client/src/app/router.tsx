@@ -8,7 +8,7 @@ import { ForgotPasswordPage } from "@/modules/auth/pages/ForgotPasswordPage";
 import { ResetPasswordPage } from "@/modules/auth/pages/ResetPasswordPage";
 import { ProfilePage } from "@/modules/profile/pages/ProfilePage";
 import { EditProfilePage } from "@/modules/profile/pages/EditProfilePage";
-import { PostDetailPage } from "@/modules/posts/pages/PostDetailPage";
+import { UpdateDetailPage } from "@/modules/updates/pages/UpdateDetailPage";
 import { ExplorePage } from "@/modules/search/pages/ExplorePage";
 import { BookmarksPage } from "@/modules/bookmarks/pages/BookmarksPage";
 import { NotificationsPage } from "@/modules/notifications/pages/NotificationsPage";
@@ -50,7 +50,7 @@ export function AppRouter() {
         <Route path="/notifications" element={<NotificationsPage />} />
         <Route path="/messages" element={<MessagesPage />} />
         <Route path="/messages/:id" element={<ConversationPage />} />
-        <Route path="/posts/:id" element={<PostDetailPage />} />
+        <Route path="/updates/:id" element={<UpdateDetailPage />} />
         <Route path="/admin/reports" element={<AdminReportsPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
