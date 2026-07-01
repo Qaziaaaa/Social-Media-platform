@@ -18,6 +18,9 @@ const editProfileSchema = z.object({
   username: z.string().min(3).max(30),
   fullName: z.string().min(1).max(100),
   bio: z.string().max(500).optional(),
+  skills: z.string().optional(),
+  website: z.string().url().max(200).or(z.literal("")).optional(),
+  location: z.string().max(100).optional(),
 });
 
 type EditProfileForm = z.infer<typeof editProfileSchema>;
@@ -49,6 +52,9 @@ export function EditProfilePage() {
       username: user?.username ?? "",
       fullName: user?.fullName ?? "",
       bio: user?.bio ?? "",
+      skills: user?.skills?.join(", ") ?? "",
+      website: user?.website ?? "",
+      location: user?.location ?? "",
     },
   });
 
@@ -63,7 +69,17 @@ export function EditProfilePage() {
 
   const mutation = useMutation({
     mutationFn: async (formData: EditProfileForm) => {
-      const payload: Record<string, string | undefined> = { ...formData };
+      const skills = formData.skills
+        ? formData.skills.split(",").map((s) => s.trim()).filter(Boolean)
+        : [];
+      const payload: Record<string, unknown> = {
+        username: formData.username,
+        fullName: formData.fullName,
+        bio: formData.bio || undefined,
+        skills,
+        website: formData.website || undefined,
+        location: formData.location || undefined,
+      };
       if (avatarFile) payload.avatar = await uploadImage(avatarFile);
       if (coverFile) payload.coverImage = await uploadImage(coverFile);
       const res = await api.patch<ApiResponse<User>>(`/users/${user?.id}`, payload);
@@ -180,6 +196,33 @@ export function EditProfilePage() {
             className="block w-full rounded-lg border border-outline-variant bg-surface-container-lowest px-3 py-2.5 text-body-md font-body-md text-on-surface placeholder:text-outline/60 shadow-sm transition-colors focus:border-primary focus:outline-none focus:ring-[3px] focus:ring-primary/10"
           />
           {errors.bio && <p className="text-sm text-error ml-xs">{errors.bio.message}</p>}
+        </div>
+
+        <Input
+          id="location"
+          label="Location"
+          placeholder="e.g. San Francisco, CA"
+          {...register("location")}
+          error={errors.location?.message}
+        />
+        <Input
+          id="website"
+          label="Website"
+          placeholder="https://example.com"
+          {...register("website")}
+          error={errors.website?.message}
+        />
+        <div className="space-y-1">
+          <label htmlFor="skills" className="font-label-md text-label-md text-on-surface ml-xs block">
+            Skills
+          </label>
+          <input
+            id="skills"
+            placeholder="React, TypeScript, UI Design (comma-separated)"
+            {...register("skills")}
+            className="block w-full rounded-lg border border-outline-variant bg-surface-container-lowest px-3 py-2.5 text-body-md font-body-md text-on-surface placeholder:text-outline/60 shadow-sm transition-colors focus:border-primary focus:outline-none focus:ring-[3px] focus:ring-primary/10"
+          />
+          {errors.skills && <p className="text-sm text-error ml-xs">{errors.skills.message}</p>}
         </div>
 
         <div className="flex gap-3">

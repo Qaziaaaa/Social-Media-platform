@@ -18,6 +18,9 @@ model User {
   coverImage   String?
   role            String    @default("user")
   suspended       Boolean   @default(false)
+  skills          String[]
+  website         String?
+  location        String?
   emailVerified   Boolean   @default(false)
   verificationToken String?
   resetToken      String?

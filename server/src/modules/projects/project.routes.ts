@@ -6,6 +6,7 @@ import * as projectController from "./project.controller";
 const router = Router();
 
 router.get("/", authenticate, asyncHandler(projectController.list));
+router.get("/user/:userId", asyncHandler(projectController.listByUser));
 router.get("/:id", asyncHandler(projectController.getById));
 router.post("/", authenticate, asyncHandler(projectController.create));
 router.patch("/:id", authenticate, asyncHandler(projectController.update));

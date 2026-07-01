@@ -9,8 +9,24 @@ import { UpdateCard } from "@/modules/updates/components/UpdateCard";
 import { useAuth } from "@/modules/auth/hooks/useAuth";
 import api from "@/services/api";
 import { queryKeys } from "@/lib/query-keys";
-import type { ApiResponse, User, Update, PaginatedResponse, Report } from "@/types";
+import type { ApiResponse, User, Update, PaginatedResponse, Report, Project } from "@/types";
 import { BlockButton } from "@/modules/blocks/components/BlockButton";
+
+const STATUS_COLORS: Record<string, string> = {
+  idea: "bg-purple-100 text-purple-700",
+  in_progress: "bg-blue-100 text-blue-700",
+  testing: "bg-amber-100 text-amber-700",
+  completed: "bg-emerald-100 text-emerald-700",
+  archived: "bg-surface-container-high text-on-surface-variant",
+};
+
+const STATUS_LABELS: Record<string, string> = {
+  idea: "Idea",
+  in_progress: "In Progress",
+  testing: "Testing",
+  completed: "Completed",
+  archived: "Archived",
+};
 
 type Tab = "updates" | "likes" | "media";
 
@@ -45,8 +61,7 @@ export function ProfilePage() {
   const followMutation = useMutation({
     mutationFn: async () => {
       if (data) {
-        const isFollowing = (data as any).isFollowing ?? false;
-        if (isFollowing) {
+        if (data.isFollowing) {
           await api.delete(`/users/${id}/follow`);
         } else {
           await api.post(`/users/${id}/follow`);
@@ -87,6 +102,15 @@ export function ProfilePage() {
     },
     initialPageParam: undefined as string | undefined,
     getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
+    enabled: !!id,
+  });
+
+  const { data: projects } = useQuery({
+    queryKey: ["projects", "user", id],
+    queryFn: async () => {
+      const { data } = await api.get<ApiResponse<Project[]>>(`/projects/user/${id}`);
+      return data.data;
+    },
     enabled: !!id,
   });
 
@@ -137,8 +161,8 @@ export function ProfilePage() {
     );
   }
 
-  const isFollowing = (data as any).isFollowing ?? false;
-  const isBlocked = (data as any).isBlocked ?? false;
+  const isFollowing = data.isFollowing ?? false;
+  const isBlocked = data.isBlocked ?? false;
   const updates = postsData?.pages.flatMap((p) => p.items) ?? [];
 
   const tabs: { key: Tab; label: string }[] = [
@@ -212,10 +236,45 @@ export function ProfilePage() {
             {data.bio && (
               <p className="font-body-md text-body-md text-on-surface mb-4 max-w-2xl">{data.bio}</p>
             )}
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mb-4">
+              {data.location && (
+                <span className="flex items-center gap-1 text-body-sm text-on-surface-variant">
+                  <span className="material-symbols-outlined text-[16px]">location_on</span>
+                  {data.location}
+                </span>
+              )}
+              {data.website && (
+                <a
+                  href={data.website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1 text-body-sm text-primary hover:underline"
+                >
+                  <span className="material-symbols-outlined text-[16px]">link</span>
+                  {data.website.replace(/^https?:\/\//, "")}
+                </a>
+              )}
+            </div>
+            {data.skills && data.skills.length > 0 && (
+              <div className="flex flex-wrap gap-1.5 mb-4">
+                {data.skills.map((skill) => (
+                  <span
+                    key={skill}
+                    className="bg-surface-container-high text-on-surface-variant text-[11px] font-medium px-2 py-0.5 rounded-full"
+                  >
+                    {skill}
+                  </span>
+                ))}
+              </div>
+            )}
             <div className="flex gap-6 border-t border-surface-container-high pt-4">
               <div className="flex gap-1 items-baseline">
                 <span className="font-label-md text-label-md text-on-surface">{data._count.updates}</span>
                 <span className="font-body-sm text-body-sm text-on-surface-variant">Updates</span>
+              </div>
+              <div className="flex gap-1 items-baseline">
+                <span className="font-label-md text-label-md text-on-surface">{data._count.projects}</span>
+                <span className="font-body-sm text-body-sm text-on-surface-variant">Projects</span>
               </div>
               <div className="flex gap-1 items-baseline">
                 <span className="font-label-md text-label-md text-on-surface">{data._count.followers}</span>
@@ -229,6 +288,44 @@ export function ProfilePage() {
           </div>
         </div>
       </section>
+
+      {projects && projects.length > 0 && (
+        <section className="bg-surface rounded-xl p-lg ambient-shadow border border-surface-container-high">
+          <div className="flex items-center justify-between mb-md">
+            <h2 className="font-label-lg text-label-lg text-on-surface font-semibold">Projects</h2>
+            {isOwnProfile && (
+              <Link to="/projects">
+                <Button variant="ghost" size="sm">Manage</Button>
+              </Link>
+            )}
+          </div>
+          <div className="flex flex-col gap-sm">
+            {projects.slice(0, 5).map((project) => (
+              <div
+                key={project.id}
+                className="flex items-center justify-between gap-sm p-sm rounded-lg hover:bg-surface-container-low transition-colors"
+              >
+                <div className="flex items-center gap-sm min-w-0">
+                  <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full shrink-0 ${STATUS_COLORS[project.status]}`}>
+                    {STATUS_LABELS[project.status]}
+                  </span>
+                  <span className="font-body-md text-body-md text-on-surface truncate">{project.name}</span>
+                  {project.description && (
+                    <span className="text-body-sm text-on-surface-variant truncate hidden sm:inline">
+                      — {project.description}
+                    </span>
+                  )}
+                </div>
+              </div>
+            ))}
+            {projects.length > 5 && (
+              <p className="text-body-sm text-on-surface-variant text-center pt-xs">
+                +{projects.length - 5} more projects
+              </p>
+            )}
+          </div>
+        </section>
+      )}
 
       <div className="flex border-b border-surface-container-high mb-2">
         {tabs.map((tab) => (

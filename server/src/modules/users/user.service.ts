@@ -9,12 +9,15 @@ const userSelect = {
   bio: true,
   avatar: true,
   coverImage: true,
+  skills: true,
+  website: true,
+  location: true,
   role: true,
   suspended: true,
   createdAt: true,
   updatedAt: true,
   _count: {
-    select: { updates: true, followers: true, following: true },
+    select: { updates: true, followers: true, following: true, projects: true },
   },
 };
 
@@ -51,6 +54,9 @@ export async function updateUser(id: string, data: {
   bio?: string;
   avatar?: string | null;
   coverImage?: string | null;
+  skills?: string[];
+  website?: string;
+  location?: string;
 }) {
   const user = await prisma.user.findUnique({ where: { id } });
   if (!user) {

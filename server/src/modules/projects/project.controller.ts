@@ -14,6 +14,11 @@ export async function list(req: Request, res: Response) {
   res.json(success(projects));
 }
 
+export async function listByUser(req: Request, res: Response) {
+  const projects = await projectService.getProjectsByUser(req.params.userId as string);
+  res.json(success(projects));
+}
+
 export async function getById(req: Request, res: Response) {
   const project = await projectService.getProjectById(req.params.id as string);
   res.json(success(project));

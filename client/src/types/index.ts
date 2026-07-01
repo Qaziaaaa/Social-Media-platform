@@ -6,12 +6,18 @@ export interface User {
   bio: string | null;
   avatar: string | null;
   coverImage: string | null;
+  skills: string[];
+  website: string | null;
+  location: string | null;
   role: string;
   suspended?: boolean;
+  isFollowing?: boolean;
+  isBlocked?: boolean;
   _count: {
     updates: number;
     followers: number;
     following: number;
+    projects: number;
   };
   createdAt: string;
   updatedAt: string;
