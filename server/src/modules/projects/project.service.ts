@@ -30,6 +30,7 @@ export async function getProjectsByUser(userId: string) {
   return prisma.project.findMany({
     where: { userId },
     orderBy: { updatedAt: "desc" },
+    include: { _count: { select: { milestones: true, updates: true } } },
   });
 }
 
@@ -40,6 +41,7 @@ export async function getProjectById(id: string) {
       user: {
         select: { id: true, username: true, fullName: true, avatar: true },
       },
+      _count: { select: { milestones: true, updates: true } },
     },
   });
 

@@ -16,6 +16,7 @@ import { MessagesPage } from "@/modules/messages/pages/MessagesPage";
 import { ConversationPage } from "@/modules/messages/pages/ConversationPage";
 import { AdminReportsPage } from "@/modules/admin/pages/AdminReportsPage";
 import { ProjectsPage } from "@/modules/projects/pages/ProjectsPage";
+import { ProjectDetailPage } from "@/modules/projects/pages/ProjectDetailPage";
 
 function NotFoundPage() {
   return (
@@ -43,6 +44,7 @@ export function AppRouter() {
       <Route element={<MainLayout />}>
         <Route path="/" element={<FeedPage />} />
         <Route path="/projects" element={<ProjectsPage />} />
+        <Route path="/projects/:id" element={<ProjectDetailPage />} />
         <Route path="/profile/:id" element={<ProfilePage />} />
         <Route path="/profile/:id/edit" element={<EditProfilePage />} />
         <Route path="/explore" element={<ExplorePage />} />

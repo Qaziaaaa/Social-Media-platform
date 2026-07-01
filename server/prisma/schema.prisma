@@ -253,13 +253,36 @@ model Project {
   visibility  ProjectVisibility  @default(public)
   userId      String
   user        User               @relation(fields: [userId], references: [id], onDelete: Cascade)
-  updates    Update[]
+  updates     Update[]
+  milestones  Milestone[]
   createdAt   DateTime           @default(now())
   updatedAt   DateTime           @updatedAt
 
   @@index([userId])
   @@index([status])
   @@index([createdAt])
+}
+
+enum MilestoneStatus {
+  planned
+  in_progress
+  completed
+}
+
+model Milestone {
+  id          String          @id @default(uuid())
+  projectId   String
+  project     Project         @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  name        String
+  description String?
+  status      MilestoneStatus @default(planned)
+  dueDate     DateTime?
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  @@index([projectId])
+  @@index([status])
+  @@index([dueDate])
 }
 
 model Block {

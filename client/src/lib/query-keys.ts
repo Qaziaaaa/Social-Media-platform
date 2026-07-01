@@ -24,6 +24,9 @@ export const queryKeys = {
     following: () => ["stories", "following"] as const,
     user: (id: string) => ["stories", "user", id] as const,
   },
+  milestones: {
+    byProject: (projectId: string) => ["milestones", projectId] as const,
+  },
   blocks: {
     all: () => ["blocks"] as const,
     check: (id: string) => ["blocks", id] as const,

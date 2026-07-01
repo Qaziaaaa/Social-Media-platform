@@ -133,6 +133,21 @@ export interface Project {
   visibility: "public" | "private";
   userId: string;
   user?: Pick<User, "id" | "username" | "fullName" | "avatar">;
+  _count?: {
+    milestones: number;
+    updates: number;
+  };
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Milestone {
+  id: string;
+  projectId: string;
+  name: string;
+  description: string | null;
+  status: "planned" | "in_progress" | "completed";
+  dueDate: string | null;
   createdAt: string;
   updatedAt: string;
 }

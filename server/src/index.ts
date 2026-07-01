@@ -24,6 +24,7 @@ import reportRoutes from "./modules/reports/report.routes";
 import storyRoutes from "./modules/stories/story.routes";
 import blockRoutes from "./modules/blocks/block.routes";
 import projectRoutes from "./modules/projects/project.routes";
+import milestoneRoutes from "./modules/milestones/milestone.routes";
 
 const app = express();
 const httpServer = createServer(app);
@@ -69,6 +70,7 @@ app.use("/api", reportRoutes);
 app.use("/api/stories", storyRoutes);
 app.use("/api", blockRoutes);
 app.use("/api/projects", projectRoutes);
+app.use("/api/milestones", milestoneRoutes);
 
 app.use(errorHandler);
 
