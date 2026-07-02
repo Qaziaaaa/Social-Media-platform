@@ -31,7 +31,7 @@ async function api(page, method, url, body?) {
 
 test.describe("Stories", () => {
   test("Alice creates a story and views it in the viewer", async ({ browser }) => {
-    const ctx = await browser.newPage();
+    const ctx = await browser.newPage({ baseURL: "http://localhost:5173" });
     await login(ctx, ALICE);
     await ctx.goto("/");
 
@@ -76,7 +76,7 @@ test.describe("Stories", () => {
 test.describe("Auto-resolve reports", () => {
   test("Admin resolves report → update is deleted", async ({ browser }) => {
     // ── Login as Alice and create an update ──
-    const aliceCtx = await browser.newPage();
+    const aliceCtx = await browser.newPage({ baseURL: "http://localhost:5173" });
     await login(aliceCtx, ALICE);
 
     const updateRes = await api(aliceCtx, "POST", "/updates", {
@@ -92,7 +92,7 @@ test.describe("Auto-resolve reports", () => {
     });
 
     // ── Login as admin and resolve via API (more reliable than UI click) ──
-    const adminCtx = await browser.newPage();
+    const adminCtx = await browser.newPage({ baseURL: "http://localhost:5173" });
     await login(adminCtx, ADMIN);
 
     // List reports and get the matching report ID
@@ -116,7 +116,7 @@ test.describe("Auto-resolve reports", () => {
 
   test("Admin resolves user report → user suspended", async ({ browser }) => {
     // ── Login as admin ──
-    const adminCtx = await browser.newPage();
+    const adminCtx = await browser.newPage({ baseURL: "http://localhost:5173" });
     await login(adminCtx, ADMIN);
 
     // Get Alice's user ID via search

@@ -32,7 +32,7 @@ async function api(page, method, url, body?) {
 
 test.describe("Auth", () => {
   test("register a new user and login", async ({ browser }) => {
-    const ctx = await browser.newPage();
+    const ctx = await browser.newPage({ baseURL: "http://localhost:5173" });
     await ctx.goto("/register");
 
     const testEmail = `test_${Date.now()}@example.com`;
@@ -49,7 +49,7 @@ test.describe("Auth", () => {
   });
 
   test("login with valid credentials", async ({ browser }) => {
-    const ctx = await browser.newPage();
+    const ctx = await browser.newPage({ baseURL: "http://localhost:5173" });
     await login(ctx, BOB);
     await expect(ctx.getByRole("heading", { name: /feed/i })).toBeVisible({ timeout: 10000 }).catch(() => {});
     await ctx.close();
@@ -60,7 +60,7 @@ test.describe("Auth", () => {
 
 test.describe("Feed & Updates", () => {
   test("create an update and see it on the feed", async ({ browser }) => {
-    const ctx = await browser.newPage();
+    const ctx = await browser.newPage({ baseURL: "http://localhost:5173" });
     await login(ctx, BOB);
 
     await ctx.fill('textarea[placeholder*="What"]', "E2E test update " + Date.now());
@@ -72,7 +72,7 @@ test.describe("Feed & Updates", () => {
   });
 
   test("like and unlike an update", async ({ browser }) => {
-    const ctx = await browser.newPage();
+    const ctx = await browser.newPage({ baseURL: "http://localhost:5173" });
     await login(ctx, BOB);
 
     const likeBtn = ctx.locator('article button span.material-symbols-outlined:has-text("favorite")').first();
@@ -91,7 +91,7 @@ test.describe("Feed & Updates", () => {
   });
 
   test("comment on an update", async ({ browser }) => {
-    const ctx = await browser.newPage();
+    const ctx = await browser.newPage({ baseURL: "http://localhost:5173" });
     await login(ctx, BOB);
 
     // Click chat bubble to go to update detail
@@ -110,7 +110,7 @@ test.describe("Feed & Updates", () => {
   });
 
   test("bookmark and unbookmark an update", async ({ browser }) => {
-    const ctx = await browser.newPage();
+    const ctx = await browser.newPage({ baseURL: "http://localhost:5173" });
     await login(ctx, BOB);
 
     const bookmarkBtn = ctx.locator('article button span.material-symbols-outlined:has-text("bookmark")').first();
@@ -128,7 +128,7 @@ test.describe("Feed & Updates", () => {
 
 test.describe("Update Detail", () => {
   test("update detail page loads with like/bookmark state", async ({ browser }) => {
-    const ctx = await browser.newPage();
+    const ctx = await browser.newPage({ baseURL: "http://localhost:5173" });
     await login(ctx, BOB);
 
     // Create an update via API
@@ -153,7 +153,7 @@ test.describe("Update Detail", () => {
 
 test.describe("Profiles", () => {
   test("view a user profile", async ({ browser }) => {
-    const ctx = await browser.newPage();
+    const ctx = await browser.newPage({ baseURL: "http://localhost:5173" });
     await login(ctx, BOB);
 
     const avatarLink = ctx.locator('article a[href^="/profile/"]').first();
@@ -170,7 +170,7 @@ test.describe("Profiles", () => {
 
 test.describe("Follows", () => {
   test("follow and unfollow a user", async ({ browser }) => {
-    const ctx = await browser.newPage();
+    const ctx = await browser.newPage({ baseURL: "http://localhost:5173" });
     await login(ctx, BOB);
 
     // Search for Alice to get her profile
@@ -194,7 +194,7 @@ test.describe("Follows", () => {
 
 test.describe("Notifications", () => {
   test("notifications page loads", async ({ browser }) => {
-    const ctx = await browser.newPage();
+    const ctx = await browser.newPage({ baseURL: "http://localhost:5173" });
     await login(ctx, BOB);
     await ctx.goto("/notifications");
     await expect(ctx.getByRole("heading", { name: "Notifications" })).toBeVisible({ timeout: 10000 });
@@ -206,7 +206,7 @@ test.describe("Notifications", () => {
 
 test.describe("Search / Explore", () => {
   test("search for a user", async ({ browser }) => {
-    const ctx = await browser.newPage();
+    const ctx = await browser.newPage({ baseURL: "http://localhost:5173" });
     await login(ctx, BOB);
 
     await ctx.goto("/explore");
@@ -224,7 +224,7 @@ test.describe("Search / Explore", () => {
 
 test.describe("Blocks", () => {
   test("block and unblock a user", async ({ browser }) => {
-    const ctx = await browser.newPage();
+    const ctx = await browser.newPage({ baseURL: "http://localhost:5173" });
     await login(ctx, BOB);
 
     const searchRes = await api(ctx, "GET", "/search?q=alice&type=users");
@@ -247,7 +247,7 @@ test.describe("Blocks", () => {
 
 test.describe("Messages", () => {
   test("start a conversation via Message button", async ({ browser }) => {
-    const ctx = await browser.newPage();
+    const ctx = await browser.newPage({ baseURL: "http://localhost:5173" });
     await login(ctx, BOB);
 
     // Get Alice's actual user ID via API (not email)
@@ -269,7 +269,7 @@ test.describe("Messages", () => {
   });
 
   test("messages page loads with conversations", async ({ browser }) => {
-    const ctx = await browser.newPage();
+    const ctx = await browser.newPage({ baseURL: "http://localhost:5173" });
     await login(ctx, BOB);
     await ctx.goto("/messages");
     await expect(ctx.getByRole("heading", { name: "Messages" })).toBeVisible({ timeout: 10000 });
@@ -281,7 +281,7 @@ test.describe("Messages", () => {
 
 test.describe("Stories", () => {
   test("create and view a story", async ({ browser }) => {
-    const ctx = await browser.newPage();
+    const ctx = await browser.newPage({ baseURL: "http://localhost:5173" });
     await login(ctx, BOB);
     await ctx.goto("/");
 
@@ -302,7 +302,7 @@ test.describe("Stories", () => {
 
 test.describe("Admin Reports", () => {
   test("admin reports page loads and lists reports", async ({ browser }) => {
-    const ctx = await browser.newPage();
+    const ctx = await browser.newPage({ baseURL: "http://localhost:5173" });
     await login(ctx, ADMIN);
     await ctx.goto("/admin/reports");
     await expect(ctx.getByRole("heading", { name: /reports/i })).toBeVisible({ timeout: 10000 });
@@ -314,14 +314,14 @@ test.describe("Admin Reports", () => {
 
 test.describe("Auth Pages", () => {
   test("forgot password page loads", async ({ browser }) => {
-    const ctx = await browser.newPage();
+    const ctx = await browser.newPage({ baseURL: "http://localhost:5173" });
     await ctx.goto("/forgot-password");
     await expect(ctx.locator('input[type="email"]').first()).toBeVisible({ timeout: 10000 });
     await ctx.close();
   });
 
   test("register page loads", async ({ browser }) => {
-    const ctx = await browser.newPage();
+    const ctx = await browser.newPage({ baseURL: "http://localhost:5173" });
     await ctx.goto("/register");
     await expect(ctx.locator('input[name="email"]')).toBeVisible({ timeout: 10000 });
     await ctx.close();
@@ -332,7 +332,7 @@ test.describe("Auth Pages", () => {
 
 test.describe("Rebrand", () => {
   test("page title shows Forge", async ({ browser }) => {
-    const ctx = await browser.newPage();
+    const ctx = await browser.newPage({ baseURL: "http://localhost:5173" });
     await ctx.goto("/login");
     const title = await ctx.title();
     expect(title).toBe("Forge");
@@ -340,7 +340,7 @@ test.describe("Rebrand", () => {
   });
 
   test("brand name shows Forge in navbar", async ({ browser }) => {
-    const ctx = await browser.newPage();
+    const ctx = await browser.newPage({ baseURL: "http://localhost:5173" });
     await login(ctx, BOB);
     await expect(ctx.locator("text=Forge").first()).toBeVisible({ timeout: 10000 });
     await ctx.close();
@@ -351,7 +351,7 @@ test.describe("Rebrand", () => {
 
 test.describe("Projects", () => {
   test("create a project and see it in the list", async ({ browser }) => {
-    const ctx = await browser.newPage();
+    const ctx = await browser.newPage({ baseURL: "http://localhost:5173" });
     await login(ctx, BOB);
     await ctx.goto("/projects");
     await expect(ctx.getByRole("heading", { name: "Projects" })).toBeVisible({ timeout: 10000 });
@@ -365,7 +365,7 @@ test.describe("Projects", () => {
   });
 
   test("create project via API", async ({ browser }) => {
-    const ctx = await browser.newPage();
+    const ctx = await browser.newPage({ baseURL: "http://localhost:5173" });
     await login(ctx, BOB);
 
     const res = await api(ctx, "POST", "/projects", { name: "API Project Test" });
@@ -381,7 +381,7 @@ test.describe("Projects", () => {
   });
 
   test("projects nav item exists", async ({ browser }) => {
-    const ctx = await browser.newPage();
+    const ctx = await browser.newPage({ baseURL: "http://localhost:5173" });
     await login(ctx, BOB);
     await expect(ctx.locator('text=Projects').first()).toBeVisible({ timeout: 10000 });
     await ctx.close();
