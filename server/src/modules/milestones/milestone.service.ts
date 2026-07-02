@@ -38,6 +38,16 @@ export async function getMilestonesByProject(projectId: string) {
   });
 }
 
+export async function getMyMilestones(userId: string) {
+  return prisma.milestone.findMany({
+    where: { project: { userId } },
+    orderBy: [{ dueDate: "asc" }, { createdAt: "asc" }],
+    include: {
+      project: { select: { id: true, name: true } },
+    },
+  });
+}
+
 export async function getMilestoneById(id: string) {
   const milestone = await prisma.milestone.findUnique({
     where: { id },

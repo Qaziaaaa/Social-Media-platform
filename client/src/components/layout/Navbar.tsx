@@ -8,6 +8,7 @@ import type { ApiResponse } from "@/types";
 const navItems = [
   { icon: "home", label: "Home", path: "/" },
   { icon: "explore", label: "Explore", path: "/explore" },
+  { icon: "timeline", label: "Roadmap", path: "/roadmap" },
   { icon: "folder", label: "Projects", path: "/projects" },
   { icon: "notifications", label: "Notifications", path: "/notifications" },
   { icon: "mail", label: "Messages", path: "/messages" },

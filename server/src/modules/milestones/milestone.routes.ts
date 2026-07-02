@@ -5,6 +5,7 @@ import * as milestoneController from "./milestone.controller";
 
 const router = Router();
 
+router.get("/me", authenticate, asyncHandler(milestoneController.listMy));
 router.get("/project/:projectId", asyncHandler(milestoneController.listByProject));
 router.get("/:id", asyncHandler(milestoneController.getById));
 router.post("/", authenticate, asyncHandler(milestoneController.create));

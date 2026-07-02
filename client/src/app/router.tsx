@@ -17,6 +17,7 @@ import { ConversationPage } from "@/modules/messages/pages/ConversationPage";
 import { AdminReportsPage } from "@/modules/admin/pages/AdminReportsPage";
 import { ProjectsPage } from "@/modules/projects/pages/ProjectsPage";
 import { ProjectDetailPage } from "@/modules/projects/pages/ProjectDetailPage";
+import { RoadmapPage } from "@/modules/roadmap/pages/RoadmapPage";
 
 function NotFoundPage() {
   return (
@@ -43,6 +44,7 @@ export function AppRouter() {
       <Route path="/reset-password" element={<ResetPasswordPage />} />
       <Route element={<MainLayout />}>
         <Route path="/" element={<FeedPage />} />
+        <Route path="/roadmap" element={<RoadmapPage />} />
         <Route path="/projects" element={<ProjectsPage />} />
         <Route path="/projects/:id" element={<ProjectDetailPage />} />
         <Route path="/profile/:id" element={<ProfilePage />} />

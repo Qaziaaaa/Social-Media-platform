@@ -150,6 +150,7 @@ export interface Milestone {
   dueDate: string | null;
   createdAt: string;
   updatedAt: string;
+  project?: { id: string; name: string };
 }
 
 export interface Message {

@@ -14,6 +14,11 @@ export async function listByProject(req: Request, res: Response) {
   res.json(success(milestones));
 }
 
+export async function listMy(req: Request, res: Response) {
+  const milestones = await milestoneService.getMyMilestones(req.user!.userId);
+  res.json(success(milestones));
+}
+
 export async function getById(req: Request, res: Response) {
   const milestone = await milestoneService.getMilestoneById(req.params.id as string);
   res.json(success(milestone));
