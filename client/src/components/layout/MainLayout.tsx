@@ -92,9 +92,9 @@ export function MainLayout() {
           <footer className="flex flex-wrap gap-x-4 gap-y-2 px-md">
             <a className="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">About</a>
             <a className="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Help</a>
-            <a className="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Privacy</a>
-            <a className="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Terms</a>
-            <div className="w-full mt-xs font-body-sm text-body-sm text-on-surface-variant">© 2025 Forge</div>
+            <a className="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="/legal/PRIVACY_POLICY.md">Privacy</a>
+            <a className="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="/legal/TERMS_OF_SERVICE.md">Terms</a>
+            <div className="w-full mt-xs font-body-sm text-body-sm text-on-surface-variant">© 2026 Forge</div>
           </footer>
         </aside>
       </div>
