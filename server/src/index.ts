@@ -21,7 +21,6 @@ import bookmarkRoutes from "./modules/bookmarks/bookmark.routes";
 import notificationRoutes from "./modules/notifications/notification.routes";
 import messageRoutes from "./modules/messages/message.routes";
 import reportRoutes from "./modules/reports/report.routes";
-import storyRoutes from "./modules/stories/story.routes";
 import blockRoutes from "./modules/blocks/block.routes";
 import projectRoutes from "./modules/projects/project.routes";
 import milestoneRoutes from "./modules/milestones/milestone.routes";
@@ -67,7 +66,6 @@ app.use("/api/bookmarks", bookmarkRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/messages", messageRoutes);
 app.use("/api", reportRoutes);
-app.use("/api/stories", storyRoutes);
 app.use("/api", blockRoutes);
 app.use("/api/projects", projectRoutes);
 app.use("/api/milestones", milestoneRoutes);
@@ -75,11 +73,6 @@ app.use("/api/milestones", milestoneRoutes);
 app.use(errorHandler);
 
 setupSocket(httpServer);
-
-import { cleanupExpiredStories } from "./modules/stories/story.service";
-setInterval(() => {
-  cleanupExpiredStories().catch(() => {});
-}, 15 * 60 * 1000);
 
 httpServer.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

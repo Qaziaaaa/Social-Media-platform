@@ -20,10 +20,6 @@ export const queryKeys = {
   reports: {
     all: (status?: string) => ["reports", status ?? "all"] as const,
   },
-  stories: {
-    following: () => ["stories", "following"] as const,
-    user: (id: string) => ["stories", "user", id] as const,
-  },
   milestones: {
     my: () => ["milestones", "me"] as const,
     byProject: (projectId: string) => ["milestones", projectId] as const,

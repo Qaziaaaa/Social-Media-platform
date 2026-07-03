@@ -277,27 +277,6 @@ test.describe("Messages", () => {
   });
 });
 
-// ── Stories ──────────────────────────────────────────────
-
-test.describe("Stories", () => {
-  test("create and view a story", async ({ browser }) => {
-    const ctx = await browser.newPage({ baseURL: "http://localhost:5173" });
-    await login(ctx, BOB);
-    await ctx.goto("/");
-
-    const addBtn = ctx.locator("button:has-text('Add')");
-    await expect(addBtn).toBeVisible({ timeout: 10000 });
-    await addBtn.click();
-
-    const fileInput = ctx.locator('input[type="file"]').first();
-    await fileInput.setInputFiles(path.resolve(__dirname, "test-image.png"));
-
-    await expect(ctx.locator("text=Story created")).toBeVisible({ timeout: 15000 });
-    await ctx.goto("/");
-    await ctx.close();
-  });
-});
-
 // ── Admin Reports ────────────────────────────────────────
 
 test.describe("Admin Reports", () => {
