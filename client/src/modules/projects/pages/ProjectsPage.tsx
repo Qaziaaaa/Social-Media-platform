@@ -13,7 +13,7 @@ const STATUS_COLORS: Record<string, string> = {
   in_progress: "bg-blue-100 text-blue-700",
   testing: "bg-amber-100 text-amber-700",
   completed: "bg-emerald-100 text-emerald-700",
-  archived: "bg-surface-container-high text-on-surface-variant",
+  archived: "badge-surface",
 };
 
 const STATUS_LABELS: Record<string, string> = {
@@ -72,8 +72,8 @@ export function ProjectsPage() {
     <div className="animate-fade-in">
       <div className="flex items-center justify-between mb-lg">
         <div>
-          <h1 className="font-headline-lg text-headline-lg text-on-surface">Projects</h1>
-          <p className="font-body-sm text-body-sm text-on-surface-variant mt-xs">
+          <h1 className="font-headline-lg text-headline-lg text-text">Projects</h1>
+          <p className="font-body-sm text-body-sm text-text-secondary mt-1">
             Track your building journey
           </p>
         </div>
@@ -84,26 +84,23 @@ export function ProjectsPage() {
       </div>
 
       {showForm && (
-        <div className="bg-surface rounded-xl p-lg border border-surface-container-high mb-lg animate-fade-in">
-          <h3 className="font-label-lg text-label-lg text-on-surface mb-md">New Project</h3>
+        <div className="card p-lg mb-lg animate-fade-in">
+          <h3 className="font-label-lg text-label-lg text-text mb-md">New Project</h3>
           <div className="flex flex-col gap-md">
             <input
               placeholder="Project name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-md py-sm text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
             />
             <textarea
               placeholder="Short description (optional)"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={2}
-              className="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-md py-sm text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 resize-none"
             />
             <select
               value={status}
               onChange={(e) => setStatus(e.target.value)}
-              className="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-md py-sm text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
             >
               <option value="idea">Idea</option>
               <option value="in_progress">In Progress</option>
@@ -138,11 +135,11 @@ export function ProjectsPage() {
 
       {!isLoading && (!projects || projects.length === 0) && (
         <div className="flex flex-col items-center justify-center py-20 text-center">
-          <div className="h-16 w-16 rounded-full bg-surface-container-high flex items-center justify-center mb-md">
-            <span className="material-symbols-outlined text-3xl text-on-surface-variant">folder</span>
+          <div className="h-16 w-16 rounded-full bg-surface-hover flex items-center justify-center mb-md">
+            <span className="material-symbols-outlined text-3xl text-text-secondary">folder</span>
           </div>
-          <p className="text-on-surface-variant text-sm mb-xs">No projects yet</p>
-          <p className="text-xs text-on-surface-variant/60">Click "New Project" to start documenting your build</p>
+          <p className="text-text-secondary text-sm mb-1">No projects yet</p>
+          <p className="text-xs text-text-tertiary">Click "New Project" to start documenting your build</p>
         </div>
       )}
 
@@ -150,12 +147,12 @@ export function ProjectsPage() {
         {projects?.map((project) => (
           <div
             key={project.id}
-            className="group bg-surface rounded-xl p-lg border border-surface-container-high hover:shadow-md transition-shadow"
+            className="group card p-lg hover:shadow-lg transition-all duration-200"
           >
             <div className="flex items-start justify-between gap-sm">
               <Link to={`/projects/${project.id}`} className="flex-1 min-w-0">
-                <div className="flex items-center gap-sm mb-xs">
-                  <h3 className="font-label-lg text-label-lg text-on-surface font-semibold truncate group-hover:text-primary transition-colors">
+                <div className="flex items-center gap-sm mb-1">
+                  <h3 className="font-label-lg text-label-lg text-text font-semibold truncate group-hover:text-accent transition-colors">
                     {project.name}
                   </h3>
                   <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full shrink-0 ${STATUS_COLORS[project.status]}`}>
@@ -163,11 +160,11 @@ export function ProjectsPage() {
                   </span>
                 </div>
                 {project.description && (
-                  <p className="font-body-sm text-body-sm text-on-surface-variant line-clamp-2 mb-sm">
+                  <p className="font-body-sm text-body-sm text-text-secondary line-clamp-2 mb-2">
                     {project.description}
                   </p>
                 )}
-                <div className="flex items-center gap-md text-xs text-on-surface-variant">
+                <div className="flex items-center gap-md text-xs text-text-tertiary">
                   {project.techStack.length > 0 && (
                     <span>{project.techStack.length} tech stack items</span>
                   )}
@@ -177,7 +174,7 @@ export function ProjectsPage() {
                 onClick={() => {
                   if (confirm("Delete this project?")) deleteMutation.mutate(project.id);
                 }}
-                className="text-on-surface-variant hover:text-error p-xs rounded-full hover:bg-surface-container-low transition-colors shrink-0"
+                className="text-text-tertiary hover:text-danger p-1.5 rounded-full hover:bg-surface-hover transition-colors shrink-0"
               >
                 <span className="material-symbols-outlined text-lg">delete</span>
               </button>

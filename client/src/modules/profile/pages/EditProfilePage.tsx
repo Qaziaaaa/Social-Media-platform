@@ -115,16 +115,16 @@ export function EditProfilePage() {
   return (
     <div className="mx-auto max-w-md space-y-6 animate-fade-in">
       <div>
-        <h1 className="font-headline-lg text-headline-lg text-on-surface">Edit profile</h1>
+        <h1 className="font-headline-lg text-headline-lg text-text">Edit profile</h1>
       </div>
 
       <form onSubmit={handleSubmit((data) => mutation.mutate(data))} className="space-y-4">
         <div className="space-y-4 mb-lg">
           <div>
-            <label className="font-label-md text-label-md text-on-surface ml-xs block mb-sm">Cover image</label>
+            <label className="font-label-md text-label-md text-text ml-xs block mb-sm">Cover image</label>
             <div
               onClick={() => coverInputRef.current?.click()}
-              className="relative h-32 bg-surface-container-low rounded-lg overflow-hidden cursor-pointer group border border-outline-variant"
+              className="relative h-32 bg-surface-hover rounded-lg overflow-hidden cursor-pointer group border border-border"
             >
               {(coverPreview || user?.coverImage) && (
                 <img
@@ -186,16 +186,16 @@ export function EditProfilePage() {
           error={errors.fullName?.message}
         />
         <div className="space-y-1">
-          <label htmlFor="bio" className="font-label-md text-label-md text-on-surface ml-xs block">
+          <label htmlFor="bio" className="font-label-md text-label-md text-text ml-xs block">
             Bio
           </label>
           <textarea
             id="bio"
             rows={4}
             {...register("bio")}
-            className="block w-full rounded-lg border border-outline-variant bg-surface-container-lowest px-3 py-2.5 text-body-md font-body-md text-on-surface placeholder:text-outline/60 shadow-sm transition-colors focus:border-primary focus:outline-none focus:ring-[3px] focus:ring-primary/10"
+            className="block w-full rounded-lg border border-border bg-surface px-3 py-2.5 text-body-md font-body-md text-text placeholder:text-text-tertiary/60 shadow-sm transition-colors focus:border-accent focus:outline-none focus:ring-[3px] focus:ring-accent/10"
           />
-          {errors.bio && <p className="text-sm text-error ml-xs">{errors.bio.message}</p>}
+          {errors.bio && <p className="text-sm text-danger ml-xs">{errors.bio.message}</p>}
         </div>
 
         <Input
@@ -213,16 +213,16 @@ export function EditProfilePage() {
           error={errors.website?.message}
         />
         <div className="space-y-1">
-          <label htmlFor="skills" className="font-label-md text-label-md text-on-surface ml-xs block">
+          <label htmlFor="skills" className="font-label-md text-label-md text-text ml-xs block">
             Skills
           </label>
           <input
             id="skills"
             placeholder="React, TypeScript, UI Design (comma-separated)"
             {...register("skills")}
-            className="block w-full rounded-lg border border-outline-variant bg-surface-container-lowest px-3 py-2.5 text-body-md font-body-md text-on-surface placeholder:text-outline/60 shadow-sm transition-colors focus:border-primary focus:outline-none focus:ring-[3px] focus:ring-primary/10"
+            className="block w-full rounded-lg border border-border bg-surface px-3 py-2.5 text-body-md font-body-md text-text placeholder:text-text-tertiary/60 shadow-sm transition-colors focus:border-accent focus:outline-none focus:ring-[3px] focus:ring-accent/10"
           />
-          {errors.skills && <p className="text-sm text-error ml-xs">{errors.skills.message}</p>}
+          {errors.skills && <p className="text-sm text-danger ml-xs">{errors.skills.message}</p>}
         </div>
 
         <div className="flex gap-3">

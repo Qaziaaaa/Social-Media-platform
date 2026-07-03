@@ -30,7 +30,7 @@ export function BookmarksPage() {
 
   return (
     <div className="flex flex-col gap-lg animate-fade-in">
-      <h1 className="font-headline-lg text-headline-lg text-on-surface">Bookmarks</h1>
+      <h1 className="font-headline-lg text-headline-lg text-text">Bookmarks</h1>
 
       {isLoading ? (
         <div className="space-y-4">
@@ -38,8 +38,8 @@ export function BookmarksPage() {
           <Skeleton className="h-32 w-full rounded-xl" />
         </div>
       ) : updates.length === 0 ? (
-        <div className="bg-surface rounded-xl p-lg text-center ambient-shadow border border-surface-container-high">
-          <p className="text-on-surface-variant">No bookmarks yet. Save posts to read later.</p>
+        <div className="bg-surface rounded-xl p-lg text-center border border-border">
+          <p className="text-text-secondary">No bookmarks yet. Save posts to read later.</p>
         </div>
       ) : (
         <div className="flex flex-col gap-md">

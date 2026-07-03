@@ -97,7 +97,7 @@ export function ConversationPage() {
   if (isLoading) {
     return (
       <div className="max-w-xl mx-auto h-[calc(100vh-8rem)] flex flex-col">
-        <div className="flex items-center gap-3 px-4 py-3 border-b border-surface-container-high">
+        <div className="flex items-center gap-3 px-4 py-3 border-b border-border">
           <Skeleton className="h-8 w-8 rounded-full" />
           <Skeleton className="h-4 w-32" />
         </div>
@@ -116,14 +116,14 @@ export function ConversationPage() {
 
   return (
     <div className="max-w-xl mx-auto h-[calc(100vh-8rem)] flex flex-col">
-      <div className="flex items-center gap-3 px-4 py-3 border-b border-surface-container-high bg-surface/80 backdrop-blur-md shrink-0">
-        <Link to="/messages" className="text-on-surface-variant hover:text-primary transition-colors -ml-1">
+      <div className="flex items-center gap-3 px-4 py-3 border-b border-border bg-surface/80 backdrop-blur-md shrink-0">
+        <Link to="/messages" className="text-text-secondary hover:text-accent transition-colors -ml-1">
           <span className="material-symbols-outlined text-2xl">arrow_back</span>
         </Link>
         <Avatar src={other?.avatar ?? null} alt={other?.fullName ?? "?"} size="sm" />
         <div>
-          <div className="text-sm font-semibold text-on-surface">{other?.fullName ?? "Unknown"}</div>
-          <div className="text-xs text-on-surface-variant">@{other?.username ?? "?"}</div>
+          <div className="text-sm font-semibold text-text">{other?.fullName ?? "Unknown"}</div>
+          <div className="text-xs text-text-secondary">@{other?.username ?? "?"}</div>
         </div>
       </div>
 
@@ -132,7 +132,7 @@ export function ConversationPage() {
           <div key={m.id}>
             {shouldShowDate(liveMessages, i) && (
               <div className="flex justify-center my-3">
-                <span className="text-[11px] text-on-surface-variant/60 bg-surface-container-high px-3 py-1 rounded-full">
+                <span className="text-[11px] text-text-secondary/60 bg-surface-hover px-3 py-1 rounded-full">
                   {formatDate(m.createdAt)}
                 </span>
               </div>
@@ -142,14 +142,14 @@ export function ConversationPage() {
                 <div
                   className={`px-3.5 py-2 text-sm leading-relaxed ${
                     m.senderId === user?.id
-                      ? "bg-primary text-on-primary rounded-2xl rounded-br-sm"
-                      : "bg-surface-container-high text-on-surface rounded-2xl rounded-bl-sm"
+                      ? "bg-accent text-black rounded-2xl rounded-br-sm"
+                      : "bg-surface-hover text-text rounded-2xl rounded-bl-sm"
                   }`}
                 >
                   {m.content}
                 </div>
                 <div
-                  className={`text-[10px] text-on-surface-variant/50 mt-0.5 px-1 ${
+                  className={`text-[10px] text-text-secondary/50 mt-0.5 px-1 ${
                     m.senderId === user?.id ? "text-right" : "text-left"
                   }`}
                 >
@@ -162,7 +162,7 @@ export function ConversationPage() {
         <div ref={bottomRef} />
       </div>
 
-      <div className="shrink-0 border-t border-surface-container-high bg-surface/80 backdrop-blur-md px-4 py-3">
+      <div className="shrink-0 border-t border-border bg-surface/80 backdrop-blur-md px-4 py-3">
         <form onSubmit={handleSend} className="flex items-end gap-2">
           <div className="flex-1 relative">
             <input
@@ -171,16 +171,16 @@ export function ConversationPage() {
               onChange={(e) => setContent(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Message..."
-              className="w-full bg-surface-container-lowest rounded-2xl px-4 py-2.5 text-sm outline-none border border-outline-variant focus:border-primary/40 focus:ring-1 focus:ring-primary/20 transition-all"
+              className="w-full bg-surface rounded-2xl px-4 py-2.5 text-sm outline-none border border-border focus:border-accent/40 focus:ring-1 focus:ring-accent/20 transition-all"
             />
           </div>
           <button
             type="submit"
             disabled={!content.trim() || sendMutation.isPending}
-            className="h-10 w-10 rounded-full bg-primary text-on-primary flex items-center justify-center hover:bg-primary/90 transition-colors disabled:opacity-40 disabled:cursor-not-allowed shrink-0"
+            className="h-10 w-10 rounded-full bg-accent text-black flex items-center justify-center hover:bg-accent/90 transition-colors disabled:opacity-40 disabled:cursor-not-allowed shrink-0"
           >
             {sendMutation.isPending ? (
-              <div className="h-4 w-4 rounded-full border-2 border-on-primary border-t-transparent animate-spin" />
+              <div className="h-4 w-4 rounded-full border-2 border-black border-t-transparent animate-spin" />
             ) : (
               <span className="material-symbols-outlined text-lg">send</span>
             )}

@@ -38,7 +38,7 @@ export function AdminReportsPage() {
 
   return (
     <div className="flex flex-col gap-lg animate-fade-in">
-      <h1 className="font-headline-lg text-headline-lg font-bold text-on-surface">Admin: Reports</h1>
+      <h1 className="font-headline-lg text-headline-lg font-bold text-text">Admin: Reports</h1>
 
       <div className="flex gap-sm">
         {statusFilters.map((s) => (
@@ -47,8 +47,8 @@ export function AdminReportsPage() {
             onClick={() => setStatusFilter(s)}
             className={`px-4 py-2 font-label-md text-label-md rounded-full transition-colors capitalize ${
               statusFilter === s
-                ? "bg-primary text-on-primary"
-                : "bg-surface-container-low text-on-surface-variant hover:bg-surface-container-high"
+                ? "bg-accent text-black"
+                : "bg-surface-hover text-text-secondary hover:bg-surface-hover"
             }`}
           >
             {s}
@@ -62,15 +62,15 @@ export function AdminReportsPage() {
           <Skeleton className="h-24 w-full rounded-xl" />
         </div>
       ) : !data || data.length === 0 ? (
-        <div className="bg-surface rounded-xl p-lg text-center ambient-shadow border border-surface-container-high">
-          <p className="text-on-surface-variant">No reports found</p>
+        <div className="bg-surface rounded-xl p-lg text-center border border-border">
+          <p className="text-text-secondary">No reports found</p>
         </div>
       ) : (
         <div className="flex flex-col gap-md">
           {data.map((report) => (
             <div
               key={report.id}
-              className="bg-surface rounded-xl p-lg ambient-shadow border border-surface-container-high"
+              className="bg-surface rounded-xl p-lg border border-border"
             >
               <div className="flex items-start justify-between gap-md mb-sm">
                 <div className="flex items-center gap-sm">
@@ -79,34 +79,34 @@ export function AdminReportsPage() {
                       ? "bg-warning/20 text-warning"
                       : report.status === "resolved"
                       ? "bg-success/20 text-success"
-                      : "bg-surface-container-high text-on-surface-variant"
+                      : "bg-surface-hover text-text-secondary"
                   }`}>
                     {report.status}
                   </span>
-                  <span className="px-2 py-0.5 rounded-full bg-surface-container-low text-label-sm font-label-sm capitalize text-on-surface-variant">
+                  <span className="px-2 py-0.5 rounded-full bg-surface-hover text-label-sm font-label-sm capitalize text-text-secondary">
                     {report.targetType}
                   </span>
                 </div>
-                <span className="font-body-sm text-body-sm text-on-surface-variant">
+                <span className="font-body-sm text-body-sm text-text-secondary">
                   {new Date(report.createdAt).toLocaleDateString()}
                 </span>
               </div>
 
-              <p className="font-body-md text-body-md text-on-surface mb-sm">{report.reason}</p>
+              <p className="font-body-md text-body-md text-text mb-sm">{report.reason}</p>
 
-              <div className="font-body-sm text-body-sm text-on-surface-variant">
+              <div className="font-body-sm text-body-sm text-text-secondary">
                 Reported by{" "}
-                <Link to={`/profile/${report.reporter.id}`} className="text-primary hover:underline">
+                <Link to={`/profile/${report.reporter.id}`} className="text-accent hover:underline">
                   @{report.reporter.username}
                 </Link>
               </div>
 
-              <div className="font-body-sm text-body-sm text-on-surface-variant">
-                Target: <span className="text-on-surface font-medium">{report.targetId.slice(0, 12)}...</span>
+              <div className="font-body-sm text-body-sm text-text-secondary">
+                Target: <span className="text-text font-medium">{report.targetId.slice(0, 12)}...</span>
               </div>
 
               {report.status === "pending" && (
-                <div className="flex gap-sm mt-md pt-md border-t border-surface-container-high">
+                <div className="flex gap-sm mt-md pt-md border-t border-border">
                   <Button
                     size="sm"
                     variant="secondary"

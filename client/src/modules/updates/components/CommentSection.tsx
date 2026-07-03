@@ -32,27 +32,27 @@ function CommentItem({
     <div className="flex gap-sm mb-lg last:mb-0">
       <Avatar src={comment.author.avatar} alt={comment.author.fullName} size="sm" />
       <div className="flex-1 min-w-0">
-        <div className="bg-surface-container-low p-md rounded-xl rounded-tl-none">
+        <div className="bg-surface-hover p-md rounded-xl rounded-tl-none">
           <div className="flex justify-between items-start mb-xs">
             <div className="flex items-baseline gap-xs min-w-0">
-              <span className="font-label-md text-label-md text-on-surface truncate">{comment.author.fullName}</span>
-              <span className="font-body-sm text-body-sm text-on-surface-variant shrink-0">@{comment.author.username}</span>
+              <span className="font-label-md text-label-md text-text truncate">{comment.author.fullName}</span>
+              <span className="font-body-sm text-body-sm text-text-secondary shrink-0">@{comment.author.username}</span>
             </div>
             {currentUserId === comment.authorId && (
               <button
                 onClick={() => { if (confirm("Delete this comment?")) onDelete(comment.id); }}
-                className="text-on-surface-variant hover:text-error p-xs rounded-full transition-colors shrink-0"
+                className="text-text-secondary hover:text-danger p-xs rounded-full transition-colors shrink-0"
               >
                 <span className="material-symbols-outlined text-[16px]">delete</span>
               </button>
             )}
           </div>
-          <p className="font-body-md text-body-md text-on-surface">{comment.content}</p>
+          <p className="font-body-md text-body-md text-text">{comment.content}</p>
         </div>
-        <div className="flex items-center gap-md mt-sm ml-sm text-on-surface-variant">
+        <div className="flex items-center gap-md mt-sm ml-sm text-text-secondary">
           <button
             onClick={() => onLike(comment.id, !!comment.isLiked)}
-            className={`flex items-center gap-xs hover:text-primary transition-colors font-label-sm text-label-sm ${comment.isLiked ? "text-tertiary" : ""}`}
+            className={`flex items-center gap-xs hover:text-accent transition-colors font-label-sm text-label-sm ${comment.isLiked ? "text-tertiary" : ""}`}
           >
             <span className={`material-symbols-outlined text-[16px] ${comment.isLiked ? "text-tertiary" : ""}`} style={comment.isLiked ? { fontVariationSettings: "'FILL' 1" } : undefined}>
               favorite
@@ -61,14 +61,14 @@ function CommentItem({
           </button>
           <button
             onClick={() => onReply(comment.id, comment.author.username)}
-            className="flex items-center gap-xs hover:text-primary transition-colors font-label-sm text-label-sm"
+            className="flex items-center gap-xs hover:text-accent transition-colors font-label-sm text-label-sm"
           >
             <span className="material-symbols-outlined text-[16px]">reply</span> Reply
           </button>
         </div>
 
         {comment.replies && comment.replies.length > 0 && (
-          <div className="ml-md pl-md border-l-2 border-surface-container-high mt-md space-y-md">
+          <div className="ml-md pl-md border-l-2 border-border mt-md space-y-md">
             {comment.replies.map((reply) => (
               <CommentItem
                 key={reply.id}
@@ -163,8 +163,8 @@ export function CommentSection({ updateId }: CommentSectionProps) {
   const comments = data?.items ?? [];
 
   return (
-    <section className="bg-surface rounded-xl p-lg ambient-shadow border border-surface-container-high animate-fade-in">
-      <h3 className="font-headline-md text-headline-md text-on-surface mb-lg">
+    <section className="bg-surface rounded-xl p-lg border border-border animate-fade-in">
+      <h3 className="font-headline-md text-headline-md text-text mb-lg">
         Comments {data && `(${data.items.length})`}
       </h3>
 
@@ -173,12 +173,12 @@ export function CommentSection({ updateId }: CommentSectionProps) {
           <Avatar src={user.avatar} alt={user.fullName} size="sm" />
           <div className="flex-1">
             {replyTo && (
-              <div className="flex items-center gap-xs mb-xs text-body-sm text-on-surface-variant">
+              <div className="flex items-center gap-xs mb-xs text-body-sm text-text-secondary">
                 <span>Replying to @{replyTo.username}</span>
                 <button
                   type="button"
                   onClick={() => { setReplyTo(null); setContent(""); }}
-                  className="text-primary hover:underline ml-auto"
+                  className="text-accent hover:underline ml-auto"
                 >
                   Cancel
                 </button>
@@ -189,7 +189,7 @@ export function CommentSection({ updateId }: CommentSectionProps) {
               onChange={(e) => setContent(e.target.value)}
               placeholder={replyTo ? `Reply to @${replyTo.username}...` : "Post your reply..."}
               rows={2}
-              className="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-md py-sm font-body-md text-body-md text-on-surface focus:border-primary focus:ring-2 focus:ring-inverse-primary outline-none transition-all resize-none placeholder:text-on-surface-variant"
+              className="w-full bg-surface border border-border rounded-lg px-md py-sm font-body-md text-body-md text-text focus:border-accent focus:ring-2 focus:ring-accent-subtle outline-none transition-all resize-none placeholder:text-text-secondary"
             />
             <div className="flex justify-end mt-sm">
               <Button
@@ -220,11 +220,11 @@ export function CommentSection({ updateId }: CommentSectionProps) {
       )}
 
       {isError && (
-        <p className="font-body-sm text-body-sm text-on-surface-variant">Failed to load comments</p>
+        <p className="font-body-sm text-body-sm text-text-secondary">Failed to load comments</p>
       )}
 
       {!isLoading && !isError && comments.length === 0 && (
-        <p className="font-body-sm text-body-sm text-on-surface-variant text-center py-lg">No comments yet. Start the conversation.</p>
+        <p className="font-body-sm text-body-sm text-text-secondary text-center py-lg">No comments yet. Start the conversation.</p>
       )}
 
       {comments.map((comment) => (

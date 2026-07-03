@@ -36,7 +36,7 @@ export function UpdateList() {
     return (
       <div className="flex flex-col gap-lg">
         {Array.from({ length: 3 }).map((_, i) => (
-          <div key={i} className="bg-surface rounded-xl p-lg ambient-shadow border border-surface-container-high space-y-3">
+          <div key={i} className="card p-lg space-y-3 animate-fade-in" style={{ animationDelay: `${i * 0.08}s` }}>
             <div className="flex items-center gap-2">
               <Skeleton className="h-10 w-10 rounded-full" />
               <Skeleton className="h-4 w-24" />
@@ -50,8 +50,8 @@ export function UpdateList() {
 
   if (isError) {
     return (
-      <div className="bg-surface rounded-xl p-lg ambient-shadow border border-surface-container-high text-center">
-        <p className="text-on-surface-variant">Failed to load updates</p>
+      <div className="card p-lg text-center">
+        <p className="text-text-secondary">Failed to load updates</p>
       </div>
     );
   }
@@ -60,8 +60,8 @@ export function UpdateList() {
 
   if (updates.length === 0) {
     return (
-      <div className="bg-surface rounded-xl p-lg ambient-shadow border border-surface-container-high text-center">
-        <p className="text-on-surface-variant">No updates yet. Be the first to share something!</p>
+      <div className="card p-lg text-center">
+        <p className="text-text-secondary">No updates yet. Be the first to share something!</p>
       </div>
     );
   }

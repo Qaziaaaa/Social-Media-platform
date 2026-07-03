@@ -14,7 +14,7 @@ const STATUS_COLORS: Record<string, string> = {
   in_progress: "bg-blue-100 text-blue-700",
   testing: "bg-amber-100 text-amber-700",
   completed: "bg-emerald-100 text-emerald-700",
-  archived: "bg-surface-container-high text-on-surface-variant",
+  archived: "badge-surface",
 };
 
 const STATUS_LABELS: Record<string, string> = {
@@ -26,7 +26,7 @@ const STATUS_LABELS: Record<string, string> = {
 };
 
 const MILESTONE_COLORS: Record<string, string> = {
-  planned: "bg-surface-container-high text-on-surface-variant",
+  planned: "badge-surface",
   in_progress: "bg-blue-100 text-blue-700",
   completed: "bg-emerald-100 text-emerald-700",
 };
@@ -46,7 +46,6 @@ export function ProjectDetailPage() {
   const [milestoneName, setMilestoneName] = useState("");
   const [milestoneDesc, setMilestoneDesc] = useState("");
   const [milestoneDue, setMilestoneDue] = useState("");
-  const [editingId, setEditingId] = useState<string | null>(null);
 
   const { data: project, isLoading } = useQuery({
     queryKey: ["projects", id],
@@ -126,8 +125,8 @@ export function ProjectDetailPage() {
 
   if (!project) {
     return (
-      <div className="bg-surface rounded-xl p-lg text-center border border-surface-container-high">
-        <p className="text-on-surface-variant">Project not found</p>
+      <div className="card p-lg text-center">
+        <p className="text-text-secondary">Project not found</p>
         <Button variant="ghost" className="mt-md" onClick={() => navigate("/projects")}>
           Back to projects
         </Button>
@@ -140,63 +139,63 @@ export function ProjectDetailPage() {
       <div>
         <button
           onClick={() => navigate("/projects")}
-          className="flex items-center gap-1 text-body-sm text-on-surface-variant hover:text-primary mb-sm transition-colors"
+          className="flex items-center gap-1 text-body-sm text-text-secondary hover:text-accent transition-colors"
         >
           <span className="material-symbols-outlined text-[16px]">arrow_back</span>
           Back to projects
         </button>
       </div>
 
-      <section className="bg-surface rounded-xl p-lg border border-surface-container-high">
-        <div className="flex items-start justify-between gap-sm mb-sm">
-          <div>
-            <div className="flex items-center gap-sm mb-xs">
-              <h1 className="font-headline-lg text-headline-lg text-on-surface">{project.name}</h1>
+      {/* Project Header */}
+      <section className="card p-lg">
+        <div className="flex items-start justify-between gap-sm mb-2">
+          <div className="min-w-0">
+            <div className="flex items-center gap-2 mb-1.5">
+              <h1 className="font-headline-lg text-headline-lg text-text truncate">{project.name}</h1>
               <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full shrink-0 ${STATUS_COLORS[project.status]}`}>
                 {STATUS_LABELS[project.status]}
               </span>
             </div>
             {project.techStack.length > 0 && (
-              <div className="flex flex-wrap gap-1.5 mb-sm">
+              <div className="flex flex-wrap gap-1.5 mb-2">
                 {project.techStack.map((tech) => (
-                  <span key={tech} className="bg-surface-container-high text-on-surface-variant text-[11px] font-medium px-2 py-0.5 rounded-full">
+                  <span key={tech} className="badge badge-surface">
                     {tech}
                   </span>
                 ))}
               </div>
             )}
           </div>
-          <div className="flex gap-sm shrink-0">
-            {isOwnProject && (
-              <Button
-                variant="secondary"
-                size="sm"
-                onClick={() => {
-                  if (confirm("Delete this project?")) {
-                    api.delete(`/projects/${id}`).then(() => {
-                      queryClient.invalidateQueries({ queryKey: ["projects"] });
-                      toast.success("Project deleted");
-                      navigate("/projects");
-                    });
-                  }
-                }}
-              >
-                Delete
-              </Button>
-            )}
-          </div>
+          {isOwnProject && (
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() => {
+                if (confirm("Delete this project?")) {
+                  api.delete(`/projects/${id}`).then(() => {
+                    queryClient.invalidateQueries({ queryKey: ["projects"] });
+                    toast.success("Project deleted");
+                    navigate("/projects");
+                  });
+                }
+              }}
+            >
+              Delete
+            </Button>
+          )}
         </div>
         {project.description && (
-          <p className="font-body-md text-body-md text-on-surface-variant max-w-2xl">{project.description}</p>
+          <p className="font-body-md text-body-md text-text-secondary max-w-2xl leading-relaxed">{project.description}</p>
         )}
       </section>
 
-      <section className="bg-surface rounded-xl p-lg border border-surface-container-high">
+      {/* Milestones */}
+      <section className="card p-lg">
         <div className="flex items-center justify-between mb-md">
           <div>
-            <h2 className="font-label-lg text-label-lg text-on-surface font-semibold">Milestones</h2>
+            <h2 className="font-label-lg text-label-lg text-text font-semibold">Milestones</h2>
             {milestones && milestones.length > 0 && (
-              <p className="font-body-sm text-body-sm text-on-surface-variant mt-xs">
+              <p className="font-body-sm text-body-sm text-text-secondary mt-0.5">
                 {milestones.filter((m) => m.status === "completed").length} / {milestones.length} completed
               </p>
             )}
@@ -210,37 +209,34 @@ export function ProjectDetailPage() {
         </div>
 
         {milestones && milestones.length > 0 && (
-          <div className="w-full bg-surface-container-low rounded-full h-1.5 mb-lg">
+          <div className="w-full bg-surface-hover rounded-full h-1.5 mb-lg">
             <div
-              className="bg-primary h-1.5 rounded-full transition-all"
+              className="bg-accent h-1.5 rounded-full transition-all duration-500"
               style={{ width: `${progress}%` }}
             />
           </div>
         )}
 
         {showForm && (
-          <div className="bg-surface-container-low rounded-lg p-md mb-lg animate-fade-in">
-            <h3 className="font-label-md text-label-md text-on-surface mb-sm">New Milestone</h3>
-            <div className="flex flex-col gap-sm">
+          <div className="bg-surface-hover rounded-lg p-md mb-lg animate-fade-in">
+            <h3 className="font-label-md text-label-md text-text mb-3">New Milestone</h3>
+            <div className="flex flex-col gap-3">
               <input
                 placeholder="Milestone name"
                 value={milestoneName}
                 onChange={(e) => setMilestoneName(e.target.value)}
-                className="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-md py-sm text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
               />
               <input
                 placeholder="Description (optional)"
                 value={milestoneDesc}
                 onChange={(e) => setMilestoneDesc(e.target.value)}
-                className="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-md py-sm text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
               />
               <input
                 type="date"
                 value={milestoneDue}
                 onChange={(e) => setMilestoneDue(e.target.value)}
-                className="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-md py-sm text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
               />
-              <div className="flex gap-sm justify-end">
+              <div className="flex gap-2 justify-end">
                 <Button variant="secondary" size="sm" onClick={() => setShowForm(false)}>
                   Cancel
                 </Button>
@@ -258,30 +254,30 @@ export function ProjectDetailPage() {
         )}
 
         {milestonesLoading && (
-          <div className="space-y-sm">
+          <div className="space-y-2">
             {[1, 2].map((i) => <Skeleton key={i} className="h-16 w-full rounded-lg" />)}
           </div>
         )}
 
         {!milestonesLoading && (!milestones || milestones.length === 0) && !showForm && (
           <div className="flex flex-col items-center justify-center py-12 text-center">
-            <div className="h-12 w-12 rounded-full bg-surface-container-high flex items-center justify-center mb-sm">
-              <span className="material-symbols-outlined text-2xl text-on-surface-variant">flag</span>
+            <div className="h-12 w-12 rounded-full bg-surface-hover flex items-center justify-center mb-3">
+              <span className="material-symbols-outlined text-2xl text-text-secondary">flag</span>
             </div>
-            <p className="text-on-surface-variant text-sm">No milestones yet</p>
+            <p className="text-text-secondary text-sm">No milestones yet</p>
             {isOwnProject && (
-              <p className="text-xs text-on-surface-variant/60 mt-xs">Break your project into milestones</p>
+              <p className="text-xs text-text-tertiary mt-1">Break your project into milestones</p>
             )}
           </div>
         )}
 
-        <div className="flex flex-col gap-sm">
+        <div className="flex flex-col gap-2">
           {milestones?.map((milestone) => (
             <div
               key={milestone.id}
-              className="flex items-start justify-between gap-sm p-sm rounded-lg hover:bg-surface-container-low transition-colors border border-surface-container-high"
+              className="flex items-start justify-between gap-3 p-3 rounded-lg hover:bg-surface-hover transition-colors border border-border"
             >
-              <div className="flex items-start gap-sm flex-1 min-w-0">
+              <div className="flex items-start gap-3 flex-1 min-w-0">
                 <button
                   onClick={() => {
                     if (!isOwnProject) return;
@@ -295,10 +291,10 @@ export function ProjectDetailPage() {
                   }}
                   className={`mt-0.5 w-5 h-5 rounded-full border-2 shrink-0 flex items-center justify-center transition-colors ${
                     milestone.status === "completed"
-                      ? "bg-primary border-primary text-on-primary"
+                      ? "bg-accent border-accent text-bg"
                       : milestone.status === "in_progress"
-                        ? "border-blue-500 bg-blue-50"
-                        : "border-outline-variant hover:border-primary"
+                        ? "border-blue-500"
+                        : "border-border hover:border-accent"
                   }`}
                 >
                   {milestone.status === "completed" && (
@@ -309,9 +305,9 @@ export function ProjectDetailPage() {
                   )}
                 </button>
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-sm">
-                    <span className={`font-label-md text-label-md text-on-surface ${
-                      milestone.status === "completed" ? "line-through text-on-surface-variant" : ""
+                  <div className="flex items-center gap-2">
+                    <span className={`font-label-md text-label-md text-text ${
+                      milestone.status === "completed" ? "line-through text-text-secondary" : ""
                     }`}>
                       {milestone.name}
                     </span>
@@ -320,10 +316,10 @@ export function ProjectDetailPage() {
                     </span>
                   </div>
                   {milestone.description && (
-                    <p className="text-body-sm text-on-surface-variant mt-0.5">{milestone.description}</p>
+                    <p className="text-body-sm text-text-secondary mt-0.5">{milestone.description}</p>
                   )}
                   {milestone.dueDate && (
-                    <p className="text-[11px] text-on-surface-variant/60 mt-0.5">
+                    <p className="text-caption text-text-tertiary mt-0.5">
                       Due: {new Date(milestone.dueDate).toLocaleDateString()}
                     </p>
                   )}
@@ -334,7 +330,7 @@ export function ProjectDetailPage() {
                   onClick={() => {
                     if (confirm("Delete this milestone?")) deleteMutation.mutate(milestone.id);
                   }}
-                  className="text-on-surface-variant hover:text-error p-xs rounded-full hover:bg-surface-container-low transition-colors shrink-0 opacity-0 group-hover:opacity-100"
+                  className="text-text-tertiary hover:text-danger p-1 rounded-full hover:bg-surface-hover transition-colors shrink-0"
                 >
                   <span className="material-symbols-outlined text-[18px]">close</span>
                 </button>

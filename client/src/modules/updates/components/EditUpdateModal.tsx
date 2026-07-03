@@ -69,14 +69,14 @@ export function EditUpdateModal({ update, onClose }: EditUpdateModalProps) {
     <div
       ref={overlayRef}
       onClick={handleOverlayClick}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm animate-fade-in p-md"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm animate-fade-in p-md"
     >
-      <div className="bg-surface rounded-xl p-lg ambient-shadow border border-surface-container-high w-full max-w-lg animate-scale-in">
+      <div className="bg-surface-elevated rounded-xl p-lg shadow-xl border border-border w-full max-w-lg animate-scale-in">
         <div className="flex justify-between items-center mb-lg">
-          <h2 className="font-headline-md text-headline-md text-on-surface">Edit update</h2>
+          <h2 className="font-headline-md text-headline-md text-text">Edit update</h2>
           <button
             onClick={onClose}
-            className="text-on-surface-variant hover:text-on-surface p-xs rounded-full hover:bg-surface-container-low transition-colors"
+            className="text-text-secondary hover:text-text p-xs rounded-full hover:bg-surface-hover transition-colors"
           >
             <span className="material-symbols-outlined">close</span>
           </button>
@@ -87,11 +87,11 @@ export function EditUpdateModal({ update, onClose }: EditUpdateModalProps) {
           onChange={(e) => setContent(e.target.value)}
           placeholder="What's on your mind?"
           rows={3}
-          className="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-md py-sm font-body-md text-body-md text-on-surface focus:border-primary focus:ring-2 focus:ring-inverse-primary outline-none transition-all resize-none placeholder:text-on-surface-variant mb-md"
+          className="w-full bg-surface border border-border rounded-lg px-md py-sm font-body-md text-body-md text-text focus:border-accent focus:ring-2 focus:ring-accent-subtle outline-none transition-all resize-none placeholder:text-text-secondary mb-md"
         />
 
         {(preview || update.imageUrl) && (
-          <div className="relative rounded-xl overflow-hidden border border-surface-container-high mb-md">
+          <div className="relative rounded-xl overflow-hidden border border-border mb-md">
             <img
               src={preview ?? update.imageUrl!}
               alt="Preview"
@@ -107,11 +107,11 @@ export function EditUpdateModal({ update, onClose }: EditUpdateModalProps) {
           </div>
         )}
 
-        <div className="flex items-center justify-between pt-sm border-t border-outline-variant">
+        <div className="flex items-center justify-between pt-sm border-t border-border">
           <button
             type="button"
             onClick={() => fileInputRef.current?.click()}
-            className="text-primary hover:bg-surface-container-low p-sm rounded-full transition-colors flex items-center justify-center"
+            className="text-accent hover:bg-surface-hover p-sm rounded-full transition-colors flex items-center justify-center"
           >
             <span className="material-symbols-outlined">image</span>
           </button>

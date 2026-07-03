@@ -25,7 +25,7 @@ function ConversationItem({ c, userId }: { c: Conversation; userId: string }) {
   return (
     <Link
       to={`/messages/${c.id}`}
-      className="flex items-center gap-3 px-4 py-3 hover:bg-surface-container-low transition-colors border-b border-surface-container-high last:border-b-0"
+      className="flex items-center gap-3 px-4 py-3 hover:bg-surface-hover transition-colors border-b border-border last:border-b-0"
     >
       <div className="relative shrink-0">
         <Avatar src={other?.user.avatar ?? null} alt={other?.user.fullName ?? "?"} size="md" />
@@ -33,24 +33,24 @@ function ConversationItem({ c, userId }: { c: Conversation; userId: string }) {
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between gap-2">
-          <span className="font-medium text-sm text-on-surface truncate">
+          <span className="font-medium text-sm text-text truncate">
             {other?.user.fullName ?? "Unknown"}
           </span>
           {lastMsg && (
-            <span className="text-[11px] text-on-surface-variant shrink-0">
+            <span className="text-[11px] text-text-secondary shrink-0">
               {formatTime(lastMsg.createdAt)}
             </span>
           )}
         </div>
         {lastMsg ? (
-          <div className="text-sm text-on-surface-variant truncate mt-0.5">
-            <span className={lastMsg.senderId === userId ? "text-primary/70" : ""}>
+          <div className="text-sm text-text-secondary truncate mt-0.5">
+            <span className={lastMsg.senderId === userId ? "text-accent/70" : ""}>
               {lastMsg.senderId === userId ? "You: " : ""}
             </span>
             {lastMsg.content}
           </div>
         ) : (
-          <div className="text-sm text-on-surface-variant italic mt-0.5">No messages yet</div>
+          <div className="text-sm text-text-secondary italic mt-0.5">No messages yet</div>
         )}
       </div>
     </Link>
@@ -116,8 +116,8 @@ export function MessagesPage() {
 
   return (
     <div className="max-w-xl mx-auto animate-fade-in">
-      <div className="flex items-center justify-between px-4 py-4 border-b border-surface-container-high">
-        <h1 className="text-lg font-bold text-on-surface">Messages</h1>
+      <div className="flex items-center justify-between px-4 py-4 border-b border-border">
+        <h1 className="text-lg font-bold text-text">Messages</h1>
         <Button variant="secondary" size="sm" onClick={() => setShowNew((p) => !p)}>
           <span className="material-symbols-outlined text-lg mr-1">edit</span>
           New
@@ -125,22 +125,22 @@ export function MessagesPage() {
       </div>
 
       {showNew && (
-        <div className="mx-4 mt-4 mb-2 bg-surface rounded-xl border border-surface-container-high shadow-lg overflow-hidden">
-          <div className="p-3 border-b border-surface-container-high">
+        <div className="mx-4 mt-4 mb-2 bg-surface rounded-xl border border-border shadow-lg overflow-hidden">
+          <div className="p-3 border-b border-border">
             <input
               ref={searchRef}
               type="text"
               placeholder="Search people..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-surface-container-lowest rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary/30 border border-outline-variant"
+              className="w-full bg-surface rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-accent/30 border border-border"
             />
           </div>
           <div className="max-h-64 overflow-y-auto">
             {searching && searchTerm.length >= 2 && (
               <div className="flex items-center gap-2 px-4 py-3">
-                <div className="h-4 w-4 rounded-full border-2 border-primary border-t-transparent animate-spin" />
-                <span className="text-sm text-on-surface-variant">Searching...</span>
+                <div className="h-4 w-4 rounded-full border-2 border-accent border-t-transparent animate-spin" />
+                <span className="text-sm text-text-secondary">Searching...</span>
               </div>
             )}
             {!searching && users && users.length > 0 && (
@@ -149,18 +149,18 @@ export function MessagesPage() {
                   key={u.id}
                   onClick={() => startMutation.mutate(u.id)}
                   disabled={startMutation.isPending}
-                  className="w-full flex items-center gap-3 px-4 py-3 hover:bg-surface-container-low transition-colors text-left disabled:opacity-50"
+                  className="w-full flex items-center gap-3 px-4 py-3 hover:bg-surface-hover transition-colors text-left disabled:opacity-50"
                 >
                   <Avatar src={u.avatar} alt={u.fullName} size="sm" />
                   <div>
-                    <div className="text-sm font-medium text-on-surface">{u.fullName}</div>
-                    <div className="text-xs text-on-surface-variant">@{u.username}</div>
+                    <div className="text-sm font-medium text-text">{u.fullName}</div>
+                    <div className="text-xs text-text-secondary">@{u.username}</div>
                   </div>
                 </button>
               ))
             )}
             {!searching && searchTerm.length >= 2 && users && users.length === 0 && (
-              <p className="px-4 py-6 text-sm text-on-surface-variant text-center">No users found</p>
+              <p className="px-4 py-6 text-sm text-text-secondary text-center">No users found</p>
             )}
           </div>
         </div>
@@ -182,15 +182,15 @@ export function MessagesPage() {
 
       {!isLoading && (!conversations || conversations.length === 0) && (
         <div className="flex flex-col items-center justify-center py-20 px-4">
-          <div className="h-16 w-16 rounded-full bg-surface-container-high flex items-center justify-center mb-4">
-            <span className="material-symbols-outlined text-3xl text-on-surface-variant">chat</span>
+          <div className="h-16 w-16 rounded-full bg-surface-hover flex items-center justify-center mb-4">
+            <span className="material-symbols-outlined text-3xl text-text-secondary">chat</span>
           </div>
-          <p className="text-on-surface-variant text-sm mb-1">No conversations yet</p>
-          <p className="text-xs text-on-surface-variant/60">Click "New" to start messaging someone</p>
+          <p className="text-text-secondary text-sm mb-1">No conversations yet</p>
+          <p className="text-xs text-text-secondary/60">Click "New" to start messaging someone</p>
         </div>
       )}
 
-      <div className="divide-y divide-surface-container-high">
+      <div className="divide-y divide-border">
         {conversations?.map((c) => (
           <ConversationItem key={c.id} c={c} userId={user!.id} />
         ))}

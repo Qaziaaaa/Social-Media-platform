@@ -17,7 +17,7 @@ const STATUS_COLORS: Record<string, string> = {
   in_progress: "bg-blue-100 text-blue-700",
   testing: "bg-amber-100 text-amber-700",
   completed: "bg-emerald-100 text-emerald-700",
-  archived: "bg-surface-container-high text-on-surface-variant",
+  archived: "bg-surface-hover text-text-secondary",
 };
 
 const STATUS_LABELS: Record<string, string> = {
@@ -143,8 +143,8 @@ export function ProfilePage() {
 
   if (isLoading) {
     return (
-      <div className="space-y-4">
-        <Skeleton className="h-48 w-full rounded-xl" />
+      <div className="space-y-4 animate-fade-in">
+        <Skeleton className="h-48 w-full rounded-2xl" />
         <Skeleton className="h-8 w-48" />
         <Skeleton className="h-4 w-32" />
         <Skeleton className="h-32 w-full rounded-xl" />
@@ -155,8 +155,8 @@ export function ProfilePage() {
 
   if (isError || !data) {
     return (
-      <div className="bg-surface rounded-xl p-lg ambient-shadow border border-surface-container-high text-center">
-        <p className="text-on-surface-variant">User not found</p>
+      <div className="card p-lg text-center">
+        <p className="text-text-secondary">User not found</p>
       </div>
     );
   }
@@ -173,27 +173,28 @@ export function ProfilePage() {
 
   return (
     <div className="flex flex-col gap-lg animate-fade-in">
-      <section className="bg-surface rounded-xl ambient-shadow overflow-hidden border border-surface-container-high">
-        <div className="h-48 md:h-64 w-full bg-surface-variant relative">
+      {/* Profile Header */}
+      <section className="overflow-hidden rounded-2xl border border-border bg-surface">
+        <div className="h-48 md:h-56 w-full bg-surface-hover relative overflow-hidden">
           {data.coverImage && (
             <img src={data.coverImage} alt="Cover" className="w-full h-full object-cover" />
           )}
         </div>
 
         <div className="px-lg pb-lg relative">
-          <div className="absolute -top-16 left-lg">
-            <div className="relative w-32 h-32 rounded-full border-4 border-surface overflow-hidden bg-surface shadow-sm">
+          <div className="absolute -top-14 left-lg">
+            <div className="relative w-28 h-28 rounded-full border-[3px] border-bg overflow-hidden bg-surface shadow-lg">
               <Avatar src={data.avatar} alt={data.fullName} size="lg" className="w-full h-full" />
             </div>
           </div>
 
-          <div className="flex justify-end pt-4 mb-4">
+          <div className="flex justify-end pt-3 mb-4">
             {isOwnProfile ? (
               <Link to={`/profile/${id}/edit`}>
                 <Button variant="secondary" size="sm">Edit Profile</Button>
               </Link>
             ) : (
-              <div className="flex items-center gap-sm">
+              <div className="flex items-center gap-2">
                 <Button
                   variant={isFollowing ? "secondary" : "primary"}
                   size="sm"
@@ -205,12 +206,12 @@ export function ProfilePage() {
                 <div ref={moreRef} className="relative">
                   <button
                     onClick={() => setMoreOpen(!moreOpen)}
-                    className="text-on-surface-variant hover:text-primary hover:bg-surface-container-low p-sm rounded-full transition-colors"
+                    className="text-text-secondary hover:text-text hover:bg-surface-hover p-2 rounded-full transition-all"
                   >
                     <span className="material-symbols-outlined text-[20px]">more_horiz</span>
                   </button>
                   {moreOpen && (
-                    <div className="absolute right-0 top-full mt-xs bg-surface rounded-lg shadow-lg border border-surface-container-high py-xs min-w-[140px] z-10 animate-fade-in">
+                    <div className="absolute right-0 top-full mt-1 bg-surface-elevated rounded-xl shadow-lg border border-border py-1 min-w-[150px] z-10 animate-scale-in">
                       <BlockButton
                         userId={id!}
                         isBlocked={isBlocked}
@@ -218,7 +219,7 @@ export function ProfilePage() {
                       />
                       <button
                         onClick={() => { setMoreOpen(false); setReportOpen(true); }}
-                        className="w-full flex items-center gap-sm px-md py-sm text-label-md text-on-surface-variant hover:bg-surface-container-low transition-colors"
+                        className="w-full flex items-center gap-2.5 px-3 py-2 text-label-md text-text-secondary hover:bg-surface-hover transition-colors"
                       >
                         <span className="material-symbols-outlined text-[18px]">flag</span>
                         Report
@@ -230,15 +231,15 @@ export function ProfilePage() {
             )}
           </div>
 
-          <div className="mt-2">
-            <h1 className="font-headline-lg text-headline-lg text-on-surface">{data.fullName}</h1>
-            <p className="font-body-md text-body-md text-on-surface-variant mb-4">@{data.username}</p>
+          <div className="mt-1">
+            <h1 className="font-headline-lg text-headline-lg text-text">{data.fullName}</h1>
+            <p className="font-body-md text-body-md text-text-secondary mb-4">@{data.username}</p>
             {data.bio && (
-              <p className="font-body-md text-body-md text-on-surface mb-4 max-w-2xl">{data.bio}</p>
+              <p className="font-body-md text-body-md text-text mb-4 max-w-2xl leading-relaxed">{data.bio}</p>
             )}
             <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mb-4">
               {data.location && (
-                <span className="flex items-center gap-1 text-body-sm text-on-surface-variant">
+                <span className="flex items-center gap-1 text-body-sm text-text-secondary">
                   <span className="material-symbols-outlined text-[16px]">location_on</span>
                   {data.location}
                 </span>
@@ -248,7 +249,7 @@ export function ProfilePage() {
                   href={data.website}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-1 text-body-sm text-primary hover:underline"
+                  className="flex items-center gap-1 text-body-sm text-accent hover:text-accent-hover transition-colors"
                 >
                   <span className="material-symbols-outlined text-[16px]">link</span>
                   {data.website.replace(/^https?:\/\//, "")}
@@ -260,58 +261,59 @@ export function ProfilePage() {
                 {data.skills.map((skill) => (
                   <span
                     key={skill}
-                    className="bg-surface-container-high text-on-surface-variant text-[11px] font-medium px-2 py-0.5 rounded-full"
+                    className="badge badge-surface"
                   >
                     {skill}
                   </span>
                 ))}
               </div>
             )}
-            <div className="flex gap-6 border-t border-surface-container-high pt-4">
+            <div className="flex gap-6 border-t border-border pt-4">
               <div className="flex gap-1 items-baseline">
-                <span className="font-label-md text-label-md text-on-surface">{data._count.updates}</span>
-                <span className="font-body-sm text-body-sm text-on-surface-variant">Updates</span>
+                <span className="font-label-md text-label-md text-text">{data._count.updates}</span>
+                <span className="font-body-sm text-body-sm text-text-secondary">Updates</span>
               </div>
               <div className="flex gap-1 items-baseline">
-                <span className="font-label-md text-label-md text-on-surface">{data._count.projects}</span>
-                <span className="font-body-sm text-body-sm text-on-surface-variant">Projects</span>
+                <span className="font-label-md text-label-md text-text">{data._count.projects}</span>
+                <span className="font-body-sm text-body-sm text-text-secondary">Projects</span>
               </div>
               <div className="flex gap-1 items-baseline">
-                <span className="font-label-md text-label-md text-on-surface">{data._count.followers}</span>
-                <span className="font-body-sm text-body-sm text-on-surface-variant">Followers</span>
+                <span className="font-label-md text-label-md text-text">{data._count.followers}</span>
+                <span className="font-body-sm text-body-sm text-text-secondary">Followers</span>
               </div>
               <div className="flex gap-1 items-baseline">
-                <span className="font-label-md text-label-md text-on-surface">{data._count.following}</span>
-                <span className="font-body-sm text-body-sm text-on-surface-variant">Following</span>
+                <span className="font-label-md text-label-md text-text">{data._count.following}</span>
+                <span className="font-body-sm text-body-sm text-text-secondary">Following</span>
               </div>
             </div>
           </div>
         </div>
       </section>
 
+      {/* Projects */}
       {projects && projects.length > 0 && (
-        <section className="bg-surface rounded-xl p-lg ambient-shadow border border-surface-container-high">
-          <div className="flex items-center justify-between mb-md">
-            <h2 className="font-label-lg text-label-lg text-on-surface font-semibold">Projects</h2>
+        <section className="card p-lg">
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="font-label-lg text-label-lg text-text font-semibold">Projects</h2>
             {isOwnProfile && (
               <Link to="/projects">
                 <Button variant="ghost" size="sm">Manage</Button>
               </Link>
             )}
           </div>
-          <div className="flex flex-col gap-sm">
+          <div className="flex flex-col gap-1">
             {projects.slice(0, 5).map((project) => (
               <div
                 key={project.id}
-                className="flex items-center justify-between gap-sm p-sm rounded-lg hover:bg-surface-container-low transition-colors"
+                className="flex items-center justify-between gap-2 p-2 rounded-lg hover:bg-surface-hover transition-colors"
               >
-                <div className="flex items-center gap-sm min-w-0">
+                <div className="flex items-center gap-2 min-w-0">
                   <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full shrink-0 ${STATUS_COLORS[project.status]}`}>
                     {STATUS_LABELS[project.status]}
                   </span>
-                  <span className="font-body-md text-body-md text-on-surface truncate">{project.name}</span>
+                  <span className="font-body-md text-body-md text-text truncate">{project.name}</span>
                   {project.description && (
-                    <span className="text-body-sm text-on-surface-variant truncate hidden sm:inline">
+                    <span className="text-body-sm text-text-secondary truncate hidden sm:inline">
                       — {project.description}
                     </span>
                   )}
@@ -319,7 +321,7 @@ export function ProfilePage() {
               </div>
             ))}
             {projects.length > 5 && (
-              <p className="text-body-sm text-on-surface-variant text-center pt-xs">
+              <p className="text-body-sm text-text-secondary text-center pt-1">
                 +{projects.length - 5} more projects
               </p>
             )}
@@ -327,15 +329,16 @@ export function ProfilePage() {
         </section>
       )}
 
-      <div className="flex border-b border-surface-container-high mb-2">
+      {/* Tabs */}
+      <div className="flex border-b border-border mb-2">
         {tabs.map((tab) => (
           <button
             key={tab.key}
             onClick={() => handleSetTab(tab.key)}
-            className={`flex-1 py-4 font-label-md text-label-md transition-colors ${
+            className={`flex-1 py-3.5 font-label-md text-label-md transition-all duration-200 ${
               activeTab === tab.key
-                ? "text-primary border-b-2 border-primary"
-                : "text-on-surface-variant hover:bg-surface-container-low"
+                ? "text-accent border-b-2 border-accent"
+                : "text-text-secondary hover:text-text hover:bg-surface-hover"
             }`}
           >
             {tab.label}
@@ -343,6 +346,7 @@ export function ProfilePage() {
         ))}
       </div>
 
+      {/* Updates List */}
       <div className="flex flex-col gap-md">
         {postsLoading && (
           <>
@@ -351,8 +355,8 @@ export function ProfilePage() {
           </>
         )}
         {!postsLoading && updates.length === 0 && (
-          <div className="bg-surface rounded-xl p-lg text-center ambient-shadow border border-surface-container-high">
-            <p className="text-on-surface-variant">
+          <div className="card p-lg text-center">
+            <p className="text-text-secondary">
               {activeTab === "likes" ? "No liked updates yet" : activeTab === "media" ? "No media updates yet" : "No updates yet"}
             </p>
           </div>
@@ -375,19 +379,19 @@ export function ProfilePage() {
 
       {reportOpen && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 animate-fade-in"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm animate-fade-in"
           onClick={() => { setReportOpen(false); setReportReason(""); }}
         >
           <div
-            className="bg-surface rounded-xl p-lg shadow-xl border border-surface-container-high w-full max-w-md mx-4 animate-scale-up"
+            className="bg-surface-elevated rounded-xl p-lg shadow-xl border border-border w-full max-w-md mx-4 animate-scale-in"
             onClick={(e) => e.stopPropagation()}
           >
-            <h3 className="font-headline-md text-headline-md font-bold text-on-surface mb-md">Report user</h3>
-            <div className="space-y-sm mb-lg">
+            <h3 className="font-headline-md text-headline-md text-text font-semibold mb-md">Report user</h3>
+            <div className="space-y-1 mb-lg">
               {["Spam","Harassment","Hate speech","Misinformation","Violence","Inappropriate content","Other"].map((r) => (
                 <label
                   key={r}
-                  className="flex items-center gap-sm p-sm rounded-lg cursor-pointer hover:bg-surface-container-low transition-colors"
+                  className="flex items-center gap-3 p-2.5 rounded-lg cursor-pointer hover:bg-surface-hover transition-colors"
                 >
                   <input
                     type="radio"
@@ -395,23 +399,23 @@ export function ProfilePage() {
                     value={r}
                     checked={reportReason === r}
                     onChange={(e) => setReportReason(e.target.value)}
-                    className="accent-primary"
+                    className="accent-accent"
                   />
-                  <span className="font-body-md text-body-md text-on-surface">{r}</span>
+                  <span className="font-body-md text-body-md text-text">{r}</span>
                 </label>
               ))}
             </div>
-            <div className="flex gap-sm justify-end">
+            <div className="flex gap-2 justify-end">
               <button
                 onClick={() => { setReportOpen(false); setReportReason(""); }}
-                className="px-4 py-2 font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-low rounded-lg transition-colors"
+                className="btn-ghost"
               >
                 Cancel
               </button>
               <button
                 onClick={() => reportMutation.mutate()}
                 disabled={!reportReason || reportMutation.isPending}
-                className="px-4 py-2 font-label-md text-label-md bg-error text-on-error rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50"
+                className="btn-danger"
               >
                 {reportMutation.isPending ? "Submitting..." : "Submit"}
               </button>

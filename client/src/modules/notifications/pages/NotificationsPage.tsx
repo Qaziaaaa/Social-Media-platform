@@ -21,16 +21,16 @@ function NotificationItem({ n }: { n: Notification }) {
   return (
     <Link
       to={n.entityId ? `/updates/${n.entityId}` : `/profile/${n.actorId}`}
-      className={`flex items-center gap-md p-md rounded-xl transition-colors hover:bg-surface-container-low ${
+      className={`flex items-center gap-md p-md rounded-xl transition-colors hover:bg-surface-hover ${
         n.read ? "" : "bg-primary-container/10"
       }`}
     >
       <Avatar src={n.actor.avatar} alt={n.actor.fullName} size="md" />
       <div className="flex-1 min-w-0">
-        <span className="font-label-md text-label-md text-on-surface">{n.actor.fullName}</span>{" "}
-        <span className="font-body-md text-body-md text-on-surface-variant">{typeLabel(n.type)}</span>
+        <span className="font-label-md text-label-md text-text">{n.actor.fullName}</span>{" "}
+        <span className="font-body-md text-body-md text-text-secondary">{typeLabel(n.type)}</span>
       </div>
-      {!n.read && <span className="h-2 w-2 rounded-full bg-primary shrink-0" />}
+      {!n.read && <span className="h-2 w-2 rounded-full bg-accent shrink-0" />}
     </Link>
   );
 }
@@ -66,7 +66,7 @@ export function NotificationsPage() {
   return (
     <div className="max-w-xl mx-auto space-y-4 animate-fade-in">
       <div className="flex items-center justify-between">
-        <h1 className="font-headline-lg text-headline-lg text-on-surface">Notifications</h1>
+        <h1 className="font-headline-lg text-headline-lg text-text">Notifications</h1>
         {unreadCount > 0 && (
           <Button
             variant="ghost"
@@ -91,8 +91,8 @@ export function NotificationsPage() {
       )}
 
       {!isLoading && notifications.length === 0 && (
-        <div className="bg-surface rounded-xl p-lg text-center ambient-shadow border border-surface-container-high">
-          <p className="text-on-surface-variant">No notifications yet</p>
+        <div className="bg-surface rounded-xl p-lg text-center border border-border">
+          <p className="text-text-secondary">No notifications yet</p>
         </div>
       )}
 

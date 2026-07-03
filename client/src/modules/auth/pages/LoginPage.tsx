@@ -4,7 +4,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
 import { useAuth } from "@/modules/auth/hooks/useAuth";
 
 const loginSchema = z.object({
@@ -37,80 +36,55 @@ export function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-[70vh] items-center justify-center -mx-margin-mobile md:-mx-0">
-      <div className="w-full max-w-[1024px] bg-surface-container-lowest rounded-[24px] ambient-shadow flex flex-col md:flex-row overflow-hidden border border-outline-variant/30 animate-fade-in">
-        <div className="hidden md:block w-1/2 relative bg-surface-container-high overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-primary/5 z-10 mix-blend-overlay"></div>
-          <img
-            alt="Abstract geometric shapes"
-            className="w-full h-full object-cover object-center"
-            src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&q=80"
-          />
-          <div className="absolute bottom-2xl left-2xl right-2xl z-20">
-            <div className="inline-flex items-center gap-sm bg-surface-container-lowest/80 backdrop-blur-md px-md py-sm rounded-full mb-md border border-surface-container-lowest/50">
-              <span className="material-symbols-outlined text-primary text-[20px]">verified</span>
-              <span className="font-label-sm text-label-sm text-on-surface">Secure & Encrypted</span>
-            </div>
-            <h2 className="font-display-sm text-display-sm text-on-surface mb-sm">Forge your ideas publicly.</h2>
-            <p className="font-body-lg text-body-lg text-on-surface-variant max-w-[80%]">
-              A social platform for builders, makers, and creators. Share progress, track milestones, and launch products.
-            </p>
-          </div>
+    <div className="flex min-h-screen items-center justify-center -mx-margin-mobile md:-mx-0 bg-bg">
+      <div className="fixed inset-0 pointer-events-none bg-grid" />
+      <div className="fixed inset-0 pointer-events-none bg-glow" />
+      <div className="relative w-full max-w-[420px] px-margin-mobile md:px-0 animate-fade-in">
+        {/* Logo */}
+        <div className="flex items-center justify-center gap-2.5 mb-2xl">
+          <svg width="36" height="36" viewBox="0 0 64 64" fill="none" className="shrink-0">
+            <rect width="64" height="64" rx="16" fill="currentColor" className="text-accent"/>
+            <path d="M20 44V24l8-8 4 4 4-4 8 8v20H20z" stroke="currentColor" className="text-bg" strokeWidth="2.5" strokeLinejoin="round" fill="none"/>
+            <path d="M28 28v12m8-12v12" stroke="currentColor" className="text-bg" strokeWidth="2" strokeLinecap="round" opacity="0.6"/>
+            <path d="M32 16l-4 4m4-4l4 4" stroke="currentColor" className="text-bg" strokeWidth="2.5" strokeLinecap="round"/>
+          </svg>
+          <span className="font-headline-lg text-headline-lg font-bold text-text tracking-tight">Forge</span>
         </div>
 
-        <div className="w-full md:w-1/2 p-lg md:p-3xl flex flex-col justify-center bg-surface-container-lowest relative z-10">
-          <div className="flex items-center gap-sm mb-2xl">
-            <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-on-primary shadow-sm">
-              <span className="material-symbols-outlined text-[24px]">scatter_plot</span>
-            </div>
-            <span className="font-headline-md text-headline-md font-bold text-primary">Forge</span>
+        {/* Card */}
+        <div className="glass-strong rounded-2xl p-8">
+          <div className="mb-6">
+            <h1 className="font-headline-xl text-headline-xl text-text font-semibold mb-1">Welcome back</h1>
+            <p className="font-body-md text-body-md text-text-secondary">Sign in to continue building.</p>
           </div>
 
-          <div className="mb-xl">
-            <h1 className="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg text-on-surface mb-xs">Welcome back</h1>
-            <p className="font-body-md text-body-md text-on-surface-variant">Please enter your details to sign in.</p>
-          </div>
-
-          <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-md">
-            <div className="flex flex-col gap-xs">
-              <label className="font-label-sm text-label-sm text-on-surface-variant ml-xs" htmlFor="email">Email or Username</label>
-              <div className="relative flex items-center">
-                <span className="material-symbols-outlined absolute left-3 text-outline-variant text-[20px] pointer-events-none">mail</span>
-                <input
-                  id="email"
-                  type="email"
-                  placeholder="name@example.com"
-                  {...register("email")}
-                  className="w-full bg-surface-container-lowest border border-outline-variant rounded-lg pl-[40px] pr-[12px] py-[10px] font-body-md text-body-md text-on-surface placeholder:text-outline-variant/60 focus:outline-none focus:border-primary focus:ring-[3px] focus:ring-primary/10 transition-all"
-                />
-              </div>
-              {errors.email && <p className="text-sm text-error ml-xs">{errors.email.message}</p>}
+          <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+            <div className="flex flex-col gap-1.5">
+              <label className="font-label-sm text-label-sm text-text-secondary" htmlFor="email">Email</label>
+              <input
+                id="email"
+                type="email"
+                placeholder="name@example.com"
+                {...register("email")}
+              />
+              {errors.email && <p className="text-sm text-danger">{errors.email.message}</p>}
             </div>
 
-            <div className="flex flex-col gap-xs">
-              <label className="font-label-sm text-label-sm text-on-surface-variant ml-xs" htmlFor="password">Password</label>
-              <div className="relative flex items-center">
-                <span className="material-symbols-outlined absolute left-3 text-outline-variant text-[20px] pointer-events-none">lock</span>
-                <input
-                  id="password"
-                  type="password"
-                  placeholder="••••••••"
-                  {...register("password")}
-                  className="w-full bg-surface-container-lowest border border-outline-variant rounded-lg pl-[40px] pr-[44px] py-[10px] font-body-md text-body-md text-on-surface placeholder:text-outline-variant/60 focus:outline-none focus:border-primary focus:ring-[3px] focus:ring-primary/10 transition-all"
-                />
-              </div>
-              {errors.password && <p className="text-sm text-error ml-xs">{errors.password.message}</p>}
+            <div className="flex flex-col gap-1.5">
+              <label className="font-label-sm text-label-sm text-text-secondary" htmlFor="password">Password</label>
+              <input
+                id="password"
+                type="password"
+                placeholder="••••••••"
+                {...register("password")}
+              />
+              {errors.password && <p className="text-sm text-danger">{errors.password.message}</p>}
             </div>
 
-            <div className="flex items-center justify-between mt-xs mb-sm">
-              <label className="flex items-center gap-xs cursor-pointer group">
-                <div className="relative flex items-center justify-center w-4 h-4">
-                  <input className="peer appearance-none w-4 h-4 border border-outline-variant rounded-[4px] bg-surface-container-lowest checked:bg-primary checked:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all cursor-pointer" type="checkbox" />
-                  <span className="material-symbols-outlined absolute text-on-primary text-[12px] opacity-0 peer-checked:opacity-100 pointer-events-none transition-opacity">check</span>
-                </div>
-                <span className="font-label-sm text-label-sm text-on-surface-variant group-hover:text-on-surface transition-colors">Remember me</span>
-              </label>
-              <Link to="/forgot-password" className="font-label-sm text-label-sm text-primary hover:text-on-primary-fixed-variant hover:underline underline-offset-4 transition-all">Forgot password?</Link>
+            <div className="flex items-center justify-between mt-1">
+              <Link to="/forgot-password" className="font-label-sm text-label-sm text-accent hover:text-accent-hover transition-colors">
+                Forgot password?
+              </Link>
             </div>
 
             <Button type="submit" loading={loginLoading} className="w-full">
@@ -118,22 +92,30 @@ export function LoginPage() {
             </Button>
           </form>
 
-          <div className="relative flex items-center py-lg">
-            <div className="flex-grow border-t border-outline-variant/50"></div>
-            <span className="flex-shrink-0 px-md font-label-sm text-label-sm text-outline">Or continue with</span>
-            <div className="flex-grow border-t border-outline-variant/50"></div>
+          <div className="relative flex items-center py-5">
+            <div className="flex-grow border-t border-border"></div>
+            <span className="flex-shrink-0 px-3 font-label-sm text-label-sm text-text-tertiary">or</span>
+            <div className="flex-grow border-t border-border"></div>
           </div>
 
-          <div className="flex flex-col gap-sm">
-            <button className="w-full py-[10px] bg-surface-container-lowest border border-outline-variant rounded-lg flex items-center justify-center gap-sm font-label-md text-label-md text-on-surface hover:bg-surface-container-low focus:outline-none focus:ring-[3px] focus:ring-surface-variant transition-all active:scale-[0.98]" type="button">
-              <span className="material-symbols-outlined text-[20px]">language</span>
+          <div className="flex flex-col gap-2">
+            <button
+              type="button"
+              className="w-full py-2.5 bg-surface border border-border rounded-xl flex items-center justify-center gap-2 font-label-md text-label-md text-text hover:bg-surface-hover transition-all active:scale-[0.98]"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/>
+                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+              </svg>
               Google
             </button>
           </div>
 
-          <p className="mt-xl text-center font-body-sm text-body-sm text-on-surface-variant">
-            Don't have an account?
-            <Link to="/register" className="font-label-md text-label-md text-primary hover:text-on-primary-fixed-variant hover:underline underline-offset-4 transition-all ml-xs">
+          <p className="mt-6 text-center font-body-sm text-body-sm text-text-secondary">
+            Don't have an account?{" "}
+            <Link to="/register" className="font-label-md text-label-md text-accent hover:text-accent-hover transition-colors">
               Sign up
             </Link>
           </p>

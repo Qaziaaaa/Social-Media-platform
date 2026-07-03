@@ -50,11 +50,11 @@ export function ExplorePage() {
 
   return (
     <div className="flex flex-col gap-lg animate-fade-in">
-      <div className="bg-surface rounded-xl p-lg ambient-shadow border border-surface-container-high">
-        <h1 className="font-headline-lg text-headline-lg text-on-surface mb-lg">Explore</h1>
-        <div className="flex gap-sm">
+      <div className="card p-lg">
+        <h1 className="font-headline-lg text-headline-lg text-text mb-lg">Explore</h1>
+        <div className="flex gap-2">
           <div className="flex-1 relative">
-            <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">
+            <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary">
               search
             </span>
             <input
@@ -62,7 +62,7 @@ export function ExplorePage() {
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSearch()}
               placeholder="Search users and updates..."
-              className="w-full bg-surface-container-lowest border border-outline-variant rounded-lg pl-10 pr-3 py-2.5 font-body-md text-body-md text-on-surface focus:border-primary focus:ring-2 focus:ring-inverse-primary outline-none transition-all placeholder:text-on-surface-variant"
+              className="w-full pl-10 pr-3 py-2.5"
             />
           </div>
           <Button onClick={handleSearch} disabled={!query.trim()}>Search</Button>
@@ -70,15 +70,15 @@ export function ExplorePage() {
       </div>
 
       {debouncedQuery && (
-        <div className="flex border-b border-surface-container-high mb-2">
+        <div className="flex border-b border-border mb-2">
           {tabs.map((tab) => (
             <button
               key={tab.key}
               onClick={() => setSearchType(tab.key)}
-              className={`flex-1 py-4 font-label-md text-label-md transition-colors ${
+              className={`flex-1 py-3.5 font-label-md text-label-md transition-all duration-200 ${
                 searchType === tab.key
-                  ? "text-primary border-b-2 border-primary"
-                  : "text-on-surface-variant hover:bg-surface-container-low"
+                  ? "text-accent border-b-2 border-accent"
+                  : "text-text-secondary hover:text-text hover:bg-surface-hover"
               }`}
             >
               {tab.label}
@@ -88,31 +88,31 @@ export function ExplorePage() {
       )}
 
       {isLoading && (
-        <div className="bg-surface rounded-xl p-lg ambient-shadow border border-surface-container-high text-center">
-          <p className="text-on-surface-variant">Searching...</p>
+        <div className="card p-lg text-center">
+          <p className="text-text-secondary">Searching...</p>
         </div>
       )}
 
       {!isLoading && debouncedQuery && users.length === 0 && updates.length === 0 && (
-        <div className="bg-surface rounded-xl p-lg ambient-shadow border border-surface-container-high text-center">
-          <p className="text-on-surface-variant">No results for "{debouncedQuery}"</p>
+        <div className="card p-lg text-center">
+          <p className="text-text-secondary">No results for "{debouncedQuery}"</p>
         </div>
       )}
 
       {(searchType === "all" || searchType === "users") && users.length > 0 && (
         <section>
-          <h2 className="font-headline-md text-headline-md text-on-surface mb-md">Users</h2>
-          <div className="bg-surface rounded-xl ambient-shadow border border-surface-container-high divide-y divide-surface-container-high">
+          <h2 className="font-headline-md text-headline-md text-text mb-md">Users</h2>
+          <div className="card divide-y divide-border overflow-hidden">
             {users.map((u) => (
               <Link
                 key={u.id}
                 to={`/profile/${u.id}`}
-                className="flex items-center gap-md p-md hover:bg-surface-container-low transition-colors"
+                className="flex items-center gap-md p-md hover:bg-surface-hover transition-colors"
               >
                 <Avatar src={u.avatar} alt={u.fullName} size="md" />
                 <div>
-                  <div className="font-label-md text-label-md text-on-surface">{u.fullName}</div>
-                  <div className="font-body-sm text-body-sm text-on-surface-variant">@{u.username}</div>
+                  <div className="font-label-md text-label-md text-text">{u.fullName}</div>
+                  <div className="font-body-sm text-body-sm text-text-secondary">@{u.username}</div>
                 </div>
               </Link>
             ))}
@@ -122,7 +122,7 @@ export function ExplorePage() {
 
       {(searchType === "all" || searchType === "updates") && updates.length > 0 && (
         <section>
-          <h2 className="font-headline-md text-headline-md text-on-surface mb-md">Updates</h2>
+          <h2 className="font-headline-md text-headline-md text-text mb-md">Updates</h2>
           <div className="flex flex-col gap-md">
             {updates.map((update) => (
               <UpdateCard key={update.id} update={update} />
