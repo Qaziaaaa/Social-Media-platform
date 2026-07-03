@@ -1,4 +1,5 @@
 import { cn } from "@/utils/cn";
+import { AnonymousAvatar } from "./AnonymousAvatar";
 
 interface AvatarProps {
   src?: string | null;
@@ -12,6 +13,8 @@ const sizeClasses = {
   md: "h-10 w-10 text-sm",
   lg: "h-16 w-16 text-lg",
 };
+
+const sizeMap = { sm: 32, md: 40, lg: 64 } as const;
 
 export function Avatar({ src, alt, size = "md", className }: AvatarProps) {
   if (src) {
@@ -29,14 +32,9 @@ export function Avatar({ src, alt, size = "md", className }: AvatarProps) {
   }
 
   return (
-    <div
-      className={cn(
-        "flex items-center justify-center rounded-full bg-primary text-on-primary font-semibold",
-        sizeClasses[size],
-        className,
-      )}
-    >
-      {alt.charAt(0).toUpperCase()}
-    </div>
+    <AnonymousAvatar
+      size={sizeMap[size]}
+      className={cn("ring-2 ring-surface", className)}
+    />
   );
 }

@@ -356,11 +356,11 @@ test.describe("Projects", () => {
     await ctx.goto("/projects");
     await expect(ctx.getByRole("heading", { name: "Projects" })).toBeVisible({ timeout: 10000 });
 
-    // Create a project
+    const projectName = `E2E Project ${Date.now()}`;
     await ctx.locator("button:has-text('New Project')").click();
-    await ctx.fill('input[placeholder="Project name"]', "My E2E Project");
+    await ctx.fill('input[placeholder="Project name"]', projectName);
     await ctx.locator("button:has-text('Create')").click();
-    await expect(ctx.locator("text=My E2E Project")).toBeVisible({ timeout: 10000 });
+    await expect(ctx.locator(`text=${projectName}`)).toBeVisible({ timeout: 10000 });
     await ctx.close();
   });
 
@@ -368,15 +368,15 @@ test.describe("Projects", () => {
     const ctx = await browser.newPage({ baseURL: "http://localhost:5173" });
     await login(ctx, BOB);
 
-    const res = await api(ctx, "POST", "/projects", { name: "API Project Test" });
+    const name = `API Project ${Date.now()}`;
+    const res = await api(ctx, "POST", "/projects", { name });
     expect(res.success).toBe(true);
-    expect(res.data.name).toBe("API Project Test");
+    expect(res.data.name).toBe(name);
     expect(res.data.status).toBe("idea");
 
-    // Fetch user's projects and verify it's there
     const listRes = await api(ctx, "GET", "/projects");
     expect(listRes.success).toBe(true);
-    expect(listRes.data.some((p: any) => p.name === "API Project Test")).toBe(true);
+    expect(listRes.data.some((p: any) => p.name === name)).toBe(true);
     await ctx.close();
   });
 

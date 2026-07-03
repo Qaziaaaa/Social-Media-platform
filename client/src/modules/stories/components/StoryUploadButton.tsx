@@ -3,14 +3,17 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import api from "@/services/api";
 import { useAuth } from "@/modules/auth/hooks/useAuth";
+import { Avatar } from "@/components/ui/Avatar";
+import { AnonymousAvatar } from "@/components/ui/AnonymousAvatar";
 import { queryKeys } from "@/lib/query-keys";
 import type { ApiResponse, Story } from "@/types";
 
 interface Props {
   hasActiveStory?: boolean;
+  onViewStory?: () => void;
 }
 
-export function StoryUploadButton({ hasActiveStory }: Props) {
+export function StoryUploadButton({ hasActiveStory, onViewStory }: Props) {
   const { user } = useAuth();
   const fileRef = useRef<HTMLInputElement>(null);
   const [inputKey, setInputKey] = useState(0);
@@ -55,22 +58,31 @@ export function StoryUploadButton({ hasActiveStory }: Props) {
         }}
       />
       <button
-        onClick={() => fileRef.current?.click()}
+        onClick={() => {
+          if (hasActiveStory && onViewStory) {
+            onViewStory();
+          } else {
+            fileRef.current?.click();
+          }
+        }}
         disabled={mutation.isPending}
-        className="flex shrink-0 flex-col items-center gap-1"
+        className="flex shrink-0 flex-col items-center gap-1 group"
       >
         {hasActiveStory ? (
-          <div className="rounded-full bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-600 p-[2px]">
+          <div className="relative rounded-full bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-600 p-[2px]">
             <div className="rounded-full bg-surface p-[2px]">
-              <img
-                src={user?.avatar ?? "/default-avatar.png"}
-                alt={user?.fullName ?? ""}
-                className="h-14 w-14 rounded-full object-cover"
-              />
+              {user?.avatar ? (
+                <Avatar src={user.avatar} alt={user.fullName ?? ""} size="lg" className="h-14 w-14" />
+              ) : (
+                <AnonymousAvatar size={56} />
+              )}
+            </div>
+            <div className="absolute -bottom-0.5 -right-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-on-primary text-xs font-bold shadow-md">
+              +
             </div>
           </div>
         ) : (
-          <div className="flex h-[60px] w-[60px] items-center justify-center rounded-full border-2 border-dashed border-on-surface-variant">
+          <div className="flex h-[60px] w-[60px] items-center justify-center rounded-full border-2 border-dashed border-on-surface-variant/60 group-hover:border-on-surface-variant transition-colors">
             {mutation.isPending ? (
               <span className="h-5 w-5 animate-spin rounded-full border-2 border-primary border-t-transparent" />
             ) : (
@@ -80,7 +92,9 @@ export function StoryUploadButton({ hasActiveStory }: Props) {
             )}
           </div>
         )}
-        <span className="text-xs text-on-surface-variant">{hasActiveStory ? "You" : "Add"}</span>
+        <span className="text-[10px] text-on-surface-variant/60 group-hover:text-on-surface-variant transition-colors">
+          {hasActiveStory ? "You" : "Add"}
+        </span>
       </button>
     </>
   );

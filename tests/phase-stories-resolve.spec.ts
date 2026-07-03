@@ -48,8 +48,8 @@ test.describe("Stories", () => {
     // Wait for success toast
     await expect(ctx.locator("text=Story created")).toBeVisible({ timeout: 15000 });
 
-    // The story ring should show Alice's own story ring (avatar with "Alice" name)
-    const storyBtn = ctx.locator("button:has-text('Alice')");
+    // The story ring should show "You" ring with Alice's active story
+    const storyBtn = ctx.locator("button:has-text('You')");
     await expect(storyBtn).toBeVisible({ timeout: 10000 });
 
     // Click on own story ring to open viewer
