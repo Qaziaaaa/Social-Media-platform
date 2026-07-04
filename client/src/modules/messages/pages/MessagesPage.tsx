@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import { Avatar } from "@/components/ui/Avatar";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { Button } from "@/components/ui/Button";
+import api from "@/services/api";
 import { fetchConversations, createConversation } from "../api";
 import { useAuth } from "@/modules/auth/hooks/useAuth";
 import type { Conversation } from "@/types";
@@ -75,10 +76,8 @@ export function MessagesPage() {
     queryKey: ["users", "search", searchTerm],
     queryFn: async () => {
       if (!searchTerm.trim()) return [];
-      const { data } = await import("@/services/api").then((m) =>
-        m.default.get("/search", { params: { q: searchTerm, type: "users" } }),
-      );
-      return data.data.users;
+      const { data } = await api.get("/search", { params: { q: searchTerm, type: "users" } });
+      return (data as any).data?.users ?? [];
     },
     enabled: searchTerm.length >= 2,
   });
