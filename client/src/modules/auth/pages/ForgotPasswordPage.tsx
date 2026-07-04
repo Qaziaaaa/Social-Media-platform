@@ -79,7 +79,7 @@ export function ForgotPasswordPage() {
               type="email"
               placeholder="name@example.com"
               {...register("email")}
-              className="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-md py-[10px] font-body-md text-body-md text-on-surface placeholder:text-outline-variant/60 focus:outline-none focus:border-primary focus:ring-[3px] focus:ring-primary/10 transition-all"
+              className="w-full bg-surface border border-border rounded-md px-3.5 py-2.5 text-body-md text-text placeholder:text-text-tertiary focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent transition-all"
             />
             {errors.email && <p className="text-sm text-error ml-xs">{errors.email.message}</p>}
           </div>

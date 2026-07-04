@@ -156,7 +156,7 @@ export function ConversationPage() {
                   <div
                     className={`px-4 py-2.5 text-sm leading-relaxed ${
                       isOwn
-                        ? "bg-accent text-black rounded-2xl rounded-br-sm"
+                        ? "bg-accent text-white rounded-2xl rounded-br-sm"
                         : "bg-surface-hover text-text rounded-2xl rounded-bl-sm"
                     }`}
                   >
@@ -182,13 +182,13 @@ export function ConversationPage() {
               onChange={(e) => setContent(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Write a message..."
-              className="w-full bg-surface-hover rounded-2xl px-4 py-3 text-sm outline-none border border-border/60 focus:border-accent/40 focus:ring-1 focus:ring-accent/20 transition-all placeholder:text-text-tertiary"
+              className="w-full bg-surface-hover border border-border/60 rounded-2xl px-4 py-3 text-sm text-text placeholder:text-text-tertiary focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent transition-all"
             />
           </div>
           <button
             type="submit"
             disabled={!content.trim() || sendMutation.isPending}
-            className="h-10 w-10 rounded-full bg-accent text-black flex items-center justify-center hover:bg-accent-hover transition-colors disabled:opacity-40 disabled:cursor-not-allowed shrink-0 active:scale-95"
+            className="h-10 w-10 rounded-full bg-accent text-white flex items-center justify-center hover:bg-accent-hover transition-colors disabled:opacity-40 disabled:cursor-not-allowed shrink-0 active:scale-95"
           >
             {sendMutation.isPending ? (
               <div className="h-4 w-4 rounded-full border-2 border-black border-t-transparent animate-spin" />

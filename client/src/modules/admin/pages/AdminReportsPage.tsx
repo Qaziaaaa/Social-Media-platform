@@ -47,7 +47,7 @@ export function AdminReportsPage() {
             onClick={() => setStatusFilter(s)}
             className={`px-4 py-2 font-label-md text-label-md rounded-full transition-colors capitalize ${
               statusFilter === s
-                ? "bg-accent text-black"
+                ? "bg-accent text-white"
                 : "bg-surface-hover text-text-secondary hover:bg-surface-hover"
             }`}
           >

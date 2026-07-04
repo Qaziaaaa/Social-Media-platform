@@ -193,7 +193,7 @@ export function EditProfilePage() {
             id="bio"
             rows={4}
             {...register("bio")}
-            className="block w-full rounded-lg border border-border bg-surface px-3 py-2.5 text-body-md font-body-md text-text placeholder:text-text-tertiary/60 shadow-sm transition-colors focus:border-accent focus:outline-none focus:ring-[3px] focus:ring-accent/10"
+            className="block w-full rounded-lg border border-border bg-surface px-3 py-2.5 text-body-md font-body-md text-text placeholder:text-text-tertiary/60 shadow-sm focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent transition-all"
           />
           {errors.bio && <p className="text-sm text-danger ml-xs">{errors.bio.message}</p>}
         </div>
@@ -220,7 +220,7 @@ export function EditProfilePage() {
             id="skills"
             placeholder="React, TypeScript, UI Design (comma-separated)"
             {...register("skills")}
-            className="block w-full rounded-lg border border-border bg-surface px-3 py-2.5 text-body-md font-body-md text-text placeholder:text-text-tertiary/60 shadow-sm transition-colors focus:border-accent focus:outline-none focus:ring-[3px] focus:ring-accent/10"
+            className="block w-full rounded-lg border border-border bg-surface px-3 py-2.5 text-body-md font-body-md text-text placeholder:text-text-tertiary/60 shadow-sm focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent transition-all"
           />
           {errors.skills && <p className="text-sm text-danger ml-xs">{errors.skills.message}</p>}
         </div>

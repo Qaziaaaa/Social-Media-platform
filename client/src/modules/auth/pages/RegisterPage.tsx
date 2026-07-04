@@ -66,6 +66,7 @@ export function RegisterPage() {
               <input
                 id="fullName"
                 placeholder="Jane Doe"
+                className="w-full bg-surface border border-border rounded-md px-3.5 py-2.5 text-body-md text-text placeholder:text-text-tertiary focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent transition-all"
                 {...register("fullName")}
               />
               {errors.fullName && <p className="text-sm text-danger">{errors.fullName.message}</p>}
@@ -77,6 +78,7 @@ export function RegisterPage() {
                 id="email"
                 type="email"
                 placeholder="jane@example.com"
+                className="w-full bg-surface border border-border rounded-md px-3.5 py-2.5 text-body-md text-text placeholder:text-text-tertiary focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent transition-all"
                 {...register("email")}
               />
               {errors.email && <p className="text-sm text-danger">{errors.email.message}</p>}
@@ -87,6 +89,7 @@ export function RegisterPage() {
               <input
                 id="username"
                 placeholder="janedoe"
+                className="w-full bg-surface border border-border rounded-md px-3.5 py-2.5 text-body-md text-text placeholder:text-text-tertiary focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent transition-all"
                 {...register("username")}
               />
               {errors.username && <p className="text-sm text-danger">{errors.username.message}</p>}
@@ -98,6 +101,7 @@ export function RegisterPage() {
                 id="password"
                 type="password"
                 placeholder="••••••••"
+                className="w-full bg-surface border border-border rounded-md px-3.5 py-2.5 text-body-md text-text placeholder:text-text-tertiary focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent transition-all"
                 {...register("password")}
               />
               {errors.password && <p className="text-sm text-danger">{errors.password.message}</p>}

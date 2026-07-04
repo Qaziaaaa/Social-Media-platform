@@ -65,6 +65,7 @@ export function LoginPage() {
                 id="email"
                 type="email"
                 placeholder="name@example.com"
+                className="w-full bg-surface border border-border rounded-md px-3.5 py-2.5 text-body-md text-text placeholder:text-text-tertiary focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent transition-all"
                 {...register("email")}
               />
               {errors.email && <p className="text-sm text-danger">{errors.email.message}</p>}
@@ -76,6 +77,7 @@ export function LoginPage() {
                 id="password"
                 type="password"
                 placeholder="••••••••"
+                className="w-full bg-surface border border-border rounded-md px-3.5 py-2.5 text-body-md text-text placeholder:text-text-tertiary focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent transition-all"
                 {...register("password")}
               />
               {errors.password && <p className="text-sm text-danger">{errors.password.message}</p>}

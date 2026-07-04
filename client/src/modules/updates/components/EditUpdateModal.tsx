@@ -87,7 +87,7 @@ export function EditUpdateModal({ update, onClose }: EditUpdateModalProps) {
           onChange={(e) => setContent(e.target.value)}
           placeholder="What's on your mind?"
           rows={3}
-          className="w-full bg-surface border border-border rounded-lg px-md py-sm font-body-md text-body-md text-text focus:border-accent focus:ring-2 focus:ring-accent-subtle outline-none transition-all resize-none placeholder:text-text-secondary mb-md"
+          className="w-full bg-surface border border-border rounded-lg px-md py-sm font-body-md text-body-md text-text placeholder:text-text-secondary focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent transition-all resize-none mb-md"
         />
 
         {(preview || update.imageUrl) && (
