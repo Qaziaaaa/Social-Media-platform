@@ -38,10 +38,10 @@ export function Navbar() {
         <Link to="/" className="font-headline-lg text-headline-lg font-bold text-accent tracking-tight">
           Forge
         </Link>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           {isLoading ? null : isAuthenticated && user ? (
             <>
-              <Link to="/notifications" className="relative text-text-secondary hover:text-text p-2 rounded-full hover:bg-surface-hover transition-all active:scale-95">
+              <Link to="/notifications" className="relative flex items-center justify-center h-9 w-9 rounded-full text-text-secondary hover:text-text hover:bg-surface-hover transition-all active:scale-95">
                 <span className="material-symbols-outlined">notifications</span>
                 {notifCount > 0 && (
                   <span className="absolute -top-0.5 -right-0.5 h-4 w-4 rounded-full bg-danger text-[9px] text-white font-bold flex items-center justify-center ring-2 ring-bg">
@@ -49,7 +49,7 @@ export function Navbar() {
                   </span>
                 )}
               </Link>
-              <Link to={`/profile/${user.id}`}>
+              <Link to={`/profile/${user.id}`} className="shrink-0">
                 <Avatar src={user.avatar} alt={user.fullName} size="sm" />
               </Link>
             </>
@@ -180,7 +180,7 @@ export function Navbar() {
       </aside>
 
       {/* Mobile Bottom Nav */}
-      <nav className="md:hidden fixed bottom-0 w-full z-50 glass border-t border-border flex items-center px-1 py-1 pb-safe overflow-x-auto scroll-smooth no-scrollbar">
+      <nav className="md:hidden fixed bottom-0 w-full z-50 glass border-t border-border flex items-center gap-1 px-margin-mobile py-1.5 pb-safe overflow-x-auto scroll-smooth no-scrollbar">
         {[
           { icon: "home", label: "Home", path: "/" },
           { icon: "explore", label: "Explore", path: "/explore" },
@@ -196,27 +196,28 @@ export function Navbar() {
             <Link
               key={item.path}
               to={item.path}
-              className={`flex flex-col items-center gap-0.5 px-2.5 py-1.5 rounded-xl transition-colors shrink-0 min-w-0 ${
+              className={`flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-colors shrink-0 ${
                 isActive ? "text-accent" : "text-text-secondary"
               }`}
             >
-              <span className="relative">
+              <span className="relative flex items-center justify-center h-5 w-5">
                 <span
-                  className="material-symbols-outlined text-[22px]"
+                  className="material-symbols-outlined text-[20px]"
                   style={isActive ? { fontVariationSettings: "'FILL' 1" } : undefined}
                 >
                   {item.icon}
                 </span>
                 {"count" in item && (item as any).count > 0 && (
-                  <span className="absolute -top-1 -right-1 h-3.5 w-3.5 rounded-full bg-danger text-[8px] text-white font-bold flex items-center justify-center ring-2 ring-bg">
+                  <span className="absolute -top-1 -right-1.5 h-3.5 w-3.5 rounded-full bg-danger text-[7px] text-white font-bold flex items-center justify-center ring-[1.5px] ring-bg">
                     {(item as any).count > 9 ? "9+" : (item as any).count}
                   </span>
                 )}
               </span>
-              <span className="font-label-sm text-[10px] leading-tight">{item.label}</span>
+              <span className="text-[9px] font-medium leading-none tracking-tight whitespace-nowrap">{item.label}</span>
             </Link>
           );
         })}
+        <div className="shrink-0 w-3" aria-hidden="true" />
       </nav>
     </>
   );
