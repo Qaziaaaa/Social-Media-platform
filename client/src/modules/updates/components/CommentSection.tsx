@@ -163,7 +163,7 @@ export function CommentSection({ updateId }: CommentSectionProps) {
   const comments = data?.items ?? [];
 
   return (
-    <section className="bg-surface rounded-xl p-lg border border-border animate-fade-in">
+    <section className="card p-lg animate-fade-in">
       <h3 className="font-headline-md text-headline-md text-text mb-lg">
         Comments {data && `(${data.items.length})`}
       </h3>

@@ -30,7 +30,7 @@ export function UpdateDetailPage() {
 
   if (isError || !data) {
     return (
-      <div className="bg-surface rounded-xl p-lg border border-border text-center">
+      <div className="card p-lg text-center">
         <p className="text-text-secondary">Update not found</p>
       </div>
     );

@@ -62,7 +62,7 @@ export function AdminReportsPage() {
           <Skeleton className="h-24 w-full rounded-xl" />
         </div>
       ) : !data || data.length === 0 ? (
-        <div className="bg-surface rounded-xl p-lg text-center border border-border">
+        <div className="card p-lg text-center">
           <p className="text-text-secondary">No reports found</p>
         </div>
       ) : (
@@ -70,7 +70,7 @@ export function AdminReportsPage() {
           {data.map((report) => (
             <div
               key={report.id}
-              className="bg-surface rounded-xl p-lg border border-border"
+              className="card p-lg"
             >
               <div className="flex items-start justify-between gap-md mb-sm">
                 <div className="flex items-center gap-sm">

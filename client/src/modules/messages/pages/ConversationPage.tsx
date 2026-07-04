@@ -121,7 +121,7 @@ export function ConversationPage() {
 
   return (
     <div className="max-w-2xl mx-auto h-[calc(100dvh-8rem)] flex flex-col">
-      <div className="flex items-center gap-3 px-5 py-4 border-b border-border bg-surface/90 backdrop-blur-md shrink-0">
+      <div className="flex items-center gap-3 px-5 py-4 border-b border-border bg-surface/90 backdrop-blur-md shrink-0 shadow-sm">
         <Link to="/messages" className="text-text-secondary hover:text-accent transition-colors -ml-1 p-1 rounded-lg hover:bg-surface-hover">
           <span className="material-symbols-outlined text-2xl">arrow_back</span>
         </Link>
@@ -173,7 +173,7 @@ export function ConversationPage() {
         <div ref={bottomRef} />
       </div>
 
-      <div className="shrink-0 border-t border-border bg-surface/90 backdrop-blur-md px-5 py-4">
+      <div className="shrink-0 border-t border-border bg-surface/90 backdrop-blur-md px-5 py-4 shadow-sm">
         <form onSubmit={handleSend} className="flex items-end gap-3">
           <div className="flex-1 relative">
             <input

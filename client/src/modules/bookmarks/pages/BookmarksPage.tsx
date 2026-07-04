@@ -38,7 +38,7 @@ export function BookmarksPage() {
           <Skeleton className="h-32 w-full rounded-xl" />
         </div>
       ) : updates.length === 0 ? (
-        <div className="bg-surface rounded-xl p-lg text-center border border-border">
+        <div className="card p-lg text-center">
           <p className="text-text-secondary">No bookmarks yet. Save posts to read later.</p>
         </div>
       ) : (

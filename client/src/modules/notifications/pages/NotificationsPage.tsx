@@ -91,7 +91,7 @@ export function NotificationsPage() {
       )}
 
       {!isLoading && notifications.length === 0 && (
-        <div className="bg-surface rounded-xl p-lg text-center border border-border">
+        <div className="card p-lg text-center">
           <p className="text-text-secondary">No notifications yet</p>
         </div>
       )}

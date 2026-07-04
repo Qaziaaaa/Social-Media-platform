@@ -174,7 +174,7 @@ export function ProfilePage() {
   return (
     <div className="flex flex-col gap-lg animate-fade-in">
       {/* Profile Header */}
-      <section className="overflow-hidden rounded-2xl border border-border bg-surface">
+      <section className="card overflow-hidden rounded-2xl">
         <div className="h-48 md:h-56 w-full bg-surface-hover relative overflow-hidden">
           {data.coverImage && (
             <img src={data.coverImage} alt="Cover" className="w-full h-full object-cover" />

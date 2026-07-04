@@ -57,7 +57,7 @@ export function RoadmapPage() {
 
   if (!isAuthenticated) {
     return (
-      <div className="bg-surface rounded-xl p-lg text-center border border-border">
+      <div className="card p-lg text-center">
         <p className="text-text-secondary">Sign in to view your roadmap</p>
       </div>
     );
@@ -82,19 +82,19 @@ export function RoadmapPage() {
 
       {!isLoading && milestones && milestones.length > 0 && (
         <div className="flex gap-4 flex-wrap">
-          <div className="bg-surface rounded-xl p-md border border-border flex-1 min-w-[120px]">
+          <div className="card p-md flex-1 min-w-[120px]">
             <p className="font-label-lg text-label-lg text-text font-semibold">{stats.total}</p>
             <p className="text-body-sm text-text-secondary">Total</p>
           </div>
-          <div className="bg-surface rounded-xl p-md border border-border flex-1 min-w-[120px]">
+          <div className="card p-md flex-1 min-w-[120px]">
             <p className="font-label-lg text-label-lg text-text font-semibold text-emerald-600">{stats.completed}</p>
             <p className="text-body-sm text-text-secondary">Completed</p>
           </div>
-          <div className="bg-surface rounded-xl p-md border border-border flex-1 min-w-[120px]">
+          <div className="card p-md flex-1 min-w-[120px]">
             <p className="font-label-lg text-label-lg text-text font-semibold text-blue-600">{stats.inProgress}</p>
             <p className="text-body-sm text-text-secondary">In Progress</p>
           </div>
-          <div className="bg-surface rounded-xl p-md border border-border flex-1 min-w-[120px]">
+          <div className="card p-md flex-1 min-w-[120px]">
             <p className="font-label-lg text-label-lg text-text font-semibold text-text-secondary">{stats.planned}</p>
             <p className="text-body-sm text-text-secondary">Planned</p>
           </div>
