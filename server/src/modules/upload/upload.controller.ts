@@ -7,6 +7,7 @@ export async function uploadFile(req: Request, res: Response) {
     return;
   }
 
-  const url = `/uploads/${req.file.filename}`;
+  const useCloudinary = !!process.env.CLOUDINARY_URL;
+  const url = useCloudinary ? req.file.path : `/uploads/${req.file.filename}`;
   res.json(success({ url }));
 }

@@ -33,10 +33,12 @@ Render free spins down after **15 min idle**. Cold starts take 5–30s. Set up a
 
 ## 4. Image Uploads (Optional)
 
-Render's disk is **ephemeral** — uploads disappear on every deploy. For persistence:
-1. Set up a free [Cloudinary](https://cloudinary.com) account
-2. Add `CLOUDINARY_URL` env var to Render
-3. The upload route will auto-detect and proxy uploads if cloudinary is configured
+Render's disk is **ephemeral** — uploads disappear on every deploy. For persistent uploads:
+
+1. Sign up at [Cloudinary](https://cloudinary.com) (free: 25GB storage)
+2. From Dashboard → "API Environment variable" copy the `CLOUDINARY_URL` (looks like `cloudinary://api_key:api_secret@cloud_name`)
+3. In Render → Environment → add `CLOUDINARY_URL` with that value
+4. Redeploy — uploads will auto-detect and save to Cloudinary instead of local disk
 
 ## 5. Verify
 
