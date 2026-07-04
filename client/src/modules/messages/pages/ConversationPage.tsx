@@ -28,6 +28,11 @@ function shouldShowDate(messages: Message[], index: number) {
   return prev.toDateString() !== curr.toDateString();
 }
 
+function isSameSender(messages: Message[], index: number) {
+  if (index === 0) return false;
+  return messages[index].senderId === messages[index - 1].senderId;
+}
+
 export function ConversationPage() {
   const { id } = useParams<{ id: string }>();
   const { user } = useAuth();
@@ -57,17 +62,17 @@ export function ConversationPage() {
 
   useEffect(() => {
     const socket = getSocket();
-    if (!socket || !id) return;
+    if (!socket || !id || !user) return;
 
     const handler = (data: { conversationId: string; message: Message }) => {
-      if (data.conversationId === id) {
+      if (data.conversationId === id && data.message.senderId !== user.id) {
         setLiveMessages((prev) => [...prev, data.message]);
       }
     };
 
     socket.on("message", handler);
     return () => { socket.off("message", handler); };
-  }, [id]);
+  }, [id, user]);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -78,7 +83,7 @@ export function ConversationPage() {
     onSuccess: (msg) => {
       setContent("");
       setLiveMessages((prev) => [...prev, msg]);
-      queryClient.invalidateQueries({ queryKey: ["conversations"] });
+      queryClient.invalidateQueries({ queryKey: ["conversations"], exact: true });
     },
   });
 
@@ -96,15 +101,15 @@ export function ConversationPage() {
 
   if (isLoading) {
     return (
-      <div className="max-w-xl mx-auto h-[calc(100vh-8rem)] flex flex-col">
-        <div className="flex items-center gap-3 px-4 py-3 border-b border-border">
-          <Skeleton className="h-8 w-8 rounded-full" />
-          <Skeleton className="h-4 w-32" />
+      <div className="max-w-2xl mx-auto h-[calc(100vh-8rem)] flex flex-col">
+        <div className="flex items-center gap-3 px-5 py-4 border-b border-border">
+          <Skeleton className="h-9 w-9 rounded-full" />
+          <Skeleton className="h-4 w-36" />
         </div>
-        <div className="flex-1 p-4 space-y-3">
+        <div className="flex-1 p-5 space-y-4">
           {[1, 2, 3].map((i) => (
             <div key={i} className={`flex ${i % 2 === 0 ? "justify-end" : "justify-start"}`}>
-              <Skeleton className={`h-10 w-48 rounded-2xl ${i % 2 === 0 ? "rounded-br-sm" : "rounded-bl-sm"}`} />
+              <Skeleton className={`h-11 w-56 rounded-2xl ${i % 2 === 0 ? "rounded-br-md" : "rounded-bl-md"}`} />
             </div>
           ))}
         </div>
@@ -115,74 +120,80 @@ export function ConversationPage() {
   const other = (conversation as any)?.otherParticipants?.[0]?.user;
 
   return (
-    <div className="max-w-xl mx-auto h-[calc(100vh-8rem)] flex flex-col">
-      <div className="flex items-center gap-3 px-4 py-3 border-b border-border bg-surface/80 backdrop-blur-md shrink-0">
-        <Link to="/messages" className="text-text-secondary hover:text-accent transition-colors -ml-1">
+    <div className="max-w-2xl mx-auto h-[calc(100vh-8rem)] flex flex-col">
+      <div className="flex items-center gap-3 px-5 py-4 border-b border-border bg-surface/90 backdrop-blur-md shrink-0">
+        <Link to="/messages" className="text-text-secondary hover:text-accent transition-colors -ml-1 p-1 rounded-lg hover:bg-surface-hover">
           <span className="material-symbols-outlined text-2xl">arrow_back</span>
         </Link>
         <Avatar src={other?.avatar ?? null} alt={other?.fullName ?? "?"} size="sm" />
-        <div>
-          <div className="text-sm font-semibold text-text">{other?.fullName ?? "Unknown"}</div>
-          <div className="text-xs text-text-secondary">@{other?.username ?? "?"}</div>
+        <div className="min-w-0">
+          <div className="font-label-md text-label-md text-text truncate">{other?.fullName ?? "Unknown"}</div>
+          <div className="font-body-sm text-body-sm text-text-secondary truncate">@{other?.username ?? "?"}</div>
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto px-4 py-3 space-y-1 scroll-smooth">
-        {liveMessages.map((m, i) => (
-          <div key={m.id}>
-            {shouldShowDate(liveMessages, i) && (
-              <div className="flex justify-center my-3">
-                <span className="text-[11px] text-text-secondary/60 bg-surface-hover px-3 py-1 rounded-full">
-                  {formatDate(m.createdAt)}
-                </span>
-              </div>
-            )}
-            <div className={`flex ${m.senderId === user?.id ? "justify-end" : "justify-start"}`}>
-              <div className="group max-w-[75%]">
-                <div
-                  className={`px-3.5 py-2 text-sm leading-relaxed ${
-                    m.senderId === user?.id
-                      ? "bg-accent text-black rounded-2xl rounded-br-sm"
-                      : "bg-surface-hover text-text rounded-2xl rounded-bl-sm"
-                  }`}
-                >
-                  {m.content}
+      <div className="flex-1 overflow-y-auto px-5 py-4 space-y-1 scroll-smooth">
+        {liveMessages.map((m, i) => {
+          const isOwn = m.senderId === user?.id;
+          const grouped = isSameSender(liveMessages, i);
+          const showAvatar = !grouped && !isOwn;
+
+          return (
+            <div key={m.id}>
+              {shouldShowDate(liveMessages, i) && (
+                <div className="flex justify-center my-4">
+                  <span className="text-[11px] text-text-secondary/50 bg-surface-hover px-3 py-1 rounded-full font-medium">
+                    {formatDate(m.createdAt)}
+                  </span>
                 </div>
-                <div
-                  className={`text-[10px] text-text-secondary/50 mt-0.5 px-1 ${
-                    m.senderId === user?.id ? "text-right" : "text-left"
-                  }`}
-                >
-                  {formatTime(m.createdAt)}
+              )}
+              <div className={`flex items-end gap-2.5 mb-0.5 ${isOwn ? "flex-row-reverse" : "flex-row"}`}>
+                {showAvatar && (
+                  <Avatar src={other?.avatar ?? null} alt={other?.fullName ?? "?"} size="sm" className="mb-0.5 shrink-0" />
+                )}
+                {!showAvatar && !isOwn && <div className="w-8 shrink-0" />}
+                <div className={`flex flex-col ${isOwn ? "items-end" : "items-start"} max-w-[70%]`}>
+                  <div
+                    className={`px-4 py-2.5 text-sm leading-relaxed ${
+                      isOwn
+                        ? "bg-accent text-black rounded-2xl rounded-br-sm"
+                        : "bg-surface-hover text-text rounded-2xl rounded-bl-sm"
+                    }`}
+                  >
+                    {m.content}
+                  </div>
+                  <span className="text-[10px] text-text-secondary/40 mt-0.5 px-1">
+                    {formatTime(m.createdAt)}
+                  </span>
                 </div>
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
         <div ref={bottomRef} />
       </div>
 
-      <div className="shrink-0 border-t border-border bg-surface/80 backdrop-blur-md px-4 py-3">
-        <form onSubmit={handleSend} className="flex items-end gap-2">
+      <div className="shrink-0 border-t border-border bg-surface/90 backdrop-blur-md px-5 py-4">
+        <form onSubmit={handleSend} className="flex items-end gap-3">
           <div className="flex-1 relative">
             <input
               ref={inputRef}
               value={content}
               onChange={(e) => setContent(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Message..."
-              className="w-full bg-surface rounded-2xl px-4 py-2.5 text-sm outline-none border border-border focus:border-accent/40 focus:ring-1 focus:ring-accent/20 transition-all"
+              placeholder="Write a message..."
+              className="w-full bg-surface-hover rounded-2xl px-4 py-3 text-sm outline-none border border-border/60 focus:border-accent/40 focus:ring-1 focus:ring-accent/20 transition-all placeholder:text-text-tertiary"
             />
           </div>
           <button
             type="submit"
             disabled={!content.trim() || sendMutation.isPending}
-            className="h-10 w-10 rounded-full bg-accent text-black flex items-center justify-center hover:bg-accent/90 transition-colors disabled:opacity-40 disabled:cursor-not-allowed shrink-0"
+            className="h-10 w-10 rounded-full bg-accent text-black flex items-center justify-center hover:bg-accent-hover transition-colors disabled:opacity-40 disabled:cursor-not-allowed shrink-0 active:scale-95"
           >
             {sendMutation.isPending ? (
               <div className="h-4 w-4 rounded-full border-2 border-black border-t-transparent animate-spin" />
             ) : (
-              <span className="material-symbols-outlined text-lg">send</span>
+              <span className="material-symbols-outlined text-[20px]">send</span>
             )}
           </button>
         </form>
