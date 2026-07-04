@@ -8,6 +8,7 @@ import path from "path";
 import { createServer } from "http";
 import { errorHandler } from "./middleware/errorHandler";
 import { setupSocket } from "./socket";
+import { prisma } from "./database/prisma";
 import authRoutes from "./modules/auth/auth.routes";
 import userRoutes from "./modules/users/user.routes";
 import updateRoutes from "./modules/updates/update.routes";
@@ -86,6 +87,20 @@ setupSocket(httpServer);
 
 httpServer.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
+});
+
+process.on("SIGTERM", async () => {
+  console.log("SIGTERM received — shutting down gracefully");
+  httpServer.close();
+  await prisma.$disconnect();
+  process.exit(0);
+});
+
+process.on("SIGINT", async () => {
+  console.log("SIGINT received — shutting down gracefully");
+  httpServer.close();
+  await prisma.$disconnect();
+  process.exit(0);
 });
 
 export default app;
