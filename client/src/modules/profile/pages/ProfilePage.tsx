@@ -183,7 +183,7 @@ export function ProfilePage() {
 
         <div className="px-lg pb-lg relative">
           <div className="absolute -top-14 left-lg">
-            <div className="relative w-28 h-28 rounded-full border-[3px] border-bg overflow-hidden bg-surface shadow-lg">
+            <div className="flex items-center justify-center w-28 h-28 rounded-full border-[3px] border-bg overflow-hidden bg-surface shadow-lg">
               <Avatar src={data.avatar} alt={data.fullName} size="lg" className="w-full h-full" />
             </div>
           </div>
@@ -406,19 +406,20 @@ export function ProfilePage() {
               ))}
             </div>
             <div className="flex gap-2 justify-end">
-              <button
+              <Button
+                variant="ghost"
                 onClick={() => { setReportOpen(false); setReportReason(""); }}
-                className="btn-ghost"
               >
                 Cancel
-              </button>
-              <button
+              </Button>
+              <Button
+                variant="danger"
                 onClick={() => reportMutation.mutate()}
-                disabled={!reportReason || reportMutation.isPending}
-                className="btn-danger"
+                loading={reportMutation.isPending}
+                disabled={!reportReason}
               >
                 {reportMutation.isPending ? "Submitting..." : "Submit"}
-              </button>
+              </Button>
             </div>
           </div>
         </div>

@@ -1,5 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { Avatar } from "@/components/ui/Avatar";
+import { Button } from "@/components/ui/Button";
 import { useAuth } from "@/modules/auth/hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
 import api from "@/services/api";
@@ -55,7 +56,7 @@ export function Navbar() {
           ) : (
             <Link
               to="/login"
-              className="btn-primary text-sm px-4 py-1.5"
+              className="bg-accent text-white rounded-xl shadow-sm hover:bg-accent-hover hover:shadow-md transition-all duration-150 text-label-sm px-4 py-1.5"
             >
               Sign in
             </Link>
@@ -151,24 +152,25 @@ export function Navbar() {
         <div className="mt-auto px-3 pt-2 border-t border-border">
           {isAuthenticated ? (
             <div className="flex flex-col gap-2 pt-3">
-              <button
+              <Button
+                variant="ghost"
                 onClick={() => logout()}
-                className="w-full text-left px-3 py-2.5 rounded-xl text-text-secondary hover:bg-surface-hover hover:text-text transition-all duration-200 font-label-md text-label-md"
+                className="w-full justify-start text-left font-label-md text-label-md"
               >
                 Logout
-              </button>
+              </Button>
             </div>
           ) : (
             <div className="flex flex-col gap-2 pt-3">
               <Link
                 to="/login"
-                className="w-full btn-primary text-center"
+                className="block w-full text-center bg-accent text-white rounded-xl shadow-sm hover:bg-accent-hover hover:shadow-md transition-all duration-150 px-5 py-2 font-label-md"
               >
                 Sign In
               </Link>
               <Link
                 to="/register"
-                className="w-full text-center btn-outline"
+                className="block w-full text-center bg-transparent text-text border border-border rounded-xl hover:border-accent hover:bg-surface-hover transition-all duration-150 px-5 py-2 font-label-md"
               >
                 Register
               </Link>

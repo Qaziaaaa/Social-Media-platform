@@ -62,7 +62,7 @@ export function ExplorePage() {
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSearch()}
               placeholder="Search users and updates..."
-              className="w-full pl-10 pr-3 py-2.5"
+              className="w-full pl-10 pr-3 py-2.5 bg-surface border border-border rounded-md text-body-md text-text placeholder:text-text-tertiary focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all"
             />
           </div>
           <Button onClick={handleSearch} disabled={!query.trim()}>Search</Button>

@@ -39,8 +39,8 @@ export function MainLayout() {
           <Outlet />
         </main>
         <aside className="hidden xl:flex flex-col gap-lg py-lg w-[320px] shrink-0">
-          <div className="sticky top-0 flex flex-col gap-lg h-screen overflow-y-auto no-scrollbar pt-lg pb-lg">
-            <div className="glass rounded-xl overflow-hidden">
+          <div className="sticky top-0 flex flex-col gap-lg max-h-screen overflow-y-auto pt-lg pb-lg">
+            <div className="glass rounded-xl">
               <div className="p-lg">
                 <h3 className="font-headline-md text-headline-md text-text font-semibold mb-md">
                   Trending
@@ -79,7 +79,7 @@ export function MainLayout() {
             </div>
 
             {isAuthenticated && (
-              <div className="glass rounded-xl overflow-hidden">
+              <div className="glass rounded-xl">
                 <div className="p-lg">
                   <h3 className="font-headline-md text-headline-md text-text font-semibold mb-md">
                     Notifications
@@ -90,7 +90,7 @@ export function MainLayout() {
             )}
 
             {suggestions && suggestions.length > 0 && (
-              <div className="glass rounded-xl overflow-hidden">
+              <div className="glass rounded-xl">
                 <div className="p-lg">
                   <h3 className="font-headline-md text-headline-md text-text font-semibold mb-md">
                     Suggested

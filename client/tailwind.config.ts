@@ -114,7 +114,8 @@ export default {
         "slide-in-right": "slide-in-right 0.3s ease-out both",
         "pulse-glow": "pulse-glow 2s ease-in-out infinite",
         "spin-slow": "spin-slow 3s linear infinite",
-        shimmer: "shimmer 2s linear infinite",
+        shimmer: "shimmer 1.4s ease-in-out infinite",
+        "shimmer-faster": "shimmer 0.9s ease-in-out infinite",
       },
       keyframes: {
         "fade-in": {
@@ -142,6 +143,10 @@ export default {
           to: { transform: "rotate(360deg)" },
         },
         shimmer: {
+          "0%": { backgroundPosition: "-200% 0" },
+          "100%": { backgroundPosition: "200% 0" },
+        },
+        "shimmer-faster": {
           "0%": { backgroundPosition: "-200% 0" },
           "100%": { backgroundPosition: "200% 0" },
         },

@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Avatar } from "@/components/ui/Avatar";
+import { Button } from "@/components/ui/Button";
 import { useAuth } from "@/modules/auth/hooks/useAuth";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
@@ -283,19 +284,20 @@ export function UpdateCard({ update }: UpdateCardProps) {
               ))}
             </div>
             <div className="flex gap-2 justify-end">
-              <button
+              <Button
+                variant="ghost"
                 onClick={() => { setReportOpen(false); setReportReason(""); }}
-                className="btn-ghost"
               >
                 Cancel
-              </button>
-              <button
+              </Button>
+              <Button
+                variant="danger"
                 onClick={() => reportMutation.mutate()}
-                disabled={!reportReason || reportMutation.isPending}
-                className="btn-danger"
+                loading={reportMutation.isPending}
+                disabled={!reportReason}
               >
-                {reportMutation.isPending ? "Submitting..." : "Submit"}
-              </button>
+                Submit
+              </Button>
             </div>
           </div>
         </div>

@@ -86,14 +86,18 @@ export function UpdateForm() {
             )}
 
             <div className="flex items-center justify-between mt-3 pt-3 border-t border-border">
-              <div className="flex gap-1">
+              <div className="flex items-center gap-1">
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  className="text-text-secondary hover:text-text hover:bg-surface-hover p-2 rounded-full transition-all"
+                  className={`p-2 rounded-full transition-all ${file ? "text-accent bg-accent-subtle hover:bg-accent-subtle/80" : "text-text-secondary hover:text-text hover:bg-surface-hover"}`}
+                  title={file ? "Change image" : "Attach image"}
                 >
                   <span className="material-symbols-outlined text-[20px]">image</span>
                 </button>
+                {file && (
+                  <span className="text-caption text-accent font-medium ml-0.5 truncate max-w-[120px]">{file.name}</span>
+                )}
               </div>
               <input
                 ref={fileInputRef}
@@ -104,11 +108,12 @@ export function UpdateForm() {
               />
               <Button
                 type="submit"
-                size="sm"
+                size="md"
                 loading={mutation.isPending}
                 disabled={!content.trim() && !file}
               >
-                Update
+                <span className="material-symbols-outlined text-[18px]">rocket_launch</span>
+                {mutation.isPending ? "Sharing..." : "Share build"}
               </Button>
             </div>
           </div>

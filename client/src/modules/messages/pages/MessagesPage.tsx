@@ -117,9 +117,9 @@ export function MessagesPage() {
   return (
     <div className="max-w-xl mx-auto animate-fade-in">
       <div className="flex items-center justify-between px-4 py-4 border-b border-border">
-        <h1 className="text-lg font-bold text-text">Messages</h1>
+        <h1 className="font-headline-lg text-headline-lg text-text">Messages</h1>
         <Button variant="secondary" size="sm" onClick={() => setShowNew((p) => !p)}>
-          <span className="material-symbols-outlined text-lg mr-1">edit</span>
+          <span className="material-symbols-outlined text-[18px]">edit</span>
           New
         </Button>
       </div>
