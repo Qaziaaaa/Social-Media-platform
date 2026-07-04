@@ -13,7 +13,7 @@ const base =
 
 const variants = {
   primary:
-    "bg-accent text-white rounded-xl shadow-sm hover:bg-accent-hover hover:shadow-md active:scale-[0.97] active:shadow-none",
+    "bg-accent text-white rounded-xl hover:bg-accent-hover active:scale-[0.97] active:shadow-none btn-shadow",
   secondary:
     "bg-surface text-text border border-border rounded-xl hover:border-accent hover:text-accent hover:bg-surface-hover active:scale-[0.97]",
   ghost:

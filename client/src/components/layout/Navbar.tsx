@@ -56,7 +56,7 @@ export function Navbar() {
           ) : (
             <Link
               to="/login"
-              className="bg-accent text-white rounded-xl shadow-sm hover:bg-accent-hover hover:shadow-md transition-all duration-150 text-label-sm px-4 py-1.5"
+              className="bg-accent text-white rounded-xl btn-shadow text-label-sm px-4 py-1.5"
             >
               Sign in
             </Link>
@@ -164,7 +164,7 @@ export function Navbar() {
             <div className="flex flex-col gap-2 pt-3">
               <Link
                 to="/login"
-                className="block w-full text-center bg-accent text-white rounded-xl shadow-sm hover:bg-accent-hover hover:shadow-md transition-all duration-150 px-5 py-2 font-label-md"
+                className="block w-full text-center bg-accent text-white rounded-xl btn-shadow px-5 py-2 font-label-md"
               >
                 Sign In
               </Link>

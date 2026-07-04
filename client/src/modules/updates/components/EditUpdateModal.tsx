@@ -71,7 +71,7 @@ export function EditUpdateModal({ update, onClose }: EditUpdateModalProps) {
       onClick={handleOverlayClick}
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm animate-fade-in p-md"
     >
-      <div className="bg-surface-elevated rounded-xl p-lg shadow-xl border border-border w-full max-w-lg animate-scale-in">
+      <div className="bg-surface-elevated rounded-xl p-lg shadow-modal border border-border w-full max-w-lg animate-scale-in">
         <div className="flex justify-between items-center mb-lg">
           <h2 className="font-headline-md text-headline-md text-text">Edit update</h2>
           <button

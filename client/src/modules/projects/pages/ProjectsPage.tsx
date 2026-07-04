@@ -150,7 +150,7 @@ export function ProjectsPage() {
         {projects?.map((project) => (
           <div
             key={project.id}
-            className="group card p-lg hover:shadow-lg transition-all duration-200"
+            className="group card p-lg"
           >
             <div className="flex items-start justify-between gap-sm">
               <Link to={`/projects/${project.id}`} className="flex-1 min-w-0">

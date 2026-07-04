@@ -261,7 +261,7 @@ export function UpdateCard({ update }: UpdateCardProps) {
           onClick={() => { setReportOpen(false); setReportReason(""); }}
         >
           <div
-            className="bg-surface-elevated rounded-xl p-lg shadow-xl border border-border w-full max-w-md mx-4 animate-scale-in"
+            className="bg-surface-elevated rounded-xl p-lg shadow-modal border border-border w-full max-w-md mx-4 animate-scale-in"
             onClick={(e) => e.stopPropagation()}
           >
             <h3 className="font-headline-md text-headline-md text-text font-semibold mb-md">Report update</h3>

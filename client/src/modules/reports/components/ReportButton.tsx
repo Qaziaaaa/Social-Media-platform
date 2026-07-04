@@ -59,7 +59,7 @@ export function ReportButton({ targetType, targetId }: ReportButtonProps) {
           onClick={() => setOpen(false)}
         >
           <div
-            className="bg-surface rounded-xl p-lg shadow-xl border border-surface-container-high w-full max-w-md mx-4 animate-scale-up"
+            className="bg-surface rounded-xl p-lg shadow-modal border border-surface-container-high w-full max-w-md mx-4 animate-scale-up"
             onClick={(e) => e.stopPropagation()}
           >
             <h3 className="font-headline-md text-headline-md font-bold text-on-surface mb-md">Report</h3>
