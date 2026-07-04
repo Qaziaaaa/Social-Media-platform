@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { Avatar } from "@/components/ui/Avatar";
+import { ImageCropperModal } from "@/components/ui/ImageCropperModal";
 import { useAuth } from "@/modules/auth/hooks/useAuth";
 import api from "@/services/api";
 import { queryKeys } from "@/lib/query-keys";
@@ -35,6 +36,9 @@ export function EditProfilePage() {
   const [coverPreview, setCoverPreview] = useState<string | null>(null);
   const avatarInputRef = useRef<HTMLInputElement>(null);
   const coverInputRef = useRef<HTMLInputElement>(null);
+  const [cropTarget, setCropTarget] = useState<"avatar" | "cover" | null>(null);
+  const [cropImageUrl, setCropImageUrl] = useState<string | null>(null);
+  const pendingFileRef = useRef<File | null>(null);
 
   useEffect(() => {
     if (!isLoading && !user) {
@@ -57,6 +61,29 @@ export function EditProfilePage() {
       location: user?.location ?? "",
     },
   });
+
+  const handleCrop = useCallback((blob: Blob) => {
+    const file = new File([blob], "cropped.jpg", { type: "image/jpeg" });
+    const url = URL.createObjectURL(blob);
+    if (cropTarget === "avatar") {
+      setAvatarFile(file);
+      setAvatarPreview(url);
+    } else {
+      setCoverFile(file);
+      setCoverPreview(url);
+    }
+    setCropTarget(null);
+    setCropImageUrl(null);
+  }, [cropTarget]);
+
+  const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>, target: "avatar" | "cover") => {
+    const f = e.target.files?.[0];
+    if (!f) return;
+    pendingFileRef.current = f;
+    setCropTarget(target);
+    setCropImageUrl(URL.createObjectURL(f));
+    e.target.value = "";
+  }, []);
 
   const uploadImage = async (file: File): Promise<string> => {
     const formData = new FormData();
@@ -113,131 +140,136 @@ export function EditProfilePage() {
   if (!user) return null;
 
   return (
-    <div className="mx-auto max-w-md space-y-6 animate-fade-in">
-      <div>
-        <h1 className="font-headline-lg text-headline-lg text-text">Edit profile</h1>
-      </div>
+    <>
+      <div className="mx-auto max-w-md space-y-6 animate-fade-in">
+        <div>
+          <h1 className="font-headline-lg text-headline-lg text-text">Edit profile</h1>
+        </div>
 
-      <form onSubmit={handleSubmit((data) => mutation.mutate(data))} className="space-y-4">
-        <div className="space-y-4 mb-lg">
-          <div>
-            <label className="font-label-md text-label-md text-text ml-xs block mb-sm">Cover image</label>
-            <div
-              onClick={() => coverInputRef.current?.click()}
-              className="relative h-32 bg-surface-hover rounded-lg overflow-hidden cursor-pointer group border border-border"
-            >
-              {(coverPreview || user?.coverImage) && (
-                <img
-                  src={coverPreview ?? user!.coverImage!}
-                  alt="Cover"
-                  className="w-full h-full object-cover"
-                />
-              )}
-              <div className="absolute inset-0 flex items-center justify-center bg-black/0 group-hover:bg-black/30 transition-colors">
-                <span className="material-symbols-outlined text-white opacity-0 group-hover:opacity-100 transition-opacity text-3xl">photo_camera</span>
-              </div>
-            </div>
-            <input
-              ref={coverInputRef}
-              type="file"
-              accept="image/jpeg,image/png,image/gif,image/webp"
-              onChange={(e) => {
-                const f = e.target.files?.[0];
-                if (f) { setCoverFile(f); setCoverPreview(URL.createObjectURL(f)); }
-              }}
-              className="hidden"
-            />
-          </div>
-
-          <div className="flex justify-center -mt-12 relative z-10">
-            <div className="relative">
-              <Avatar src={avatarPreview ?? user?.avatar ?? null} alt="Avatar" size="lg" />
-              <button
-                type="button"
-                onClick={() => avatarInputRef.current?.click()}
-                className="absolute inset-0 flex items-center justify-center rounded-full bg-black/0 hover:bg-black/30 transition-colors"
+        <form onSubmit={handleSubmit((data) => mutation.mutate(data))} className="space-y-4">
+          <div className="space-y-4 mb-lg">
+            <div>
+              <label className="font-label-md text-label-md text-text ml-xs block mb-sm">Cover image</label>
+              <div
+                onClick={() => coverInputRef.current?.click()}
+                className="relative h-32 bg-surface-hover rounded-lg overflow-hidden cursor-pointer group border border-border"
               >
-                <span className="material-symbols-outlined text-white opacity-0 hover:opacity-100 transition-opacity">photo_camera</span>
-              </button>
+                {(coverPreview || user?.coverImage) && (
+                  <img
+                    src={coverPreview ?? user!.coverImage!}
+                    alt="Cover"
+                    className="w-full h-full object-cover"
+                  />
+                )}
+                <div className="absolute inset-0 flex items-center justify-center bg-black/0 group-hover:bg-black/30 transition-colors">
+                  <span className="material-symbols-outlined text-white opacity-0 group-hover:opacity-100 transition-opacity text-3xl">photo_camera</span>
+                </div>
+              </div>
               <input
-                ref={avatarInputRef}
+                ref={coverInputRef}
                 type="file"
                 accept="image/jpeg,image/png,image/gif,image/webp"
-                onChange={(e) => {
-                  const f = e.target.files?.[0];
-                  if (f) { setAvatarFile(f); setAvatarPreview(URL.createObjectURL(f)); }
-                }}
+                onChange={(e) => handleFileSelect(e, "cover")}
                 className="hidden"
               />
             </div>
+
+            <div className="flex justify-center -mt-12 relative z-10">
+              <div className="relative">
+                <Avatar src={avatarPreview ?? user?.avatar ?? null} alt="Avatar" size="lg" />
+                <button
+                  type="button"
+                  onClick={() => avatarInputRef.current?.click()}
+                  className="absolute inset-0 flex items-center justify-center rounded-full bg-black/0 hover:bg-black/30 transition-colors"
+                >
+                  <span className="material-symbols-outlined text-white opacity-0 hover:opacity-100 transition-opacity">photo_camera</span>
+                </button>
+                <input
+                  ref={avatarInputRef}
+                  type="file"
+                  accept="image/jpeg,image/png,image/gif,image/webp"
+                  onChange={(e) => handleFileSelect(e, "avatar")}
+                  className="hidden"
+                />
+              </div>
+            </div>
           </div>
-        </div>
 
-        <Input
-          id="username"
-          label="Username"
-          {...register("username")}
-          error={errors.username?.message}
-        />
-        <Input
-          id="fullName"
-          label="Full name"
-          {...register("fullName")}
-          error={errors.fullName?.message}
-        />
-        <div className="space-y-1">
-          <label htmlFor="bio" className="font-label-md text-label-md text-text ml-xs block">
-            Bio
-          </label>
-          <textarea
-            id="bio"
-            rows={4}
-            {...register("bio")}
-            className="block w-full rounded-lg border border-border bg-surface px-3 py-2.5 text-body-md font-body-md text-text placeholder:text-text-tertiary/60 shadow-sm focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent transition-all"
+          <Input
+            id="username"
+            label="Username"
+            {...register("username")}
+            error={errors.username?.message}
           />
-          {errors.bio && <p className="text-sm text-danger ml-xs">{errors.bio.message}</p>}
-        </div>
-
-        <Input
-          id="location"
-          label="Location"
-          placeholder="e.g. San Francisco, CA"
-          {...register("location")}
-          error={errors.location?.message}
-        />
-        <Input
-          id="website"
-          label="Website"
-          placeholder="https://example.com"
-          {...register("website")}
-          error={errors.website?.message}
-        />
-        <div className="space-y-1">
-          <label htmlFor="skills" className="font-label-md text-label-md text-text ml-xs block">
-            Skills
-          </label>
-          <input
-            id="skills"
-            placeholder="React, TypeScript, UI Design (comma-separated)"
-            {...register("skills")}
-            className="block w-full rounded-lg border border-border bg-surface px-3 py-2.5 text-body-md font-body-md text-text placeholder:text-text-tertiary/60 shadow-sm focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent transition-all"
+          <Input
+            id="fullName"
+            label="Full name"
+            {...register("fullName")}
+            error={errors.fullName?.message}
           />
-          {errors.skills && <p className="text-sm text-danger ml-xs">{errors.skills.message}</p>}
-        </div>
+          <div className="space-y-1">
+            <label htmlFor="bio" className="font-label-md text-label-md text-text ml-xs block">
+              Bio
+            </label>
+            <textarea
+              id="bio"
+              rows={4}
+              {...register("bio")}
+              className="block w-full rounded-lg border border-border bg-surface px-3 py-2.5 text-body-md font-body-md text-text placeholder:text-text-tertiary/60 shadow-sm focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent transition-all"
+            />
+            {errors.bio && <p className="text-sm text-danger ml-xs">{errors.bio.message}</p>}
+          </div>
 
-        <div className="flex gap-3">
-          <Button type="submit" loading={mutation.isPending}>
-            Save
-          </Button>
-          <Button
-            type="button"
-            variant="secondary"
-            onClick={() => navigate(`/profile/${user.id}`)}
-          >
-            Cancel
-          </Button>
-        </div>
-      </form>
-    </div>
+          <Input
+            id="location"
+            label="Location"
+            placeholder="e.g. San Francisco, CA"
+            {...register("location")}
+            error={errors.location?.message}
+          />
+          <Input
+            id="website"
+            label="Website"
+            placeholder="https://example.com"
+            {...register("website")}
+            error={errors.website?.message}
+          />
+          <div className="space-y-1">
+            <label htmlFor="skills" className="font-label-md text-label-md text-text ml-xs block">
+              Skills
+            </label>
+            <input
+              id="skills"
+              placeholder="React, TypeScript, UI Design (comma-separated)"
+              {...register("skills")}
+              className="block w-full rounded-lg border border-border bg-surface px-3 py-2.5 text-body-md font-body-md text-text placeholder:text-text-tertiary/60 shadow-sm focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent transition-all"
+            />
+            {errors.skills && <p className="text-sm text-danger ml-xs">{errors.skills.message}</p>}
+          </div>
+
+          <div className="flex gap-3">
+            <Button type="submit" loading={mutation.isPending}>
+              Save
+            </Button>
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={() => navigate(`/profile/${user.id}`)}
+            >
+              Cancel
+            </Button>
+          </div>
+        </form>
+      </div>
+
+      {cropImageUrl && cropTarget && (
+        <ImageCropperModal
+          imageUrl={cropImageUrl}
+          aspect={cropTarget === "avatar" ? 1 : 3}
+          onCrop={handleCrop}
+          onClose={() => { setCropTarget(null); setCropImageUrl(null); }}
+        />
+      )}
+    </>
   );
 }
