@@ -69,7 +69,7 @@ export function UpdateForm() {
               onChange={(e) => setContent(e.target.value)}
               placeholder="What are you building?"
               rows={3}
-              className="w-full bg-transparent border-none focus:ring-0 font-body-md text-body-md text-text placeholder:text-text-tertiary resize-none min-h-[80px]"
+              className="w-full bg-transparent border-0 border-b-2 border-transparent focus:border-accent outline-none focus:ring-0 font-body-md text-body-md text-text placeholder:text-text-tertiary resize-none min-h-[80px] transition-all"
             />
 
             {preview && (
