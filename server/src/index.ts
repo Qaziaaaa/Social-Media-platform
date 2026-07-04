@@ -31,9 +31,13 @@ const PORT = process.env.PORT || 4000;
 
 app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
 const devOrigins = Array.from({ length: 10 }, (_, i) => `http://localhost:${5173 + i}`);
+const prodOrigins = (process.env.CLIENT_URL || "")
+  .split(",")
+  .map((s) => s.trim())
+  .filter(Boolean);
 app.use(cors({
   origin: process.env.NODE_ENV === "production"
-    ? process.env.CLIENT_URL
+    ? prodOrigins.length > 0 ? prodOrigins : "*"
     : devOrigins,
   credentials: true,
 }));
@@ -49,6 +53,12 @@ const limiter = rateLimit({
 });
 app.use("/api/", limiter);
 
+app.get("/", (_req, res) => {
+  res.json({ success: true, data: { status: "ok" } });
+});
+app.get("/_health", (_req, res) => {
+  res.json({ success: true, data: { status: "ok" } });
+});
 app.get("/api/health", (_req, res) => {
   res.json({ success: true, data: { status: "ok" } });
 });
