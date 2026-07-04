@@ -34,7 +34,7 @@ export function Navbar() {
   return (
     <>
       {/* Mobile Top Bar */}
-      <header className="md:hidden fixed top-0 w-full z-50 glass border-b border-border flex justify-between items-center px-margin-mobile py-3">
+      <header className="md:hidden fixed top-0 left-0 right-0 z-50 glass border-b border-border flex items-center justify-between px-margin-mobile py-3">
         <Link to="/" className="font-headline-lg text-headline-lg font-bold text-accent tracking-tight">
           Forge
         </Link>
@@ -179,16 +179,13 @@ export function Navbar() {
         </div>
       </aside>
 
-      {/* Mobile Bottom Nav */}
-      <nav className="md:hidden fixed bottom-0 w-full z-50 glass border-t border-border flex items-center gap-1 px-margin-mobile py-1.5 pb-safe overflow-x-auto scroll-smooth no-scrollbar">
+      {/* Mobile Bottom Nav — 5 fixed items, no scroll, guaranteed symmetry */}
+      <nav className="md:hidden fixed bottom-0 w-full z-50 glass border-t border-border grid grid-cols-5 items-center px-0 py-1 pb-safe">
         {[
           { icon: "home", label: "Home", path: "/" },
           { icon: "explore", label: "Explore", path: "/explore" },
-          { icon: "timeline", label: "Roadmap", path: "/roadmap" },
-          { icon: "folder", label: "Projects", path: "/projects" },
-          { icon: "mail", label: "Messages", path: "/messages" },
-          { icon: "bookmark", label: "Bookmarks", path: "/bookmarks" },
           { icon: "notifications", label: "Alerts", path: "/notifications", count: notifCount },
+          { icon: "mail", label: "Messages", path: "/messages" },
           { icon: "person", label: "Profile", path: isAuthenticated && user ? `/profile/${user.id}` : "/login", check: (p: string) => p.startsWith("/profile") },
         ].map((item) => {
           const isActive = "check" in item ? (item as any).check(location.pathname) : location.pathname === item.path;
@@ -196,7 +193,7 @@ export function Navbar() {
             <Link
               key={item.path}
               to={item.path}
-              className={`flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-colors shrink-0 ${
+              className={`flex flex-col items-center gap-0.5 py-1.5 rounded-xl transition-colors ${
                 isActive ? "text-accent" : "text-text-secondary"
               }`}
             >
@@ -217,7 +214,6 @@ export function Navbar() {
             </Link>
           );
         })}
-        <div className="shrink-0 w-3" aria-hidden="true" />
       </nav>
     </>
   );
