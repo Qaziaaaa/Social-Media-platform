@@ -180,7 +180,7 @@ export function Navbar() {
       </aside>
 
       {/* Mobile Bottom Nav — 5 fixed items, no scroll, guaranteed symmetry */}
-      <nav className="md:hidden fixed bottom-0 w-full z-50 glass border-t border-border grid grid-cols-5 items-center px-0 py-1 pb-safe">
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 glass border-t border-border grid grid-cols-5 items-center py-1">
         {[
           { icon: "home", label: "Home", path: "/" },
           { icon: "explore", label: "Explore", path: "/explore" },
