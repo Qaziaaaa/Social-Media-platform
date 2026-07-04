@@ -32,7 +32,7 @@ type Tab = "updates" | "likes" | "media";
 
 export function ProfilePage() {
   const { id } = useParams<{ id: string }>();
-  const { user: currentUser } = useAuth();
+  const { user: currentUser, logout } = useAuth();
   const queryClient = useQueryClient();
   const isOwnProfile = currentUser?.id === id;
   const [activeTab, setActiveTab] = useState<Tab>("updates");
@@ -190,9 +190,15 @@ export function ProfilePage() {
 
           <div className="flex justify-end pt-3 mb-4">
             {isOwnProfile ? (
-              <Link to={`/profile/${id}/edit`}>
-                <Button variant="secondary" size="sm">Edit Profile</Button>
-              </Link>
+              <div className="flex gap-2">
+                <Link to={`/profile/${id}/edit`}>
+                  <Button variant="secondary" size="sm">Edit Profile</Button>
+                </Link>
+                <Button variant="ghost" size="sm" onClick={() => logout()}>
+                  <span className="material-symbols-outlined text-[18px]">logout</span>
+                  Logout
+                </Button>
+              </div>
             ) : (
               <div className="flex items-center gap-2">
                 <Button
