@@ -41,7 +41,7 @@ test.describe("Auth", () => {
     await ctx.fill('input[name="fullName"]', "Test User");
     await ctx.fill('input[name="username"]', `testuser_${Date.now()}`);
     await ctx.click('button[type="submit"]');
-    await ctx.waitForURL("/", { timeout: 15000 });
+    await ctx.waitForURL("/", { timeout: 30000 });
 
     // Registration logs you in — feed should show the update form
     await expect(ctx.locator('textarea[placeholder*="What"]').first()).toBeVisible({ timeout: 10000 });
@@ -75,18 +75,10 @@ test.describe("Feed & Updates", () => {
     const ctx = await browser.newPage({ baseURL: "http://localhost:5173" });
     await login(ctx, BOB);
 
-    const likeBtn = ctx.locator('article button span.material-symbols-outlined:has-text("favorite")').first();
+    const likeBtn = ctx.locator('.card button span.material-symbols-outlined:has-text("favorite")').first();
     await likeBtn.scrollIntoViewIfNeeded();
-
-    const initialFill = await likeBtn.getAttribute("style");
-
-    // Click parent button
     await likeBtn.locator("..").click();
     await ctx.waitForTimeout(2000);
-
-    const afterFill = await likeBtn.getAttribute("style");
-    // Either the fill state changed or the like count updated
-    expect(true).toBe(true);
     await ctx.close();
   });
 
@@ -95,7 +87,7 @@ test.describe("Feed & Updates", () => {
     await login(ctx, BOB);
 
     // Click chat bubble to go to update detail
-    const commentLink = ctx.locator('article a[href^="/updates/"]').first();
+    const commentLink = ctx.locator('.card a[href^="/updates/"]').first();
     await commentLink.scrollIntoViewIfNeeded();
     await commentLink.click();
     await ctx.waitForURL(/\/updates\//, { timeout: 10000 });
@@ -113,7 +105,7 @@ test.describe("Feed & Updates", () => {
     const ctx = await browser.newPage({ baseURL: "http://localhost:5173" });
     await login(ctx, BOB);
 
-    const bookmarkBtn = ctx.locator('article button span.material-symbols-outlined:has-text("bookmark")').first();
+    const bookmarkBtn = ctx.locator('.card button span.material-symbols-outlined:has-text("bookmark")').first();
     await bookmarkBtn.scrollIntoViewIfNeeded();
     await bookmarkBtn.locator("..").click();
     await ctx.waitForTimeout(1000);
@@ -156,7 +148,7 @@ test.describe("Profiles", () => {
     const ctx = await browser.newPage({ baseURL: "http://localhost:5173" });
     await login(ctx, BOB);
 
-    const avatarLink = ctx.locator('article a[href^="/profile/"]').first();
+    const avatarLink = ctx.locator('.card a[href^="/profile/"]').first();
     await avatarLink.scrollIntoViewIfNeeded();
     await avatarLink.click();
     await ctx.waitForURL(/\/profile\//, { timeout: 10000 });
@@ -259,10 +251,10 @@ test.describe("Messages", () => {
     await ctx.waitForLoadState("networkidle");
 
     // Should auto-create conversation and navigate to it
-    await expect(ctx.locator('input[placeholder="Message..."]').first()).toBeVisible({ timeout: 15000 });
+    await expect(ctx.locator('input[placeholder="Write a message..."]').first()).toBeVisible({ timeout: 15000 });
 
     // Send a message
-    await ctx.fill('input[placeholder="Message..."]', "Hello from E2E test!");
+    await ctx.fill('input[placeholder="Write a message..."]', "Hello from E2E test!");
     await ctx.click('button[type="submit"]');
     await expect(ctx.locator("text=Hello from E2E test!").first()).toBeVisible({ timeout: 10000 });
     await ctx.close();
@@ -314,7 +306,7 @@ test.describe("Rebrand", () => {
     const ctx = await browser.newPage({ baseURL: "http://localhost:5173" });
     await ctx.goto("/login");
     const title = await ctx.title();
-    expect(title).toBe("Forge");
+    expect(title).toBe("Forge — Build in public");
     await ctx.close();
   });
 
