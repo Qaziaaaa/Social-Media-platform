@@ -101,7 +101,7 @@ export function ConversationPage() {
 
   if (isLoading) {
     return (
-      <div className="max-w-2xl mx-auto h-[calc(100vh-8rem)] flex flex-col">
+      <div className="max-w-2xl mx-auto h-[calc(100dvh-8rem)] flex flex-col">
         <div className="flex items-center gap-3 px-5 py-4 border-b border-border">
           <Skeleton className="h-9 w-9 rounded-full" />
           <Skeleton className="h-4 w-36" />
@@ -120,7 +120,7 @@ export function ConversationPage() {
   const other = (conversation as any)?.otherParticipants?.[0]?.user;
 
   return (
-    <div className="max-w-2xl mx-auto h-[calc(100vh-8rem)] flex flex-col">
+    <div className="max-w-2xl mx-auto h-[calc(100dvh-8rem)] flex flex-col">
       <div className="flex items-center gap-3 px-5 py-4 border-b border-border bg-surface/90 backdrop-blur-md shrink-0">
         <Link to="/messages" className="text-text-secondary hover:text-accent transition-colors -ml-1 p-1 rounded-lg hover:bg-surface-hover">
           <span className="material-symbols-outlined text-2xl">arrow_back</span>

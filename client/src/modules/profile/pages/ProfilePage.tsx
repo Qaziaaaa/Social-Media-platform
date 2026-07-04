@@ -268,7 +268,7 @@ export function ProfilePage() {
                 ))}
               </div>
             )}
-            <div className="flex gap-6 border-t border-border pt-4">
+            <div className="flex gap-6 flex-wrap border-t border-border pt-4">
               <div className="flex gap-1 items-baseline">
                 <span className="font-label-md text-label-md text-text">{data._count.updates}</span>
                 <span className="font-body-sm text-body-sm text-text-secondary">Updates</span>

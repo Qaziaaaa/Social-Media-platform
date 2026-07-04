@@ -180,39 +180,43 @@ export function Navbar() {
       </aside>
 
       {/* Mobile Bottom Nav */}
-      <nav className="md:hidden fixed bottom-0 w-full z-50 glass border-t border-border flex justify-around items-center px-2 py-2 pb-safe">
-        <Link
-          to="/"
-          className={`flex flex-col items-center gap-0.5 p-2 rounded-xl transition-colors ${
-            location.pathname === "/" ? "text-accent" : "text-text-secondary"
-          }`}
-        >
-          <span
-            className="material-symbols-outlined"
-            style={location.pathname === "/" ? { fontVariationSettings: "'FILL' 1" } : undefined}
-          >
-            home
-          </span>
-        </Link>
-        <Link
-          to="/explore"
-          className="flex flex-col items-center gap-0.5 p-2 rounded-xl text-text-secondary"
-        >
-          <span className="material-symbols-outlined">explore</span>
-        </Link>
-        <Link
-          to={isAuthenticated && user ? `/profile/${user.id}` : "/login"}
-          className={`flex flex-col items-center gap-0.5 p-2 rounded-xl ${
-            location.pathname.startsWith("/profile") ? "text-accent" : "text-text-secondary"
-          }`}
-        >
-          <span
-            className="material-symbols-outlined"
-            style={location.pathname.startsWith("/profile") ? { fontVariationSettings: "'FILL' 1" } : undefined}
-          >
-            person
-          </span>
-        </Link>
+      <nav className="md:hidden fixed bottom-0 w-full z-50 glass border-t border-border flex items-center px-1 py-1 pb-safe overflow-x-auto scroll-smooth no-scrollbar">
+        {[
+          { icon: "home", label: "Home", path: "/" },
+          { icon: "explore", label: "Explore", path: "/explore" },
+          { icon: "timeline", label: "Roadmap", path: "/roadmap" },
+          { icon: "folder", label: "Projects", path: "/projects" },
+          { icon: "mail", label: "Messages", path: "/messages" },
+          { icon: "bookmark", label: "Bookmarks", path: "/bookmarks" },
+          { icon: "notifications", label: "Alerts", path: "/notifications", count: notifCount },
+          { icon: "person", label: "Profile", path: isAuthenticated && user ? `/profile/${user.id}` : "/login", check: (p: string) => p.startsWith("/profile") },
+        ].map((item) => {
+          const isActive = "check" in item ? (item as any).check(location.pathname) : location.pathname === item.path;
+          return (
+            <Link
+              key={item.path}
+              to={item.path}
+              className={`flex flex-col items-center gap-0.5 px-2.5 py-1.5 rounded-xl transition-colors shrink-0 min-w-0 ${
+                isActive ? "text-accent" : "text-text-secondary"
+              }`}
+            >
+              <span className="relative">
+                <span
+                  className="material-symbols-outlined text-[22px]"
+                  style={isActive ? { fontVariationSettings: "'FILL' 1" } : undefined}
+                >
+                  {item.icon}
+                </span>
+                {"count" in item && (item as any).count > 0 && (
+                  <span className="absolute -top-1 -right-1 h-3.5 w-3.5 rounded-full bg-danger text-[8px] text-white font-bold flex items-center justify-center ring-2 ring-bg">
+                    {(item as any).count > 9 ? "9+" : (item as any).count}
+                  </span>
+                )}
+              </span>
+              <span className="font-label-sm text-[10px] leading-tight">{item.label}</span>
+            </Link>
+          );
+        })}
       </nav>
     </>
   );

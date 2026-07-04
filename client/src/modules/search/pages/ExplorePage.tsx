@@ -52,7 +52,7 @@ export function ExplorePage() {
     <div className="flex flex-col gap-lg animate-fade-in">
       <div className="card p-lg">
         <h1 className="font-headline-lg text-headline-lg text-text mb-lg">Explore</h1>
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
           <div className="flex-1 relative">
             <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary">
               search

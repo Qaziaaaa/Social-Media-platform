@@ -40,7 +40,7 @@ export function AdminReportsPage() {
     <div className="flex flex-col gap-lg animate-fade-in">
       <h1 className="font-headline-lg text-headline-lg font-bold text-text">Admin: Reports</h1>
 
-      <div className="flex gap-sm">
+      <div className="flex gap-sm flex-wrap">
         {statusFilters.map((s) => (
           <button
             key={s}
