@@ -32,6 +32,7 @@ export interface Report {
   reason: string;
   status: "pending" | "resolved" | "dismissed";
   createdAt: string;
+  target: Record<string, unknown> | null;
 }
 
 export interface BlockedUser {

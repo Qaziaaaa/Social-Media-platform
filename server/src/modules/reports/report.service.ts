@@ -37,7 +37,45 @@ export async function getReports(status?: string) {
     },
   });
 
-  return reports;
+  const enriched = await Promise.all(
+    reports.map(async (report) => {
+      let target: Record<string, unknown> | null = null;
+      if (report.targetType === "update") {
+        const update = await prisma.update.findUnique({
+          where: { id: report.targetId },
+          select: { id: true, content: true, imageUrl: true, createdAt: true, authorId: true },
+        });
+        if (update) {
+          const author = await prisma.user.findUnique({
+            where: { id: update.authorId },
+            select: { id: true, username: true, fullName: true, avatar: true },
+          });
+          target = { ...update, author };
+        }
+      } else if (report.targetType === "comment") {
+        const comment = await prisma.comment.findUnique({
+          where: { id: report.targetId },
+          select: { id: true, content: true, createdAt: true, authorId: true },
+        });
+        if (comment) {
+          const author = await prisma.user.findUnique({
+            where: { id: comment.authorId },
+            select: { id: true, username: true, fullName: true, avatar: true },
+          });
+          target = { ...comment, author };
+        }
+      } else if (report.targetType === "user") {
+        const user = await prisma.user.findUnique({
+          where: { id: report.targetId },
+          select: { id: true, username: true, fullName: true, avatar: true, bio: true },
+        });
+        target = user;
+      }
+      return { ...report, target };
+    }),
+  );
+
+  return enriched;
 }
 
 export async function updateReportStatus(reportId: string, status: string) {
