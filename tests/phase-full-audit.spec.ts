@@ -272,11 +272,75 @@ test.describe("Messages", () => {
 // ── Admin Reports ────────────────────────────────────────
 
 test.describe("Admin Reports", () => {
-  test("admin reports page loads and lists reports", async ({ browser }) => {
+  test("admin reports page loads, lists pending reports, shows target preview", async ({ browser }) => {
+    const ctx = await browser.newPage({ baseURL: "http://localhost:5173" });
+    await login(ctx, ADMIN);
+
+    // Create a test update via API as Alice so we have a reportable target
+    const aliceCtx = await browser.newPage({ baseURL: "http://localhost:5173" });
+    await login(aliceCtx, ALICE);
+    const aliceToken = await aliceCtx.evaluate(() => localStorage.getItem("social_access_token"));
+    const getAliceToken = async () => aliceToken;
+
+    const updateRes = await (async () => {
+      const token = await getAliceToken();
+      const opts = {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        data: JSON.stringify({ content: "Report preview test " + Date.now() }),
+      };
+      return (await ctx.request.fetch("http://localhost:4000/api/updates", opts)).json();
+    })();
+
+    // Report Alice's update as Bob
+    const bobCtx = await browser.newPage({ baseURL: "http://localhost:5173" });
+    await login(bobCtx, BOB);
+    const bobToken = await bobCtx.evaluate(() => localStorage.getItem("social_access_token"));
+    await (async () => {
+      const opts = {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${bobToken}` },
+        data: JSON.stringify({ targetType: "update", targetId: updateRes.data.id, reason: "E2E test report" }),
+      };
+      return (await ctx.request.fetch("http://localhost:4000/api/reports", opts)).json();
+    })();
+
+    // Navigate to admin reports
+    await ctx.goto("/admin/reports");
+    await expect(ctx.getByRole("heading", { name: /reports/i })).toBeVisible({ timeout: 10000 });
+
+    // The pending filter should be active by default; verify at least one report card exists
+    await expect(ctx.locator('text=pending').first()).toBeVisible({ timeout: 10000 });
+
+    // The report reason should be visible
+    const reasonLocator = ctx.locator('text=E2E test report');
+    await expect(reasonLocator.first()).toBeVisible({ timeout: 10000 });
+
+    // Should show a target preview (the update content in a bg-surface-hover/50 box)
+    await expect(ctx.locator('text=Report preview test').first()).toBeVisible({ timeout: 10000 });
+
+    // Should show Action and Dismiss buttons
+    await expect(ctx.locator('button:has-text("Action")').first()).toBeVisible({ timeout: 10000 });
+    await expect(ctx.locator('button:has-text("Dismiss")').first()).toBeVisible({ timeout: 10000 });
+
+    await aliceCtx.close();
+    await bobCtx.close();
+    await ctx.close();
+  });
+
+  test("admin can switch between pending/resolved/dismissed tabs", async ({ browser }) => {
     const ctx = await browser.newPage({ baseURL: "http://localhost:5173" });
     await login(ctx, ADMIN);
     await ctx.goto("/admin/reports");
-    await expect(ctx.getByRole("heading", { name: /reports/i })).toBeVisible({ timeout: 10000 });
+
+    await expect(ctx.locator('button:has-text("pending")')).toBeVisible({ timeout: 10000 });
+    await expect(ctx.locator('button:has-text("resolved")')).toBeVisible();
+    await expect(ctx.locator('button:has-text("dismissed")')).toBeVisible();
+
+    await ctx.locator('button:has-text("resolved")').click();
+    await ctx.waitForTimeout(1000);
+    await expect(ctx.getByRole("heading", { name: /reports/i })).toBeVisible();
+
     await ctx.close();
   });
 });
